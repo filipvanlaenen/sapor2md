@@ -7,11 +7,31 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+/**
+ * A class representing a probability mass function.
+ *
+ * @param <T>
+ */
 public class ProbabilityMassFunction<T extends Comparable> {
 
+    /**
+     * A map holding the probabilities per key.
+     */
     private final Map<T, Double> map = new HashMap<T, Double>();
+    /**
+     * The median for the probability mass function.
+     */
+    private T median;
 
-    ProbabilityMassFunction(Object... objects) {
+    /**
+     * Constructs a probability mass function from an array of objects. The array
+     * has to have an even length, with each uneven element an instance of the key
+     * class, and each even element a probability.
+     *
+     * @param objects
+     *            An array defining a probability mass function.
+     */
+    ProbabilityMassFunction(final Object... objects) {
         if (objects.length % 2 == 1) {
             throw new IllegalArgumentException(
                     "The number of arguments to construct a probability mass function should be even.");
@@ -28,11 +48,23 @@ public class ProbabilityMassFunction<T extends Comparable> {
         }
     }
 
-    double getProbability(Object key) {
+    /**
+     * Returns the probability for a key.
+     *
+     * @param key
+     *            The key.
+     * @return The probability for the key.
+     */
+    double getProbability(final Object key) {
         return map.get(key);
     }
 
-    T getMedian() {
+    /**
+     * Calculates the median for the probability mass function.
+     *
+     * @return The median for the probability mass function.
+     */
+    private T calculateMedian() {
         Set<T> set = map.keySet();
         List<T> keys = new ArrayList<T>(set);
         Collections.sort(keys);
@@ -44,6 +76,18 @@ public class ProbabilityMassFunction<T extends Comparable> {
             }
         }
         return null;
+    }
+
+    /**
+     * Returns the median for the probability mass function.
+     *
+     * @return The median for the probability mass function.
+     */
+    T getMedian() {
+        if (median == null) {
+            median = calculateMedian();
+        }
+        return median;
     }
 
 }
