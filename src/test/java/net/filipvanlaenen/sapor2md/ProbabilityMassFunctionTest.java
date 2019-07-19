@@ -16,7 +16,7 @@ public class ProbabilityMassFunctionTest {
     @Test
     void constructorShouldThrowIllegalArgumentExceptionIfNoOfArgumentsIsOdd() {
         assertThrows(IllegalArgumentException.class, () -> {
-            new ProbabilityMassFunction(0);
+            new ProbabilityMassFunction<Integer>(0);
         });
     }
 
@@ -28,7 +28,7 @@ public class ProbabilityMassFunctionTest {
     @Test
     void constructorShouldThrowIllegalArgumentExceptionIfOneOfTheEvenArgumentsIsNotANumber() {
         assertThrows(IllegalArgumentException.class, () -> {
-            new ProbabilityMassFunction(0, "foo");
+            new ProbabilityMassFunction<Integer>(0, "foo");
         });
     }
 
@@ -38,7 +38,37 @@ public class ProbabilityMassFunctionTest {
      */
     @Test
     void constructorMapsArgumentsCorrectlyToItsInternalMap() {
-        ProbabilityMassFunction pmf = new ProbabilityMassFunction(0, 0.3, 1, 0.4, 2, 0.3);
+        ProbabilityMassFunction<Integer> pmf = new ProbabilityMassFunction<Integer>(0, 0.3, 1, 0.4, 2, 0.3);
         assertEquals(0.3, pmf.getProbability(0));
+    }
+
+    /**
+     * Test verifying that if one key has a 100% probability, it is returned as the
+     * median.
+     */
+    @Test
+    void keyWithHundredPercentProbabilityIsMedian() {
+        ProbabilityMassFunction<Integer> pmf = new ProbabilityMassFunction<Integer>(0, 1D);
+        assertEquals(0, pmf.getMedian());
+    }
+
+    /**
+     * Test verifying that if the first key has 40%, and the second key 60%
+     * probability, the second key is the median.
+     */
+    @Test
+    void keyWithSixtyPercentProbabilityIsMedian() {
+        ProbabilityMassFunction<Integer> pmf = new ProbabilityMassFunction<Integer>(0, 0.4D, 1, 0.6D);
+        assertEquals(1, pmf.getMedian());
+    }
+
+    /**
+     * Test verifying that if the first key has 40%, and the second key 20%, and the
+     * third key 40% probability, the second key is the median.
+     */
+    @Test
+    void keyWithSurpassingFiftyPercentProbabilityIsMedian() {
+        ProbabilityMassFunction<Integer> pmf = new ProbabilityMassFunction<Integer>(0, 0.4D, 1, 0.2D, 2, 0.4D);
+        assertEquals(1, pmf.getMedian());
     }
 }

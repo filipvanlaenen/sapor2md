@@ -1,11 +1,15 @@
 package net.filipvanlaenen.sapor2md;
 
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
-public class ProbabilityMassFunction {
+public class ProbabilityMassFunction<T extends Comparable> {
 
-    private final Map<Object, Double> map = new HashMap<Object, Double>();
+    private final Map<T, Double> map = new HashMap<T, Double>();
 
     ProbabilityMassFunction(Object... objects) {
         if (objects.length % 2 == 1) {
@@ -16,7 +20,7 @@ public class ProbabilityMassFunction {
             Object key = objects[i];
             Object value = objects[i + 1];
             if (value instanceof Number) {
-                map.put(key, (Double) value);
+                map.put((T) key, (Double) value);
             } else {
                 throw new IllegalArgumentException(
                         "The even arguments to construct a probability mass function should be numbers.");
@@ -26,6 +30,20 @@ public class ProbabilityMassFunction {
 
     double getProbability(Object key) {
         return map.get(key);
+    }
+
+    T getMedian() {
+        Set<T> set = map.keySet();
+        List<T> keys = new ArrayList<T>(set);
+        Collections.sort(keys);
+        double accumulatedProbability = 0D;
+        for (T key : keys) {
+            accumulatedProbability += map.get(key);
+            if (accumulatedProbability >= 0.5D) {
+                return key;
+            }
+        }
+        return null;
     }
 
 }
