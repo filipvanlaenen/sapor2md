@@ -71,4 +71,25 @@ public class ProbabilityMassFunctionTest {
         ProbabilityMassFunction<Integer> pmf = new ProbabilityMassFunction<Integer>(0, 0.4D, 1, 0.2D, 2, 0.4D);
         assertEquals(1, pmf.getMedian());
     }
+
+    /**
+     * Test verifying that if the first key has 40%, and the second key 10%, and the
+     * third key 50% probability, the second key is the median.
+     */
+    @Test
+    void keyAtFiftyPercentProbabilityIsMedian() {
+        ProbabilityMassFunction<Integer> pmf = new ProbabilityMassFunction<Integer>(0, 0.4D, 1, 0.1D, 2, 0.4D);
+        assertEquals(1, pmf.getMedian());
+    }
+
+    /**
+     * Test verifying that if the first key has 40%, and the second key 20%, and the
+     * third key 40% probability, the second key is the median, but only after
+     * sorting the keys according to their natural order.
+     */
+    @Test
+    void keyWithSurpassingFiftyPercentProbabilityAfterSortingIsMedian() {
+        ProbabilityMassFunction<Integer> pmf = new ProbabilityMassFunction<Integer>(2, 0.4D, 1, 0.2D, -4, 0.4D);
+        assertEquals(1, pmf.getMedian());
+    }
 }
