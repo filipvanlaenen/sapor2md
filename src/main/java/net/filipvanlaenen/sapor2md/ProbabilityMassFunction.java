@@ -90,4 +90,8 @@ public class ProbabilityMassFunction<T extends Comparable> {
         return median;
     }
 
+    Set<T> keySet() {
+        return map.keySet();
+    }
+
 }

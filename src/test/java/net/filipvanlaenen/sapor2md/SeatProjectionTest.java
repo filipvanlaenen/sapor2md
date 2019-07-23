@@ -67,4 +67,29 @@ public class SeatProjectionTest {
                 new ProbabilityMassFunction<Integer>(0, 0.6D, 1, 0.4D));
         assertEquals(1, seatProjection.getMedian("Red Party"));
     }
+
+    /**
+     * Test verifying that if the medians of all the groups add up to the total
+     * number of seats, the adjusted median is the same as the regular median.
+     */
+    @Test
+    void getAdjustedMedianReturnsTheMedianForTheGroupIfTheMediansAddUp() {
+        SeatProjection seatProjection = new SeatProjection("Red Party",
+                new ProbabilityMassFunction<Integer>(2, 0.6D, 3, 0.4D), "Blue Party",
+                new ProbabilityMassFunction<Integer>(0, 0.4D, 1, 0.6D));
+        assertEquals(2, seatProjection.getAdjustedMedian("Red Party", 3));
+    }
+
+    /**
+     * Test verifying that if extra seats need to be allocated, a number with
+     * increased probability is picked if possible.
+     */
+    @Test
+    void getAdjustedMedianReturnsAnNumberWithIncreasedProbability() {
+        SeatProjection seatProjection = new SeatProjection("Red Party",
+                new ProbabilityMassFunction<Integer>(0, 0.4D, 1, 0.2D, 2, 0.4D), "Blue Party",
+                new ProbabilityMassFunction<Integer>(0, 0.65D, 1, 0.35D), "Green Party",
+                new ProbabilityMassFunction<Integer>(0, 0.75D, 1, 0.25D));
+        assertEquals(2, seatProjection.getAdjustedMedian("Red Party", 2));
+    }
 }
