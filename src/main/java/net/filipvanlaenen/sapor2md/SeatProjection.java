@@ -58,4 +58,15 @@ public class SeatProjection {
         return map.get(group).getProbability(noOfSeats);
     }
 
+    /**
+     * Returns the median of a parliamentary group.
+     *
+     * @param group
+     *            The name of the parliamentary group.
+     * @return The median for the parliamentary group.
+     */
+    Integer getMedian(final String group) {
+        return map.get(group).getMedian();
+    }
+
 }

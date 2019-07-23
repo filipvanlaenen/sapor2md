@@ -50,10 +50,21 @@ public class SeatProjectionTest {
      * the groups correctly.
      */
     @Test
-    void constructorWiresPMFsCorrectlyToGroups() {
+    void constructorWiresProbabilityMassFunctionsCorrectlyToGroups() {
         SeatProjection seatProjection = new SeatProjection("Red Party",
                 new ProbabilityMassFunction<Integer>(0, 0.3D, 1, 0.4D, 2, 0.3D), "Blue Party",
                 new ProbabilityMassFunction<Integer>(0, 0.4D, 1, 0.6D));
         assertEquals(0.3D, seatProjection.getProbability("Red Party", 0));
+    }
+
+    /**
+     * Test verifying that the correct median is returned for a parliamentary group.
+     */
+    @Test
+    void getMedianShouldReturnTheMedianForTheGroup() {
+        SeatProjection seatProjection = new SeatProjection("Red Party",
+                new ProbabilityMassFunction<Integer>(0, 0.3D, 1, 0.4D, 2, 0.3D), "Blue Party",
+                new ProbabilityMassFunction<Integer>(0, 0.6D, 1, 0.4D));
+        assertEquals(1, seatProjection.getMedian("Red Party"));
     }
 }
