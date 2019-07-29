@@ -8,12 +8,27 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Stream;
 
+/**
+ * The command-line interface for this library.
+ */
 public class CommandLineInterface {
-
+    /**
+     * Main entry point for the command-line interface.
+     *
+     * @param args
+     *            The arguments from the command-line.
+     */
     public static void main(final String... args) {
         System.out.println(new CommandLineInterface().perform(readFileIntoString(args[0]), Integer.parseInt(args[1])));
     }
 
+    /**
+     * Reads a file from the file system and returns the result as a single string.
+     *
+     * @param filePath
+     *            The path to the file to be read.
+     * @return The content of the file as a single string.
+     */
     private static String readFileIntoString(String filePath) {
         StringBuilder contentBuilder = new StringBuilder();
         try (Stream<String> stream = Files.lines(Paths.get(filePath), StandardCharsets.UTF_8)) {
@@ -24,9 +39,17 @@ public class CommandLineInterface {
         return contentBuilder.toString();
     }
 
-    String perform(String probabilityMassFunctions, int parliamentSize) {
-        Object[] seatProjectionArguments = parseProbabilityMassFunctionsString(probabilityMassFunctions);
-        SeatProjection seatProjection = new SeatProjection(seatProjectionArguments);
+    /**
+     * Performs the action requested from the command-line.
+     *
+     * @param probabilityMassFunctionsString
+     *            The probability mass functions encoded in a single string.
+     * @param parliamentSize
+     *            The size of the parliament.
+     * @return Whatever was requested by the user from the command-line.
+     */
+    String perform(String probabilityMassFunctionsString, int parliamentSize) {
+        SeatProjection seatProjection = parseProbabilityMassFunctionsString(probabilityMassFunctionsString);
         StringBuilder contentBuilder = new StringBuilder();
         contentBuilder.append("Choice | CI95LB | Median | Adjusted Median\n");
         for (String group : seatProjection.getGroups()) {
@@ -37,7 +60,7 @@ public class CommandLineInterface {
         return contentBuilder.toString();
     }
 
-    private Object[] parseProbabilityMassFunctionsString(String probabilityMassFunctions) {
+    private SeatProjection parseProbabilityMassFunctionsString(String probabilityMassFunctions) {
         List<Object> arguments = new ArrayList<Object>();
         String[] lines = probabilityMassFunctions.split("\\R");
         for (String line : lines) {
@@ -50,10 +73,10 @@ public class CommandLineInterface {
                     pmfArguments.add(i - 1);
                     pmfArguments.add(Double.parseDouble(lineComponents[i]));
                 }
-                arguments.add(new ProbabilityMassFunction(pmfArguments.toArray()));
+                arguments.add(new ProbabilityMassFunction<Integer>(pmfArguments.toArray()));
             }
         }
-        return arguments.toArray();
+        return new SeatProjection(arguments.toArray());
     }
 
 }
