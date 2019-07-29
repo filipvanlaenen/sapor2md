@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 /**
  * A class representing a seat projection. A seat projection consists of a
@@ -195,5 +196,13 @@ public class SeatProjection {
             adjustedMedians.put(size, calculateAdjustedMedians(size));
         }
         return adjustedMedians.get(size).get(group);
+    }
+
+    Set<String> getGroups() {
+        return map.keySet();
+    }
+
+    int getLowerBoundOfConfidenceInterval(double confidence) {
+        return 0;
     }
 }
