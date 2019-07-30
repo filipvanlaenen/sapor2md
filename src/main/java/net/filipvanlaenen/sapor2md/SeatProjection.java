@@ -208,16 +208,15 @@ public class SeatProjection {
     }
 
     /**
-     * Returns the lower bound of a confidence interval for a group.
+     * Returns the confidence interval for a group.
      * 
      * @param group
      *            The name of the parliamentary group.
      * @param confidence
      *            The level of confidence required.
-     * @return The lower bound of the confidence interval for the given confidence
-     *         for a group.
+     * @return The confidence interval for the given confidence for a group.
      */
-    int getLowerBoundOfConfidenceInterval(final String group, final double confidence) {
-        return map.get(group).getLowerBoundOfConfidenceInterval(confidence);
+    ConfidenceInterval<Integer> getConfidenceInterval(final String group, final double confidence) {
+        return map.get(group).getConfidenceInterval(confidence);
     }
 }

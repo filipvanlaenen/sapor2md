@@ -11,10 +11,13 @@ import java.util.Set;
  * A class representing a probability mass function.
  *
  * @param <T>
- *            The domain type for the probability mass function.
+ *            The type of the keys for the probability mass function.
  */
 public class ProbabilityMassFunction<T extends Comparable> {
-
+    /**
+     * The magic number one half.
+     */
+    private static final double ONE_HALF = 0.5D;
     /**
      * A map holding the probabilities per key.
      */
@@ -77,7 +80,7 @@ public class ProbabilityMassFunction<T extends Comparable> {
         double accumulatedProbability = 0D;
         for (T key : keys) {
             accumulatedProbability += map.get(key);
-            if (accumulatedProbability >= 0.5D) {
+            if (accumulatedProbability >= ONE_HALF) {
                 return key;
             }
         }
@@ -96,27 +99,32 @@ public class ProbabilityMassFunction<T extends Comparable> {
         return median;
     }
 
+    /**
+     * Returns the keys of the probability mass function.
+     *
+     * @return The keys of the probability mass function.
+     */
     Set<T> keySet() {
         return map.keySet();
     }
 
     /**
-     * Returns the lower bound for a confidence interval.
-     * 
+     * Returns a confidence interval on the probability mass function.
+     *
      * @param confidence
      *            The level of confidence for the interval.
-     * @return The lower bound of the confidence interval.
+     * @return The confidence interval.
      */
-    T getLowerBoundOfConfidenceInterval(final double confidence) {
+    ConfidenceInterval<T> getConfidenceInterval(final double confidence) {
         if (!confidenceIntervals.containsKey(confidence)) {
             confidenceIntervals.put(confidence, calculateConfidenceInterval(confidence));
         }
-        return confidenceIntervals.get(confidence).getLowerBound();
+        return confidenceIntervals.get(confidence);
     }
 
     /**
      * Calculates a confidence interval.
-     * 
+     *
      * @param confidence
      *            The level of confidence for the interval.
      * @return The confidence interval as a pair of Ts.
@@ -132,7 +140,7 @@ public class ProbabilityMassFunction<T extends Comparable> {
         double accumulatedProbability = 0D;
         for (T key : keys) {
             accumulatedProbability += map.get(key);
-            if (lowerBound == null && accumulatedProbability >= lowerProbabilityBound) {
+            if (lowerBound == null && accumulatedProbability > lowerProbabilityBound) {
                 lowerBound = key;
             }
             if (accumulatedProbability <= upperProbabilityBound) {

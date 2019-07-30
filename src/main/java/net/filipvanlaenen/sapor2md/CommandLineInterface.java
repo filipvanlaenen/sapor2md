@@ -54,7 +54,7 @@ public class CommandLineInterface {
         contentBuilder.append("Choice | CI95LB | Median | Adjusted Median\n");
         for (String group : seatProjection.getGroups()) {
             contentBuilder.append(group).append(" | ")
-                    .append(seatProjection.getLowerBoundOfConfidenceInterval(group, 0.95D)).append(" | ")
+                    .append(seatProjection.getConfidenceInterval(group, 0.95D).getLowerBound()).append(" | ")
                     .append(seatProjection.getMedian(group)).append(" | ")
                     .append(seatProjection.getAdjustedMedian(group, parliamentSize)).append("\n");
         }
