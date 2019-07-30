@@ -24,6 +24,11 @@ public class ProbabilityMassFunction<T extends Comparable> {
     private T median;
 
     /**
+     * A map holding the confidence intervals.
+     */
+    private final Map<Double, ConfidenceInterval<T>> confidenceIntervals = new HashMap<Double, ConfidenceInterval<T>>();
+
+    /**
      * Constructs a probability mass function from an array of objects. The array
      * has to have an even length, with each uneven element an instance of the key
      * class, and each even element a probability.
@@ -92,6 +97,48 @@ public class ProbabilityMassFunction<T extends Comparable> {
 
     Set<T> keySet() {
         return map.keySet();
+    }
+
+    /**
+     * Returns the lower bound for a confidence interval.
+     * 
+     * @param confidence
+     *            The level of confidence for the interval.
+     * @return The lower bound of the confidence interval.
+     */
+    T getLowerBoundOfConfidenceInterval(final double confidence) {
+        if (!confidenceIntervals.containsKey(confidence)) {
+            confidenceIntervals.put(confidence, calculateConfidenceInterval(confidence));
+        }
+        return confidenceIntervals.get(confidence).getLowerBound();
+    }
+
+    /**
+     * Calculates a confidence interval.
+     * 
+     * @param confidence
+     *            The level of confidence for the interval.
+     * @return The confidence interval as a pair of Ts.
+     */
+    private ConfidenceInterval<T> calculateConfidenceInterval(final double confidence) {
+        Set<T> set = map.keySet();
+        List<T> keys = new ArrayList<T>(set);
+        Collections.sort(keys);
+        double lowerProbabilityBound = (1D - confidence) / 2D;
+        double upperProbabilityBound = 1D - lowerProbabilityBound;
+        T lowerBound = null;
+        T upperBound = null;
+        double accumulatedProbability = 0D;
+        for (T key : keys) {
+            accumulatedProbability += map.get(key);
+            if (lowerBound == null && accumulatedProbability >= lowerProbabilityBound) {
+                lowerBound = key;
+            }
+            if (accumulatedProbability <= upperProbabilityBound) {
+                upperBound = key;
+            }
+        }
+        return new ConfidenceInterval<T>(lowerBound, upperBound);
     }
 
 }

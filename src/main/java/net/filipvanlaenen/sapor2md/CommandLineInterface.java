@@ -53,8 +53,9 @@ public class CommandLineInterface {
         StringBuilder contentBuilder = new StringBuilder();
         contentBuilder.append("Choice | CI95LB | Median | Adjusted Median\n");
         for (String group : seatProjection.getGroups()) {
-            contentBuilder.append(group).append(" | ").append(seatProjection.getLowerBoundOfConfidenceInterval(0.95D))
-                    .append(" | ").append(seatProjection.getMedian(group)).append(" | ")
+            contentBuilder.append(group).append(" | ")
+                    .append(seatProjection.getLowerBoundOfConfidenceInterval(group, 0.95D)).append(" | ")
+                    .append(seatProjection.getMedian(group)).append(" | ")
                     .append(seatProjection.getAdjustedMedian(group, parliamentSize)).append("\n");
         }
         return contentBuilder.toString();

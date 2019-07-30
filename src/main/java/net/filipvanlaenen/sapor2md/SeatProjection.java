@@ -198,11 +198,26 @@ public class SeatProjection {
         return adjustedMedians.get(size).get(group);
     }
 
+    /**
+     * Returns a set with all groups.
+     *
+     * @return A set containing all the groups.
+     */
     Set<String> getGroups() {
         return map.keySet();
     }
 
-    int getLowerBoundOfConfidenceInterval(double confidence) {
-        return 0;
+    /**
+     * Returns the lower bound of a confidence interval for a group.
+     * 
+     * @param group
+     *            The name of the parliamentary group.
+     * @param confidence
+     *            The level of confidence required.
+     * @return The lower bound of the confidence interval for the given confidence
+     *         for a group.
+     */
+    int getLowerBoundOfConfidenceInterval(final String group, final double confidence) {
+        return map.get(group).getLowerBoundOfConfidenceInterval(confidence);
     }
 }

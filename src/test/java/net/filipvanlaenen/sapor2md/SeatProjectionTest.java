@@ -3,6 +3,9 @@ package net.filipvanlaenen.sapor2md;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
+import java.util.HashSet;
+import java.util.Set;
+
 import org.junit.jupiter.api.Test;
 
 /**
@@ -55,6 +58,21 @@ public class SeatProjectionTest {
                 new ProbabilityMassFunction<Integer>(0, 0.3D, 1, 0.4D, 2, 0.3D), "Blue Party",
                 new ProbabilityMassFunction<Integer>(0, 0.4D, 1, 0.6D));
         assertEquals(0.3D, seatProjection.getProbability("Red Party", 0));
+    }
+
+    /**
+     * Test verifying that getGroups returns the groups correctly.
+     */
+    @Test
+    void getGroupsReturnsAllGroups() {
+        SeatProjection seatProjection = new SeatProjection("Red Party",
+                new ProbabilityMassFunction<Integer>(0, 0.3D, 1, 0.4D, 2, 0.3D), "Blue Party",
+                new ProbabilityMassFunction<Integer>(0, 0.4D, 1, 0.6D));
+        Set<String> actual = seatProjection.getGroups();
+        Set<String> expected = new HashSet<String>();
+        expected.add("Red Party");
+        expected.add("Blue Party");
+        assertEquals(expected, actual);
     }
 
     /**
