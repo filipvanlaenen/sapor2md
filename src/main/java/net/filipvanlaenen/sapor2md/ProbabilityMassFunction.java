@@ -11,6 +11,7 @@ import java.util.Set;
  * A class representing a probability mass function.
  *
  * @param <T>
+ *            The domain type for the probability mass function.
  */
 public class ProbabilityMassFunction<T extends Comparable> {
 
