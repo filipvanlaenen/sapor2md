@@ -160,4 +160,17 @@ public class SeatProjectionTest {
                 new ProbabilityMassFunction<Integer>(0, ONE_QUARTER, 1, THREE_QUARTERS));
         assertEquals(0, seatProjection.getAdjustedMedian("Red Party", 2));
     }
+
+    /**
+     * Test verifying that if fewer seats need to be allocated, and the probability
+     * cannot be increased, at least the probability is maximized.
+     */
+    @Test
+    void getAdjustedMedianReturnsALowerNumberWithHighestProbability() {
+        SeatProjection seatProjection = new SeatProjection("Red Party",
+                new ProbabilityMassFunction<Integer>(0, ONE_FIFTH, 1, TWO_FIFTHS, 2, TWO_FIFTHS), "Blue Party",
+                new ProbabilityMassFunction<Integer>(0, ONE_QUARTER, 1, THREE_QUARTERS), "Green Party",
+                new ProbabilityMassFunction<Integer>(0, ONE_QUARTER, 1, THREE_QUARTERS));
+        assertEquals(0, seatProjection.getAdjustedMedian("Red Party", 2));
+    }
 }
