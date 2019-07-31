@@ -127,7 +127,7 @@ public class SeatProjectionTest {
      * increased probability is picked if possible.
      */
     @Test
-    void getAdjustedMedianReturnsAnNumberWithIncreasedProbability() {
+    void getAdjustedMedianReturnsAHigherNumberWithIncreasedProbability() {
         SeatProjection seatProjection = new SeatProjection("Red Party",
                 new ProbabilityMassFunction<Integer>(0, TWO_FIFTHS, 1, ONE_FIFTH, 2, TWO_FIFTHS), "Blue Party",
                 new ProbabilityMassFunction<Integer>(0, THREE_QUARTERS, 1, ONE_QUARTER), "Green Party",
@@ -140,11 +140,24 @@ public class SeatProjectionTest {
      * cannot be increased, at least the probability is maximized.
      */
     @Test
-    void getAdjustedMedianReturnsAnNumberWithHighestProbability() {
+    void getAdjustedMedianReturnsAHigherNumberWithHighestProbability() {
         SeatProjection seatProjection = new SeatProjection("Red Party",
                 new ProbabilityMassFunction<Integer>(0, TWO_FIFTHS, 1, TWO_FIFTHS, 2, ONE_FIFTH), "Blue Party",
                 new ProbabilityMassFunction<Integer>(0, THREE_QUARTERS, 1, ONE_QUARTER), "Green Party",
                 new ProbabilityMassFunction<Integer>(0, THREE_QUARTERS, 1, ONE_QUARTER));
         assertEquals(2, seatProjection.getAdjustedMedian("Red Party", 2));
+    }
+
+    /**
+     * Test verifying that if fewer seats need to be allocated, a number with
+     * increased probability is picked if possible.
+     */
+    @Test
+    void getAdjustedMedianReturnsALowerNumberWithIncreasedProbability() {
+        SeatProjection seatProjection = new SeatProjection("Red Party",
+                new ProbabilityMassFunction<Integer>(0, TWO_FIFTHS, 1, ONE_FIFTH, 2, TWO_FIFTHS), "Blue Party",
+                new ProbabilityMassFunction<Integer>(0, ONE_QUARTER, 1, THREE_QUARTERS), "Green Party",
+                new ProbabilityMassFunction<Integer>(0, ONE_QUARTER, 1, THREE_QUARTERS));
+        assertEquals(0, seatProjection.getAdjustedMedian("Red Party", 2));
     }
 }
