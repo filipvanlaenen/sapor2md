@@ -125,48 +125,69 @@ public class SeatProjection {
     private Map<String, Integer> adjustMedians(final Map<String, Integer> medians, final int sumOfMedians,
             final int size, final double selectionFactor) {
         Map<String, Integer> possibleResult = new HashMap<String, Integer>();
-        Map<String, List<Integer>> candidates = new HashMap<String, List<Integer>>();
-        String[] groups = new String[map.size()];
-        int i = 0;
-        for (String g : map.keySet()) {
-            groups[i] = g;
-            List<Integer> candidateSeats = new ArrayList<Integer>();
-            Integer median = medians.get(g);
-            ProbabilityMassFunction<Integer> pmf = map.get(g);
-            double medianProbability = pmf.getProbability(median);
-            for (Integer noOfSeats : pmf.keySet()) {
-                if (((size > sumOfMedians) && (noOfSeats >= median) || (size < sumOfMedians) && (noOfSeats <= median))
-                        && pmf.getProbability(noOfSeats) > medianProbability * selectionFactor) {
-                    candidateSeats.add(noOfSeats);
-                }
-            }
-            candidates.put(g, candidateSeats);
-            i += 1;
-        }
+        Map<String, List<Integer>> candidateNosOfSeats = selectCandidateNosOfSeatsToBeAdjustedMedians(medians,
+                sumOfMedians, size, selectionFactor);
+        int noOfGroups = map.size();
+        String[] groups = new ArrayList<String>(map.keySet()).toArray(new String[noOfGroups]);
         double highestProbability = 0D;
-        int[] counter = new int[candidates.size()];
-        while (counter[counter.length - 1] < candidates.get(groups[groups.length - 1]).size()) {
+        int[] counter = new int[noOfGroups];
+        while (counter[noOfGroups - 1] < candidateNosOfSeats.get(groups[noOfGroups - 1]).size()) {
             double p = 1D;
             int s = 0;
-            for (int k = 0; k < counter.length; k++) {
-                p *= map.get(groups[k]).getProbability(candidates.get(groups[k]).get(counter[k]));
-                s += candidates.get(groups[k]).get(counter[k]);
+            for (int k = 0; k < noOfGroups; k++) {
+                p *= map.get(groups[k]).getProbability(candidateNosOfSeats.get(groups[k]).get(counter[k]));
+                s += candidateNosOfSeats.get(groups[k]).get(counter[k]);
             }
             if (s == size && p > highestProbability) {
                 highestProbability = p;
-                for (int k = 0; k < counter.length; k++) {
-                    possibleResult.put(groups[k], candidates.get(groups[k]).get(counter[k]));
+                for (int k = 0; k < noOfGroups; k++) {
+                    possibleResult.put(groups[k], candidateNosOfSeats.get(groups[k]).get(counter[k]));
                 }
             }
             counter[0] += 1;
             int j = 0;
-            while (j < counter.length - 1 && counter[j] == candidates.get(groups[j]).size()) {
+            while (j < noOfGroups - 1 && counter[j] == candidateNosOfSeats.get(groups[j]).size()) {
                 counter[j] = 0;
                 counter[j + 1] += 1;
                 j += 1;
             }
         }
         return possibleResult;
+    }
+
+    /**
+     * Selects the numbers of seats for all parties that are candidates to be
+     * adjusted medians.
+     *
+     * @param medians
+     *            The medians per group.
+     * @param sumOfMedians
+     *            The sum of the medians
+     * @param size
+     *            The size of the parliament.
+     * @param selectionFactor
+     *            The factor used to compare a candidate number of seats'
+     *            probability with the median's probability.
+     * @return The numbers of seats that are candidates to be adjusted medians, per
+     *         group.
+     */
+    private Map<String, List<Integer>> selectCandidateNosOfSeatsToBeAdjustedMedians(final Map<String, Integer> medians,
+            final int sumOfMedians, final int size, final double selectionFactor) {
+        Map<String, List<Integer>> candidateNosOfSeats = new HashMap<String, List<Integer>>();
+        for (String g : map.keySet()) {
+            List<Integer> candidateNoOfSeats = new ArrayList<Integer>();
+            Integer median = medians.get(g);
+            ProbabilityMassFunction<Integer> pmf = map.get(g);
+            double medianProbability = pmf.getProbability(median);
+            for (Integer noOfSeats : pmf.keySet()) {
+                if (((size > sumOfMedians) && (noOfSeats >= median) || (size < sumOfMedians) && (noOfSeats <= median))
+                        && pmf.getProbability(noOfSeats) > medianProbability * selectionFactor) {
+                    candidateNoOfSeats.add(noOfSeats);
+                }
+            }
+            candidateNosOfSeats.put(g, candidateNoOfSeats);
+        }
+        return candidateNosOfSeats;
     }
 
     /**
