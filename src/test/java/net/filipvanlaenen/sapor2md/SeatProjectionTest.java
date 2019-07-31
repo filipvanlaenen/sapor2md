@@ -12,6 +12,22 @@ import org.junit.jupiter.api.Test;
  * Unit tests on the <code>SeatProjection</code> class.
  */
 public class SeatProjectionTest {
+    /**
+     * The magic number one quarter.
+     */
+    private static final double ONE_QUARTER = 0.25D;
+    /**
+     * The magic number a half.
+     */
+    private static final double A_HALF = 0.5D;
+    /**
+     * The magic number three quarters.
+     */
+    private static final double THREE_QUARTERS = 0.75D;
+    /**
+     * The magic number three.
+     */
+    private static final int THREE = 3;
 
     /**
      * Test verifying that the constructor throws an
@@ -55,9 +71,9 @@ public class SeatProjectionTest {
     @Test
     void constructorWiresProbabilityMassFunctionsCorrectlyToGroups() {
         SeatProjection seatProjection = new SeatProjection("Red Party",
-                new ProbabilityMassFunction<Integer>(0, 0.3D, 1, 0.4D, 2, 0.3D), "Blue Party",
-                new ProbabilityMassFunction<Integer>(0, 0.4D, 1, 0.6D));
-        assertEquals(0.3D, seatProjection.getProbability("Red Party", 0));
+                new ProbabilityMassFunction<Integer>(0, ONE_QUARTER, 1, THREE_QUARTERS), "Blue Party",
+                new ProbabilityMassFunction<Integer>(0, A_HALF, 1, A_HALF));
+        assertEquals(ONE_QUARTER, seatProjection.getProbability("Red Party", 0));
     }
 
     /**
@@ -66,8 +82,8 @@ public class SeatProjectionTest {
     @Test
     void getGroupsReturnsAllGroups() {
         SeatProjection seatProjection = new SeatProjection("Red Party",
-                new ProbabilityMassFunction<Integer>(0, 0.3D, 1, 0.4D, 2, 0.3D), "Blue Party",
-                new ProbabilityMassFunction<Integer>(0, 0.4D, 1, 0.6D));
+                new ProbabilityMassFunction<Integer>(0, ONE_QUARTER, 1, THREE_QUARTERS), "Blue Party",
+                new ProbabilityMassFunction<Integer>(0, A_HALF, 1, A_HALF));
         Set<String> actual = seatProjection.getGroups();
         Set<String> expected = new HashSet<String>();
         expected.add("Red Party");
@@ -81,8 +97,8 @@ public class SeatProjectionTest {
     @Test
     void getMedianShouldReturnTheMedianForTheGroup() {
         SeatProjection seatProjection = new SeatProjection("Red Party",
-                new ProbabilityMassFunction<Integer>(0, 0.3D, 1, 0.4D, 2, 0.3D), "Blue Party",
-                new ProbabilityMassFunction<Integer>(0, 0.6D, 1, 0.4D));
+                new ProbabilityMassFunction<Integer>(0, ONE_QUARTER, 1, THREE_QUARTERS), "Blue Party",
+                new ProbabilityMassFunction<Integer>(0, A_HALF, 1, A_HALF));
         assertEquals(1, seatProjection.getMedian("Red Party"));
     }
 
@@ -93,9 +109,9 @@ public class SeatProjectionTest {
     @Test
     void getAdjustedMedianReturnsTheMedianForTheGroupIfTheMediansAddUp() {
         SeatProjection seatProjection = new SeatProjection("Red Party",
-                new ProbabilityMassFunction<Integer>(2, 0.6D, 3, 0.4D), "Blue Party",
-                new ProbabilityMassFunction<Integer>(0, 0.4D, 1, 0.6D));
-        assertEquals(2, seatProjection.getAdjustedMedian("Red Party", 3));
+                new ProbabilityMassFunction<Integer>(2, THREE_QUARTERS, THREE, ONE_QUARTER), "Blue Party",
+                new ProbabilityMassFunction<Integer>(0, ONE_QUARTER, 1, THREE_QUARTERS));
+        assertEquals(2, seatProjection.getAdjustedMedian("Red Party", THREE));
     }
 
     /**

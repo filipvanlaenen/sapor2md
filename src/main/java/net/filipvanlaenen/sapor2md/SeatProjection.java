@@ -16,12 +16,12 @@ public class SeatProjection {
     /**
      * A map holding the probability mass functions per group.
      */
-    private final Map<String, ProbabilityMassFunction<Integer>> map = new HashMap<String, ProbabilityMassFunction<Integer>>();
+    private final Map<String, ProbabilityMassFunction<Integer>> map = new HashMap<>();
     /**
      * A map holding the adjusted medians per parliamentary group per parliament
      * size.
      */
-    private final Map<Integer, Map<String, Integer>> adjustedMedians = new HashMap<Integer, Map<String, Integer>>();
+    private final Map<Integer, Map<String, Integer>> adjustedMedians = new HashMap<>();
 
     /**
      * Constructs a seat projection from an array of objects. The array has to have
@@ -79,7 +79,7 @@ public class SeatProjection {
 
     /**
      * Calculates the adjusted medians for a given size for a parliament.
-     * 
+     *
      * @param size
      *            The size of the parliament.
      * @return The adjusted medians for the given parliament size.
@@ -93,21 +93,23 @@ public class SeatProjection {
         if (sumOfMedians == size) {
             return medians;
         } else {
-            Map<String, Integer> adjustedMedians = adjustMedians(medians, sumOfMedians, size, true);
-            if (adjustedMedians.isEmpty()) {
-                adjustedMedians = adjustMedians(medians, sumOfMedians, size, false);
+            double selectionFactor = 1D;
+            Map<String, Integer> possibleResult = adjustMedians(medians, sumOfMedians, size, selectionFactor);
+            while (possibleResult.isEmpty()) {
+                selectionFactor /= 2D;
+                possibleResult = adjustMedians(medians, sumOfMedians, size, selectionFactor);
             }
-            return adjustedMedians;
+            return possibleResult;
         }
     }
 
     /**
      * Tries to find a solution based on the medians that fills up the parliament.
      * In many cases, a projection can be picked that would actually increase the
-     * probability a bit compared to the medians. This can be used to filter down
-     * the number of possibilities to try, and is there offered as an option.
-     * Otherwise, the method will try to maximize the probability of the solution
-     * anyway, but will then try all combinations that fill up the parliament.
+     * probability compared to the medians. If the selectionFactor is set to 1, only
+     * keys having a larger probability than the median will be considered. If this
+     * doesn't work, the factor should be gradually lowered, until a solution can be
+     * found .
      *
      * @param medians
      *            The medians.
@@ -115,14 +117,14 @@ public class SeatProjection {
      *            The sum of the medians.
      * @param size
      *            The requested size of the parliament.
-     * @param increaseProbability
-     *            True if only seat projections that would increase the probability
-     *            compared to the medians should be tried.
+     * @param selectionFactor
+     *            The factor used to compare a candidate number of seats'
+     *            probability with the median's probability.
      * @return A seat projection that fills up the parliament, based on the medians.
      */
-    private Map<String, Integer> adjustMedians(Map<String, Integer> medians, int sumOfMedians, final int size,
-            final boolean increaseProbability) {
-        Map<String, Integer> adjustedMedians = new HashMap<String, Integer>();
+    private Map<String, Integer> adjustMedians(final Map<String, Integer> medians, final int sumOfMedians,
+            final int size, final double selectionFactor) {
+        Map<String, Integer> possibleResult = new HashMap<String, Integer>();
         Map<String, List<Integer>> candidates = new HashMap<String, List<Integer>>();
         String[] groups = new String[map.size()];
         int i = 0;
@@ -132,11 +134,10 @@ public class SeatProjection {
             Integer median = medians.get(g);
             ProbabilityMassFunction<Integer> pmf = map.get(g);
             double medianProbability = pmf.getProbability(median);
-            for (Integer seats : pmf.keySet()) {
-                if ((size > sumOfMedians) && (seats >= median) || (size < sumOfMedians) && (seats <= median)) {
-                    if (!increaseProbability || pmf.getProbability(seats) >= medianProbability) {
-                        candidateSeats.add(seats);
-                    }
+            for (Integer noOfSeats : pmf.keySet()) {
+                if (((size > sumOfMedians) && (noOfSeats >= median) || (size < sumOfMedians) && (noOfSeats <= median))
+                        && pmf.getProbability(noOfSeats) > medianProbability * selectionFactor) {
+                    candidateSeats.add(noOfSeats);
                 }
             }
             candidates.put(g, candidateSeats);
@@ -154,7 +155,7 @@ public class SeatProjection {
             if (s == size && p > highestProbability) {
                 highestProbability = p;
                 for (int k = 0; k < counter.length; k++) {
-                    adjustedMedians.put(groups[k], candidates.get(groups[k]).get(counter[k]));
+                    possibleResult.put(groups[k], candidates.get(groups[k]).get(counter[k]));
                 }
             }
             counter[0] += 1;
@@ -165,12 +166,12 @@ public class SeatProjection {
                 j += 1;
             }
         }
-        return adjustedMedians;
+        return possibleResult;
     }
 
     /**
      * Calculates the medians.
-     * 
+     *
      * @return The medians.
      */
     private Map<String, Integer> calculateMedians() {
@@ -209,7 +210,7 @@ public class SeatProjection {
 
     /**
      * Returns the confidence interval for a group.
-     * 
+     *
      * @param group
      *            The name of the parliamentary group.
      * @param confidence
