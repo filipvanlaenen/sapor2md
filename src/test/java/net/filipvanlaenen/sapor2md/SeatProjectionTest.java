@@ -13,9 +13,17 @@ import org.junit.jupiter.api.Test;
  */
 public class SeatProjectionTest {
     /**
+     * The magic number one fifth.
+     */
+    private static final double ONE_FIFTH = 0.2D;
+    /**
      * The magic number one quarter.
      */
     private static final double ONE_QUARTER = 0.25D;
+    /**
+     * The magic number two fifths.
+     */
+    private static final double TWO_FIFTHS = 0.4D;
     /**
      * The magic number a half.
      */
@@ -121,9 +129,9 @@ public class SeatProjectionTest {
     @Test
     void getAdjustedMedianReturnsAnNumberWithIncreasedProbability() {
         SeatProjection seatProjection = new SeatProjection("Red Party",
-                new ProbabilityMassFunction<Integer>(0, 0.4D, 1, 0.2D, 2, 0.4D), "Blue Party",
-                new ProbabilityMassFunction<Integer>(0, 0.65D, 1, 0.35D), "Green Party",
-                new ProbabilityMassFunction<Integer>(0, 0.75D, 1, 0.25D));
+                new ProbabilityMassFunction<Integer>(0, TWO_FIFTHS, 1, ONE_FIFTH, 2, TWO_FIFTHS), "Blue Party",
+                new ProbabilityMassFunction<Integer>(0, THREE_QUARTERS, 1, ONE_QUARTER), "Green Party",
+                new ProbabilityMassFunction<Integer>(0, THREE_QUARTERS, 1, ONE_QUARTER));
         assertEquals(2, seatProjection.getAdjustedMedian("Red Party", 2));
     }
 
@@ -134,9 +142,9 @@ public class SeatProjectionTest {
     @Test
     void getAdjustedMedianReturnsAnNumberWithHighestProbability() {
         SeatProjection seatProjection = new SeatProjection("Red Party",
-                new ProbabilityMassFunction<Integer>(0, 0.4D, 1, 0.35D, 2, 0.25D), "Blue Party",
-                new ProbabilityMassFunction<Integer>(0, 0.65D, 1, 0.35D), "Green Party",
-                new ProbabilityMassFunction<Integer>(0, 0.75D, 1, 0.25D));
+                new ProbabilityMassFunction<Integer>(0, TWO_FIFTHS, 1, TWO_FIFTHS, 2, ONE_FIFTH), "Blue Party",
+                new ProbabilityMassFunction<Integer>(0, THREE_QUARTERS, 1, ONE_QUARTER), "Green Party",
+                new ProbabilityMassFunction<Integer>(0, THREE_QUARTERS, 1, ONE_QUARTER));
         assertEquals(2, seatProjection.getAdjustedMedian("Red Party", 2));
     }
 }
