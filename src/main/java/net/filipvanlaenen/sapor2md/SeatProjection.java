@@ -181,7 +181,7 @@ public class SeatProjection {
             double medianProbability = pmf.getProbability(median);
             for (Integer noOfSeats : pmf.keySet()) {
                 if (((size > sumOfMedians) && (noOfSeats >= median) || (size < sumOfMedians) && (noOfSeats <= median))
-                        && pmf.getProbability(noOfSeats) > medianProbability * selectionFactor) {
+                        && pmf.getProbability(noOfSeats) >= medianProbability * selectionFactor) {
                     candidateNoOfSeats.add(noOfSeats);
                 }
             }
