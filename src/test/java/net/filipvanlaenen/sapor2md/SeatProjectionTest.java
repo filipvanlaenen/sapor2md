@@ -173,4 +173,20 @@ public class SeatProjectionTest {
                 new ProbabilityMassFunction<Integer>(0, ONE_QUARTER, 1, THREE_QUARTERS));
         assertEquals(0, seatProjection.getAdjustedMedian("Red Party", 2));
     }
+
+    /**
+     * Test verifying that given a set of probability mass functions and a size for
+     * the parliament, for each group the number of certain seats (lower bound of
+     * the 95 percent confidence interval), the median, and the adjusted median can
+     * be calculated correctly.
+     */
+    @Test
+    void cliProducesCertainSeatsMediansAndAdjustedMediansForProbabilityMassFunctionsSet() {
+        String probabilityMassFunctions = "Choice | 0 | 1 | 2\n" + "Red Party | 0.4 | 0.35 | 0.25\n"
+                + "Blue Party | 0 | 0.65 | 0.35\n" + "Green Party | 0.75 | 0.25\n";
+        String actual = SeatProjection.calculateAdjustedMedians(probabilityMassFunctions, 3);
+        String expected = "Choice | CI95LB | Median | Adjusted Median\n" + "Red Party | 0 | 1 | 2\n"
+                + "Blue Party | 1 | 1 | 1\n" + "Green Party | 0 | 0 | 0\n";
+        assertEquals(expected, actual);
+    }
 }

@@ -24,6 +24,58 @@ public class SeatProjection {
     private final Map<Integer, Map<String, Integer>> adjustedMedians = new HashMap<>();
 
     /**
+     * Parses a string into a seat projection object.
+     *
+     * @param probabilityMassFunctions
+     *            A string representation of a seat projection.
+     * @return A seat projection object.
+     */
+    private static SeatProjection parseFromString(final String probabilityMassFunctions) {
+        List<Object> arguments = new ArrayList<Object>();
+        String[] lines = probabilityMassFunctions.split("\\R");
+        for (String line : lines) {
+            String[] lineComponents = line.split("\\|");
+            String label = lineComponents[0].trim();
+            if (!label.equals("Choice")) {
+                arguments.add(label);
+                List<Object> pmfArguments = new ArrayList<Object>();
+                for (int i = 1; i < lineComponents.length; i++) {
+                    pmfArguments.add(i - 1);
+                    pmfArguments.add(Double.parseDouble(lineComponents[i]));
+                }
+                arguments.add(new ProbabilityMassFunction<Integer>(pmfArguments.toArray()));
+            }
+        }
+        return new SeatProjection(arguments.toArray());
+    }
+
+    /**
+     * Calculates the adjusted lower bound of the 95 percent confidence interval,
+     * the median and the adjusted median for a seat projection and a parliament
+     * size. The seat projection is given as a string that is parsed into a seat
+     * projection object.
+     *
+     * @param probabilityMassFunctionsString
+     *            A string that can be parsed into a seat projection object.
+     * @param parliamentSize
+     *            The size of the parliament.
+     * @return A string with the lower bound of the 95 percent confidence interval,
+     *         the median and the adjusted median for each parliamentary group.
+     */
+    static String calculateAdjustedMedians(final String probabilityMassFunctionsString, final int parliamentSize) {
+        SeatProjection seatProjection = SeatProjection.parseFromString(probabilityMassFunctionsString);
+        StringBuilder contentBuilder = new StringBuilder();
+        contentBuilder.append("Choice | CI95LB | Median | Adjusted Median\n");
+        for (String group : seatProjection.getGroups()) {
+            contentBuilder.append(group).append(" | ")
+                    .append(seatProjection.getConfidenceInterval(group, 0.95D).getLowerBound()).append(" | ")
+                    .append(seatProjection.getMedian(group)).append(" | ")
+                    .append(seatProjection.getAdjustedMedian(group, parliamentSize)).append("\n");
+        }
+        return contentBuilder.toString();
+    }
+
+    /**
      * Constructs a seat projection from an array of objects. The array has to have
      * an even length, with each uneven element the name of a parliamentary groups,
      * and each even element a probability mass function.
