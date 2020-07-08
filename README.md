@@ -41,3 +41,10 @@ Red Party | 0 | 1 | 2
 Blue Party | 1 | 1 | 1
 Green Party | 0 | 0 | 0
 ```
+
+The output should be interpreted as follows:
+* The Red Party has 0 seats as the lower bound for the 95% confidence interval,
+  1 seat as the median, but 2 seats as the adjusted median;
+* The Blue Party has 1 seat as both the lower bound for the 95% confidence
+  interval, the median and the adjusted median;
+* The Green Party has 0 seats for all three.
