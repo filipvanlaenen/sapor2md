@@ -62,7 +62,7 @@ median of the Red Party is adjusted from 1 seat to 2 seats.
 The table below shows how the results change when the size of the parliament
 is changed:
 
-| Party       | 2 | 3 | 4 | 5 |
+| Party       | 2 Seats Parliament | 3 Seats Parliament | 4 Seats Parliament | 5 Seats Parliament |
 |:------------|:-:|:-:|:-:|:-:|
 | Red Party   | 1 | 2 | 2 | 2 |
 | Blue Party  | 1 | 1 | 2 | 2 |
