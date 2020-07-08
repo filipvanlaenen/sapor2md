@@ -43,7 +43,7 @@ public final class CommandLineInterface {
      */
     private CommandLineInterface(final String... args) {
         command = args[0];
-        remainingArguments = Arrays.copyOfRange(args, 1, args.length - 1);
+        remainingArguments = Arrays.copyOfRange(args, 1, args.length);
     }
 
     /**
