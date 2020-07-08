@@ -48,3 +48,22 @@ The output should be interpreted as follows:
 * The Blue Party has 1 seat as both the lower bound for the 95% confidence
   interval, the median and the adjusted median;
 * The Green Party has 0 seats for all three.
+
+The Red and the Blue Party both have 1 seat as the median of their probability
+mass functions. However, since we requested a parliament size of 3, the
+program tries to adjust the medians in such a way the probability of the result
+if maximized. In this case, there are three possible results. Adding a seat to
+the Red Party has a total probability of 0.25 × 0.65 × 0.75 = 0.121875. Adding
+a seat to the Blue Party as a total probability of 0.35 × 0.35 × 0.75 =
+0.091875. Finally, adding a seat to the Green Party has a total probability of
+0.35 × 0.65 × 0.25 = 0.56875. The first solution is clearly the best, hence the
+median of the Red Party is adjusted from 1 seat to 2 seats.
+
+The table below shows how the results change when the size of the parliament
+is changed:
+
+| Party       | 2 | 3 | 4 | 5 |
+|:------------|:-:|:-:|:-:|:-:|
+| Red Party   | 1 | 2 | 2 | 2 |
+| Blue Party  | 1 | 1 | 2 | 2 |
+| Green Party | 0 | 0 | 0 | 1 |
