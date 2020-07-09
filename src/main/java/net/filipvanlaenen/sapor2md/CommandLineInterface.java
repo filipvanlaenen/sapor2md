@@ -106,7 +106,7 @@ public final class CommandLineInterface {
                     try (Stream<Path> walk = Files.walk(Paths.get(directory))) {
                         List<String> localPollFiles = walk.filter(Files::isRegularFile).map(x -> x.toString())
                                 .filter(f -> f.endsWith(".poll")).collect(Collectors.toList());
-                        mode.mergePollFiles(pollFiles, localPollFiles);
+                        pollFiles = mode.mergePollFiles(pollFiles, localPollFiles);
                     } catch (IOException e) {
                         e.printStackTrace();
                     }
@@ -139,53 +139,6 @@ public final class CommandLineInterface {
                 e.printStackTrace();
             }
             return contentBuilder.toString();
-        }
-
-        /**
-         * The modes in which poll files from a set of directories can be merged
-         * together.
-         */
-        enum PollFilesMode {
-            /**
-             * Mode to merge poll files from directories retaining all of them.
-             */
-            All {
-                /**
-                 * Merges two lists of poll files together, keeping all poll files from both
-                 * lists.
-                 */
-                @Override
-                void mergePollFiles(final List<String> pollFiles, final List<String> localPollFiles) {
-                    List<String> newPollFiles = new ArrayList<>(localPollFiles);
-                    newPollFiles.removeAll(pollFiles);
-                    pollFiles.addAll(newPollFiles);
-                }
-            },
-            /**
-             * Mode to merge poll files from directories retaining the common ones only.
-             */
-            Common {
-                /**
-                 * Merges two lists of poll files together, keeping only the poll files that are
-                 * common to both lists.
-                 */
-                @Override
-                void mergePollFiles(final List<String> pollFiles, final List<String> localPollFiles) {
-                    List<String> missingPollFiles = new ArrayList<>(pollFiles);
-                    missingPollFiles.removeAll(localPollFiles);
-                    pollFiles.removeAll(missingPollFiles);
-                }
-            };
-
-            /**
-             * Merges two lists of poll files together.
-             *
-             * @param pollFiles
-             *            The list of poll files collected so far.
-             * @param localPollFiles
-             *            The list of poll files from a new directory.
-             */
-            abstract void mergePollFiles(List<String> pollFiles, List<String> localPollFiles);
         }
 
     }
