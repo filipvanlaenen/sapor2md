@@ -16,7 +16,7 @@ public class FileSystemCountryProperties implements CountryProperties {
     final private String parliamentName;
 
     FileSystemCountryProperties(String directory) {
-        filePath = directory + File.pathSeparator + COUNTRY_PROPERTIES_FILE_NAME;
+        filePath = directory + File.separator + COUNTRY_PROPERTIES_FILE_NAME;
         String content = FileSystemServices.readFileIntoString(filePath);
         String[] lines = content.split("\n");
         Map<String, String> map = new HashMap<String, String>();
