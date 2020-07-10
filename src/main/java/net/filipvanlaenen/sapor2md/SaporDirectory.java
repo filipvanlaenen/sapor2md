@@ -1,5 +1,8 @@
 package net.filipvanlaenen.sapor2md;
 
+import java.util.Iterator;
+
+
 /**
  * Interface defining the behavior for a Sapor directory.
  */
@@ -29,5 +32,7 @@ public interface SaporDirectory {
     default String getParliamentName() {
         return getCountryProperties().getParliamentName();
     }
+
+    Iterator<Poll> getPolls();
 
 }

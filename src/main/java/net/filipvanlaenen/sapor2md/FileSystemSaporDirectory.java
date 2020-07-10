@@ -1,5 +1,7 @@
 package net.filipvanlaenen.sapor2md;
 
+import java.util.Iterator;
+
 /**
  * Class implementing the <code>SaporDirectory</code> interface using the file
  * system.
@@ -24,6 +26,11 @@ public final class FileSystemSaporDirectory implements SaporDirectory {
     @Override
     public CountryProperties getCountryProperties() {
         return countryProperties;
+    }
+
+    @Override
+    public Iterator<Poll> getPolls() {
+        return null;
     }
 
 }
