@@ -1,7 +1,6 @@
 package net.filipvanlaenen.sapor2md;
 
 import java.io.IOException;
-import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -79,7 +78,7 @@ public final class CommandLineInterface {
              */
             @Override
             String execute(final String... args) {
-                String probabilityMassFunctionsString = readFileIntoString(args[0]);
+                String probabilityMassFunctionsString = FileSystemServices.readFileIntoString(args[0]);
                 int parliamentSize = Integer.parseInt(args[1]);
                 return SeatProjection.calculateAdjustedMedians(probabilityMassFunctionsString, parliamentSize);
             }
@@ -113,6 +112,25 @@ public final class CommandLineInterface {
                 }
                 return String.join("\n", pollFiles);
             }
+        },
+        /**
+         * Command to produce an RSS 2.0 feed for a directory.
+         */
+        RSS20Feed {
+
+            /**
+             * Produces an RSS 2.0 feed for a directory.
+             *
+             * @params args The arguments for the command, i.e. the directory for which to
+             *         produce the feed.
+             * @return A multiline string containing the feed.
+             */
+            @Override
+            String execute(final String... args) {
+                String directory = args[0];
+                RSS20Feed feed = new RSS20Feed(directory);
+                return feed.toString();
+            }
         };
 
         /**
@@ -123,23 +141,6 @@ public final class CommandLineInterface {
          * @return The string output resulting from executing the command.
          */
         abstract String execute(String... args);
-
-        /**
-         * Reads a file from the file system and returns the result as a single string.
-         *
-         * @param filePath
-         *            The path to the file to be read.
-         * @return The content of the file as a single string.
-         */
-        private static String readFileIntoString(final String filePath) {
-            StringBuilder contentBuilder = new StringBuilder();
-            try (Stream<String> stream = Files.lines(Paths.get(filePath), StandardCharsets.UTF_8)) {
-                stream.forEach(s -> contentBuilder.append(s).append("\n"));
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-            return contentBuilder.toString();
-        }
 
     }
 }
