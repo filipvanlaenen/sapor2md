@@ -5,17 +5,45 @@ import java.time.OffsetDateTime;
 import java.util.HashMap;
 import java.util.Map;
 
-public class FileSystemCountryProperties implements CountryProperties {
+/**
+ * Class implementing the <code>CountryProperties</code> interface against a
+ * file system.
+ */
+public final class FileSystemCountryProperties implements CountryProperties {
 
-    final static private String COUNTRY_PROPERTIES_FILE_NAME = "country.properties";
-    final static private String GITHUB_DIRECTORY_KEY = "GitHubDirectory";
-    final static private String PARLIAMENT_NAME_KEY = "ParliamentName";
+    /**
+     * The file name for the country properties.
+     */
+    private static final String COUNTRY_PROPERTIES_FILE_NAME = "country.properties";
+    /**
+     * The key for the property containing the URL to the GitHub directory.
+     */
+    private static final String GITHUB_DIRECTORY_URL_KEY = "GitHubDirectoryURL";
+    /**
+     * The key for the parliament name.
+     */
+    private static final String PARLIAMENT_NAME_KEY = "ParliamentName";
 
-    final private String filePath;
-    final private String gitHubDirectory;
-    final private String parliamentName;
+    /**
+     * The path to the country properties file.
+     */
+    private final String filePath;
+    /**
+     * The URL to the GitHub directory.
+     */
+    private final String gitHubDirectoryURL;
+    /**
+     * The name of the parliament.
+     */
+    private final String parliamentName;
 
-    FileSystemCountryProperties(String directory) {
+    /**
+     * Constructor taking the path to the Sapor directory as the argument.
+     *
+     * @param directory
+     *            The path to the Sapor directory.
+     */
+    FileSystemCountryProperties(final String directory) {
         filePath = directory + File.separator + COUNTRY_PROPERTIES_FILE_NAME;
         String content = FileSystemServices.readFileIntoString(filePath);
         String[] lines = content.split("\n");
@@ -24,13 +52,13 @@ public class FileSystemCountryProperties implements CountryProperties {
             String[] elements = line.split("=");
             map.put(elements[0], elements[1]);
         }
-        this.gitHubDirectory = map.get(GITHUB_DIRECTORY_KEY);
+        this.gitHubDirectoryURL = map.get(GITHUB_DIRECTORY_URL_KEY);
         this.parliamentName = map.get(PARLIAMENT_NAME_KEY);
     }
 
     @Override
-    public String getGitHubDirectory() {
-        return gitHubDirectory;
+    public String getGitHubDirectoryURL() {
+        return gitHubDirectoryURL;
     }
 
     @Override

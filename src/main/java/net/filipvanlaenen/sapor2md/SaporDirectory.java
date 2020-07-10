@@ -13,12 +13,12 @@ public interface SaporDirectory {
     CountryProperties getCountryProperties();
 
     /**
-     * Returns the name of the GitHub directory.
+     * Returns the URL to the GitHub directory.
      *
-     * @return The name of the GitHub directory.
+     * @return The URL to the GitHub directory.
      */
-    default String getGitHubDirectory() {
-        return getCountryProperties().getGitHubDirectory();
+    default String getGitHubDirectoryURL() {
+        return getCountryProperties().getGitHubDirectoryURL();
     }
 
     /**

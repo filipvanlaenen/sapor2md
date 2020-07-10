@@ -9,9 +9,9 @@ import java.time.OffsetDateTime;
 public final class InMemoryCountryProperties implements CountryProperties {
 
     /**
-     * The name of the GitHub directory.
+     * The URL to the GitHub directory.
      */
-    private String gitHubDirectory;
+    private String gitHubDirectoryURL;
     /**
      * The name of the parliament.
      */
@@ -22,18 +22,18 @@ public final class InMemoryCountryProperties implements CountryProperties {
     private OffsetDateTime timestamp;
 
     /**
-     * Sets the name of the GitHub directory.
+     * Sets the URL to the GitHub directory.
      *
-     * @param gitHubDirectory
-     *            The name of the GitHub directory.
+     * @param gitHubDirectoryURL
+     *            The URL to the GitHub directory.
      */
-    void setGitHubDirectory(final String gitHubDirectory) {
-        this.gitHubDirectory = gitHubDirectory;
+    void setGitHubDirectoryURL(final String gitHubDirectoryURL) {
+        this.gitHubDirectoryURL = gitHubDirectoryURL;
     }
 
     @Override
-    public String getGitHubDirectory() {
-        return gitHubDirectory;
+    public String getGitHubDirectoryURL() {
+        return gitHubDirectoryURL;
     }
 
     /**

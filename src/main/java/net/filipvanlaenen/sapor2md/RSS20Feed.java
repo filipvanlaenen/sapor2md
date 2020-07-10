@@ -43,7 +43,7 @@ public final class RSS20Feed {
         sb.append("<rss version=\"2.0\">\n");
         sb.append("  <channel>\n");
         sb.append("    <title>All Registered Polls for the " + saporDirectory.getParliamentName() + "</title>\n");
-        sb.append("    <link>" + saporDirectory.getGitHubDirectory() + "</link>\n");
+        sb.append("    <link>" + saporDirectory.getGitHubDirectoryURL() + "</link>\n");
         sb.append("    <description>All Registered Polls for the " + saporDirectory.getParliamentName()
                 + "</description>\n");
         sb.append("    <pubDate>" + getPubDate().format(DateTimeFormatter.RFC_1123_DATE_TIME) + "</pubDate>\n");

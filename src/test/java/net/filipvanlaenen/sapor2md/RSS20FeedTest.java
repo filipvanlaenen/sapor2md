@@ -21,7 +21,7 @@ public class RSS20FeedTest {
     void produceEmptyFeedForDirectoryWithNoPolls() {
         InMemoryCountryProperties countryProperties = new InMemoryCountryProperties();
         countryProperties.setParliamentName("Foo Parliament");
-        countryProperties.setGitHubDirectory("https://bar.github.io/foo_polls");
+        countryProperties.setGitHubDirectoryURL("https://bar.github.io/foo_polls");
         LocalDateTime localDateTime = LocalDateTime.of(2020, Month.JANUARY, 1, 0, 0);
         ZoneOffset offset = ZoneOffset.of("+02:00");
         OffsetDateTime offsetDateTime = OffsetDateTime.of(localDateTime, offset);
