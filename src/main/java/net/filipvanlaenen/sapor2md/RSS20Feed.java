@@ -3,18 +3,40 @@ package net.filipvanlaenen.sapor2md;
 import java.time.OffsetDateTime;
 import java.time.format.DateTimeFormatter;
 
-public class RSS20Feed {
+/**
+ * Class producing an RSS 2.0 feed for a Sapor directory.
+ */
+public final class RSS20Feed {
 
+    /**
+     * The Sapor directory for the RSS 2.0 feed.
+     */
     private final SaporDirectory saporDirectory;
 
+    /**
+     * Constructor taking the file system path for the Sapor directory as an
+     * argument.
+     *
+     * @param directory
+     *            The file system path to the Sapor directory.
+     */
     RSS20Feed(final String directory) {
         this(new FileSystemSaporDirectory(directory));
     }
 
+    /**
+     * Constructor taking a <code>SaporDirectory</code> object as an argument.
+     *
+     * @param saporDirectory
+     *            A Sapor directory.
+     */
     RSS20Feed(final SaporDirectory saporDirectory) {
         this.saporDirectory = saporDirectory;
     }
 
+    /**
+     * Exports the RSS 2.0 feed as a multiline string.
+     */
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder();
@@ -30,6 +52,11 @@ public class RSS20Feed {
         return sb.toString();
     }
 
+    /**
+     * Returns the date to be used as the publication date for the entire feed.
+     *
+     * @return The publication date for the feed.
+     */
     private OffsetDateTime getPubDate() {
         return saporDirectory.getCountryProperties().getTimestamp();
     }

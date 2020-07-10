@@ -1,10 +1,23 @@
 package net.filipvanlaenen.sapor2md;
 
-public class FileSystemSaporDirectory implements SaporDirectory {
+/**
+ * Class implementing the <code>SaporDirectory</code> interface using the file
+ * system.
+ */
+public final class FileSystemSaporDirectory implements SaporDirectory {
 
+    /**
+     * The country properties.
+     */
     private final FileSystemCountryProperties countryProperties;
 
-    FileSystemSaporDirectory(String directory) {
+    /**
+     * Constructor using the path to the Sapor directory as the parameter.
+     *
+     * @param directory
+     *            The path to the Sapor directory.
+     */
+    FileSystemSaporDirectory(final String directory) {
         this.countryProperties = new FileSystemCountryProperties(directory);
     }
 

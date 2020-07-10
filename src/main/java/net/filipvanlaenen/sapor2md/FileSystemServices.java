@@ -9,7 +9,17 @@ import java.time.OffsetDateTime;
 import java.time.ZoneOffset;
 import java.util.stream.Stream;
 
-public class FileSystemServices {
+/**
+ * A utility class providing file system services.
+ */
+public final class FileSystemServices {
+
+    /**
+     * Private constructor to prevent instantiation of this utility class.
+     */
+    private FileSystemServices() {
+    }
+
     /**
      * Reads a file from the file system and returns the result as a single string.
      *
@@ -27,7 +37,15 @@ public class FileSystemServices {
         return contentBuilder.toString();
     }
 
-    static OffsetDateTime getTimestamp(String filePath) {
+    /**
+     * Returns the last modified timestamp of a file as an
+     * <code>OffsetDataTime</code>.
+     *
+     * @param filePath
+     *            The path to the file.
+     * @return The last modified timestamp.
+     */
+    static OffsetDateTime getTimestamp(final String filePath) {
         FileTime timestamp;
         try {
             timestamp = Files.getLastModifiedTime(Paths.get(filePath));

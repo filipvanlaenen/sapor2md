@@ -7,7 +7,7 @@ public interface SaporDirectory {
 
     /**
      * Returns the country properties.
-     * 
+     *
      * @return The country properties.
      */
     CountryProperties getCountryProperties();
