@@ -9,11 +9,22 @@ import java.util.Iterator;
  * Class producing an RSS 2.0 feed for a Sapor directory.
  */
 public final class RSS20Feed {
+    /**
+     * Magic number 0.95, or 95 percent.
+     */
+    private static final double NINETY_FIVE_PERCENT = 0.95D;
+    /**
+     * Magic number 100.
+     */
+    private static final double ONE_HUNDRED = 100D;
 
     /**
      * The Sapor directory for the RSS 2.0 feed.
      */
     private final SaporDirectory saporDirectory;
+    /**
+     * The mode for the RSS 2.0 feed.
+     */
     private final RSS20FeedMode feedMode;
 
     /**
@@ -22,8 +33,10 @@ public final class RSS20Feed {
      *
      * @param directory
      *            The file system path to the Sapor directory.
+     * @param feedMode
+     *            The mode of the feed.
      */
-    RSS20Feed(final String directory, RSS20FeedMode feedMode) {
+    RSS20Feed(final String directory, final RSS20FeedMode feedMode) {
         this(new FileSystemSaporDirectory(directory), feedMode);
     }
 
@@ -32,8 +45,10 @@ public final class RSS20Feed {
      *
      * @param saporDirectory
      *            A Sapor directory.
+     * @param feedMode
+     *            The mode of the feed.
      */
-    RSS20Feed(final SaporDirectory saporDirectory, RSS20FeedMode feedMode) {
+    RSS20Feed(final SaporDirectory saporDirectory, final RSS20FeedMode feedMode) {
         this.saporDirectory = saporDirectory;
         this.feedMode = feedMode;
     }
@@ -65,7 +80,15 @@ public final class RSS20Feed {
         return sb.toString();
     }
 
-    private String createVotingIntentionsItem(Poll poll) {
+    /**
+     * Creates an item for the voting intentions for a poll.
+     *
+     * @param poll
+     *            The poll for which an item should be created with the voting
+     *            intentions.
+     * @return A string representing the item to be included in the feed.
+     */
+    private String createVotingIntentionsItem(final Poll poll) {
         StringBuilder sb = new StringBuilder();
         sb.append("    <item>\n");
         sb.append("      <title>Opinion Poll by ");
@@ -96,7 +119,19 @@ public final class RSS20Feed {
         return sb.toString();
     }
 
-    private static String formatPeriod(LocalDate start, LocalDate end) {
+    /**
+     * Formats a period, consisting of two dates, to a human-readable form. Common
+     * elements in the dates are joined, such that the result takes one of the
+     * following forms: 1–2 January 2020, 1 January–2 February 2020 or 1 January
+     * 2020–31 December 2021.
+     *
+     * @param start
+     *            The start of the period.
+     * @param end
+     *            The end of the period.
+     * @return A string with the period formatted in a human-readable form.
+     */
+    private static String formatPeriod(final LocalDate start, final LocalDate end) {
         DateTimeFormatter dayMonthYear = DateTimeFormatter.ofPattern("d MMMM yyyy");
         DateTimeFormatter dayMonth = DateTimeFormatter.ofPattern("d MMMM");
         DateTimeFormatter day = DateTimeFormatter.ofPattern("d");
@@ -111,9 +146,31 @@ public final class RSS20Feed {
         }
     }
 
-    private static String formatProbabilityRangeConfidenceInterval(ConfidenceInterval<ProbabilityRange> ci) {
-        return String.format("%.1f", ci.getLowerBound().getLowerBound() * 100D) + "–"
-                + String.format("%.1f", ci.getUpperBound().getUpperBound()* 100D) + "%";
+    /**
+     * Formats a double as a percentage number. The double is multiplied with 100
+     * and formatted with one digit behind the decimal point.
+     *
+     * @param percentage
+     *            The double to be formatted.
+     * @return A string with the double formatted as percentage number.
+     */
+    private static String formatPercentageNumber(final double percentage) {
+        return String.format("%.1f", percentage * ONE_HUNDRED);
+    }
+
+    /**
+     * Formats a confidence interval with probability ranges to a human readable
+     * form. It takes the lower bound of the lower probability range and the upper
+     * bound of the upper probability ranges as the lower an upper bounds.
+     *
+     * @param ci
+     *            The confidence interval.
+     * @return A string with the confidence interval formatted in a human-readable
+     *         form.
+     */
+    private static String formatProbabilityRangeConfidenceInterval(final ConfidenceInterval<ProbabilityRange> ci) {
+        return formatPercentageNumber(ci.getLowerBound().getLowerBound()) + "–"
+                + formatPercentageNumber(ci.getUpperBound().getUpperBound()) + "%";
     }
 
     /**
@@ -125,10 +182,17 @@ public final class RSS20Feed {
         return saporDirectory.getCountryProperties().getTimestamp();
     }
 
+    /**
+     * Enumeration with the modes that can be applied to an RSS 2.0 feed.
+     */
     enum RSS20FeedMode {
+        /**
+         * Mode for the RSS 2.0 feed to be used as the official feed on the GitHub
+         * website.
+         */
         GitHubFeed {
             @Override
-            String createVotingIntentionsItemDescription(Poll poll, SaporDirectory saporDirectory) {
+            String createVotingIntentionsItemDescription(final Poll poll, final SaporDirectory saporDir) {
                 StringBuilder sb = new StringBuilder();
                 sb.append("<ul>");
                 VotingIntentions votingIntentions = poll.getVotingIntentions();
@@ -137,19 +201,23 @@ public final class RSS20Feed {
                     sb.append(group);
                     sb.append(": ");
                     sb.append(formatProbabilityRangeConfidenceInterval(
-                            votingIntentions.getConfidenceInterval(group, 0.95)));
+                            votingIntentions.getConfidenceInterval(group, NINETY_FIVE_PERCENT)));
                     sb.append("</li>");
                 }
                 sb.append("</ul>");
                 return sb.toString();
             }
         },
+        /**
+         * Mode for the RSS 2.0 feed to be consumed by IFTTT to produce Twitter
+         * messages.
+         */
         IftttFeed {
             @Override
-            String createVotingIntentionsItemDescription(Poll poll, SaporDirectory saporDirectory) {
+            String createVotingIntentionsItemDescription(final Poll poll, final SaporDirectory saporDir) {
                 StringBuilder sb = new StringBuilder();
                 sb.append("<![CDATA[");
-                sb.append("Voting intentions for the " + saporDirectory.getCountryProperties().getParliamentName());
+                sb.append("Voting intentions for the " + saporDir.getCountryProperties().getParliamentName());
                 sb.append("<br/>");
                 sb.append("Opinion poll by ");
                 sb.append(poll.getPollingFirm());
@@ -159,13 +227,13 @@ public final class RSS20Feed {
                 sb.append(formatPeriod(poll.getFieldworkStart(), poll.getFieldworkEnd()));
                 sb.append("<br/>");
                 sb.append("<img src=\"");
-                sb.append(saporDirectory.getGitHubDirectoryURL());
+                sb.append(saporDir.getGitHubDirectoryURL());
                 sb.append("/");
                 sb.append(poll.getBaseName());
                 sb.append(".png\"/>");
                 sb.append("<br/>");
                 sb.append("Details on ");
-                sb.append(saporDirectory.getGitHubDirectoryURL());
+                sb.append(saporDir.getGitHubDirectoryURL());
                 sb.append("/");
                 sb.append(poll.getBaseName());
                 sb.append(".html");
@@ -174,6 +242,17 @@ public final class RSS20Feed {
             }
         };
 
-        abstract String createVotingIntentionsItemDescription(Poll poll, SaporDirectory saporDirectory);
+        /**
+         * Creates the description field for an item about the voting intentions for a
+         * poll.
+         *
+         * @param poll
+         *            The poll.
+         * @param saporDir
+         *            The Sapor directory.
+         * @return A string with the content of the description field for an item about
+         *         the voting intentions for a poll.
+         */
+        abstract String createVotingIntentionsItemDescription(Poll poll, SaporDirectory saporDir);
     }
 }
