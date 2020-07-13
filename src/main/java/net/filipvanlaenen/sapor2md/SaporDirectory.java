@@ -23,6 +23,11 @@ public interface SaporDirectory {
         return getCountryProperties().getGitHubDirectoryURL();
     }
 
+    /**
+     * Returns an iterator with the polls in the directory.
+     *
+     * @return An iterator with the polls.
+     */
     Iterator<Poll> getPolls();
 
 }
