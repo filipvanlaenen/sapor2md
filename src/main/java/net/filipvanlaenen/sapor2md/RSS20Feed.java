@@ -46,7 +46,8 @@ public final class RSS20Feed {
         StringBuilder sb = new StringBuilder();
         sb.append("<rss version=\"2.0\">\n");
         sb.append("  <channel>\n");
-        sb.append("    <title>All Registered Polls for the " + saporDirectory.getCountryProperties().getParliamentName() + "</title>\n");
+        sb.append("    <title>All Registered Polls for the " + saporDirectory.getCountryProperties().getParliamentName()
+                + "</title>\n");
         sb.append("    <link>" + saporDirectory.getGitHubDirectoryURL() + "</link>\n");
         sb.append("    <description>All Registered Polls for the ");
         sb.append(saporDirectory.getCountryProperties().getParliamentName());
@@ -66,7 +67,6 @@ public final class RSS20Feed {
 
     private String createVotingIntentionsItem(Poll poll) {
         StringBuilder sb = new StringBuilder();
-        OffsetDateTime timestamp = poll.getStateSummary().getTimestamp();
         sb.append("    <item>\n");
         sb.append("      <title>Opinion Poll by ");
         sb.append(poll.getPollingFirm());
@@ -89,6 +89,7 @@ public final class RSS20Feed {
         sb.append(".png\" length=\"");
         sb.append(poll.getVotingIntentionsFileSize());
         sb.append("\" type=\"image/png\"/>\n");
+        OffsetDateTime timestamp = poll.getStateSummary().getTimestamp();
         sb.append("      <pubDate>" + timestamp.format(DateTimeFormatter.RFC_1123_DATE_TIME) + "</pubDate>\n");
         sb.append("      <dc:date>" + timestamp.format(DateTimeFormatter.ISO_DATE_TIME) + "</dc:date>\n");
         sb.append("    </item>\n");
@@ -110,6 +111,11 @@ public final class RSS20Feed {
         }
     }
 
+    private static String formatProbabilityRangeConfidenceInterval(ConfidenceInterval<ProbabilityRange> ci) {
+        return String.format("%.1f", ci.getLowerBound().getLowerBound() * 100D) + "–"
+                + String.format("%.1f", ci.getUpperBound().getUpperBound()* 100D) + "%";
+    }
+
     /**
      * Returns the date to be used as the publication date for the entire feed.
      *
@@ -123,7 +129,19 @@ public final class RSS20Feed {
         GitHubFeed {
             @Override
             String createVotingIntentionsItemDescription(Poll poll, SaporDirectory saporDirectory) {
-                return "<ul></ul>";
+                StringBuilder sb = new StringBuilder();
+                sb.append("<ul>");
+                VotingIntentions votingIntentions = poll.getVotingIntentions();
+                for (String group : votingIntentions.getGroups()) {
+                    sb.append("<li>");
+                    sb.append(group);
+                    sb.append(": ");
+                    sb.append(formatProbabilityRangeConfidenceInterval(
+                            votingIntentions.getConfidenceInterval(group, 0.95)));
+                    sb.append("</li>");
+                }
+                sb.append("</ul>");
+                return sb.toString();
             }
         },
         IftttFeed {

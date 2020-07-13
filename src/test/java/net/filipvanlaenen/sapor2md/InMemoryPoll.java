@@ -81,4 +81,9 @@ public class InMemoryPoll implements Poll {
         this.votingIntentions = votingIntentions;
     }
 
+    @Override
+    public VotingIntentions getVotingIntentions() {
+        return votingIntentions;
+    }
+
 }

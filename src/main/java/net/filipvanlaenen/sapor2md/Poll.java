@@ -20,6 +20,8 @@ public interface Poll {
 
     String getPollingFirm();
 
+    VotingIntentions getVotingIntentions();
+
     long getVotingIntentionsFileSize();
 
 }

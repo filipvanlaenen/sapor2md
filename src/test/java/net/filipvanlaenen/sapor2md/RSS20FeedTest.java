@@ -7,6 +7,8 @@ import java.time.LocalDateTime;
 import java.time.Month;
 import java.time.OffsetDateTime;
 import java.time.ZoneOffset;
+import java.util.ArrayList;
+import java.util.List;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -78,6 +80,27 @@ public class RSS20FeedTest {
         assertEquals(expected, actual);
     }
 
+    private ProbabilityMassFunction<ProbabilityRange> createProbabilityMassFunctionForForVotingIntentionsConfidenceInterval(
+            double lowerBound, double upperBound) {
+        int noBelow = (int) (lowerBound * 2000);
+        List<Object> args = new ArrayList<Object>();
+        for (int i = 0; i < noBelow; i++) {
+            args.add(new ProbabilityRange(((double) i) / 2000D, ((double) (i + 1)) / 2000D));
+            args.add(0D);
+        }
+        int noBetween = (int) ((upperBound - lowerBound) * 2000);
+        double p = 0.95D / noBetween;
+        for (int i = 0; i < noBetween; i++) {
+            args.add(new ProbabilityRange(((double) (noBelow + i)) / 2000D, ((double) (noBelow + i + 1)) / 2000D));
+            if (i == 0 || i == noBetween - 1) {
+                args.add(p + 0.025D);
+            } else {
+                args.add(p);
+            }
+        }
+        return new ProbabilityMassFunction<ProbabilityRange>(args.toArray());
+    }
+
     /**
      * Verifying that for a directory with a poll that has 1 simulation, a feed with
      * a voting intentions item is produced.
@@ -95,7 +118,9 @@ public class RSS20FeedTest {
         stateSummary.setNumberOfSimulations(1);
         stateSummary.setTimestamp(createDateTime(2020, Month.JANUARY, 4, 0, 0));
         poll.setStateSummary(stateSummary);
-        VotingIntentions votingIntentions = new VotingIntentions();
+        VotingIntentions votingIntentions = new VotingIntentions("Red Party",
+                createProbabilityMassFunctionForForVotingIntentionsConfidenceInterval(0.149, 0.195), "Green Party",
+                createProbabilityMassFunctionForForVotingIntentionsConfidenceInterval(0.100, 0.140));
         poll.setVotingIntentions(votingIntentions);
         directory.addPoll(poll);
         String actual = new RSS20Feed(directory, RSS20FeedMode.GitHubFeed).toString();
