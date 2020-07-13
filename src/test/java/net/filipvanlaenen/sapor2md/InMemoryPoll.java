@@ -37,7 +37,8 @@ public final class InMemoryPoll implements Poll {
      */
     private VotingIntentions votingIntentions;
     /**
-     * The size of the file containing the voting intentions for the poll.
+     * The size of the file containing the chart with the voting intentions for the
+     * poll.
      */
     private long votingIntentionsFileSize;
 
