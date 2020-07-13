@@ -7,7 +7,6 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
-import java.util.HashMap;
 import java.util.Map;
 
 public class FileSystemPoll implements Poll {
@@ -27,22 +26,18 @@ public class FileSystemPoll implements Poll {
     private final LocalDate fieldworkEnd;
     private final LocalDate fieldworkStart;
     private final String pollingFirm;
+    private final StateSummary stateSummary;
 
     FileSystemPoll(final String directory, final String pollFileName) {
         this.directory = directory;
         filePath = directory + File.separator + pollFileName;
         baseName = pollFileName.substring(0, pollFileName.length() - 5);
-        String content = FileSystemServices.readFileIntoString(filePath);
-        String[] lines = content.split("\n");
-        Map<String, String> map = new HashMap<String, String>();
-        for (String line : lines) {
-            String[] elements = line.split("=");
-            map.put(elements[0], elements[1]);
-        }
+        Map<String, String> map = FileSystemServices.readFileIntoMap(filePath);
         this.commissioners = map.get(COMMISSIONERS_KEY);
         this.pollingFirm = map.get(POLLING_FIRM_KEY);
         this.fieldworkEnd = LocalDate.parse(map.get(FIELDWORK_END_KEY), DateTimeFormatter.ISO_LOCAL_DATE);
         this.fieldworkStart = LocalDate.parse(map.get(FIELDWORK_START_KEY), DateTimeFormatter.ISO_LOCAL_DATE);
+        this.stateSummary = new FileSystemStateSummary(directory, baseName);
     }
 
     @Override
@@ -52,8 +47,7 @@ public class FileSystemPoll implements Poll {
 
     @Override
     public StateSummary getStateSummary() {
-        // TODO
-        return null;
+        return stateSummary;
     }
 
     @Override

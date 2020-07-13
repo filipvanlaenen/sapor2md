@@ -8,7 +8,9 @@ import java.nio.file.Paths;
 import java.nio.file.attribute.FileTime;
 import java.time.OffsetDateTime;
 import java.time.ZoneOffset;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -38,6 +40,17 @@ public final class FileSystemServices {
             e.printStackTrace();
         }
         return contentBuilder.toString();
+    }
+    
+    static Map<String, String> readFileIntoMap(final String filePath) {
+        String content = FileSystemServices.readFileIntoString(filePath);
+        String[] lines = content.split("\n");
+        Map<String, String> map = new HashMap<String, String>();
+        for (String line : lines) {
+            String[] elements = line.split("=");
+            map.put(elements[0], elements[1]);
+        }
+        return map;
     }
 
     /**

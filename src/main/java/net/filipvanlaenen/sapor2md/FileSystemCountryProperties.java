@@ -2,7 +2,6 @@ package net.filipvanlaenen.sapor2md;
 
 import java.io.File;
 import java.time.OffsetDateTime;
-import java.util.HashMap;
 import java.util.Map;
 
 /**
@@ -45,13 +44,7 @@ public final class FileSystemCountryProperties implements CountryProperties {
      */
     FileSystemCountryProperties(final String directory) {
         filePath = directory + File.separator + COUNTRY_PROPERTIES_FILE_NAME;
-        String content = FileSystemServices.readFileIntoString(filePath);
-        String[] lines = content.split("\n");
-        Map<String, String> map = new HashMap<String, String>();
-        for (String line : lines) {
-            String[] elements = line.split("=");
-            map.put(elements[0], elements[1]);
-        }
+        Map<String, String> map = FileSystemServices.readFileIntoMap(filePath);
         this.gitHubDirectoryURL = map.get(GITHUB_DIRECTORY_URL_KEY);
         this.parliamentName = map.get(PARLIAMENT_NAME_KEY);
     }
