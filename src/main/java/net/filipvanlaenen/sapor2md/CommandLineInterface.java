@@ -136,6 +136,9 @@ public final class CommandLineInterface {
                 return String.join("\n", pollFiles);
             }
         },
+        /**
+         * Command to produce the official RSS 2.0 feed for the GitHub website.
+         */
         RSS20Feed {
 
             /**
