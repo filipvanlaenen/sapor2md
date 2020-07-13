@@ -72,7 +72,7 @@ public class SeatProjection extends ProbabilityMassFunctionCombination<Integer> 
 
     /**
      * Constructs a seat projection from an array of objects. The array has to have
-     * an even length, with each uneven element the name of a parliamentary groups,
+     * an even length, with each uneven element the name of a parliamentary group,
      * and each even element a probability mass function.
      *
      * @param objects
