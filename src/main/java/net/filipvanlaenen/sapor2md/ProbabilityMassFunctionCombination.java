@@ -10,6 +10,9 @@ import java.util.Set;
  * probability mass function associated to them. The probability mass function
  * may have a voting intention percentage share, a number of seats, or anything
  * else that is comparable as the discrete value.
+ *
+ * @param <T>
+ *            The type of the keys for the probability mass functions.
  */
 public abstract class ProbabilityMassFunctionCombination<T extends Comparable<T>> {
     /**
