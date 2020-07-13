@@ -2,18 +2,52 @@ package net.filipvanlaenen.sapor2md;
 
 import java.time.LocalDate;
 
-public class InMemoryPoll implements Poll {
+/**
+ * Class implementing the <code>Poll</code> interface, but in memory, such that
+ * it can be used for testing purposes.
+ */
+public final class InMemoryPoll implements Poll {
 
-    final private String baseName;
+    /**
+     * The base name for the poll.
+     */
+    private final String baseName;
+    /**
+     * The state summary for the poll.
+     */
     private StateSummary stateSummary;
+    /**
+     * The commissioners of the poll.
+     */
     private String commissioners;
+    /**
+     * The end of the fieldwork period.
+     */
     private LocalDate fieldworkEnd;
+    /**
+     * The start of the fieldwork period.
+     */
     private LocalDate fieldworkStart;
+    /**
+     * The polling firm that conducted the poll.
+     */
     private String pollingFirm;
+    /**
+     * The voting intentions for the poll.
+     */
     private VotingIntentions votingIntentions;
+    /**
+     * The size of the file containing the voting intentions for the poll.
+     */
     private long votingIntentionsFileSize;
 
-    InMemoryPoll(String baseName) {
+    /**
+     * Constructor taking the base name as the argument.
+     *
+     * @param baseName
+     *            The base name of the poll.
+     */
+    InMemoryPoll(final String baseName) {
         this.baseName = baseName;
     }
 
@@ -22,7 +56,13 @@ public class InMemoryPoll implements Poll {
         return baseName;
     }
 
-    void setStateSummary(StateSummary stateSummary) {
+    /**
+     * Sets the state summary for the poll.
+     *
+     * @param stateSummary
+     *            The state summary for the poll.
+     */
+    void setStateSummary(final StateSummary stateSummary) {
         this.stateSummary = stateSummary;
     }
 
@@ -36,9 +76,14 @@ public class InMemoryPoll implements Poll {
         return commissioners;
     }
 
-    void setCommissioners(String commissioners) {
+    /**
+     * Sets the commissioners for the poll.
+     *
+     * @param commissioners
+     *            The commissioners for the poll.
+     */
+    void setCommissioners(final String commissioners) {
         this.commissioners = commissioners;
-
     }
 
     @Override
@@ -46,7 +91,13 @@ public class InMemoryPoll implements Poll {
         return fieldworkEnd;
     }
 
-    void setFieldworkEnd(LocalDate fieldworkEnd) {
+    /**
+     * Sets the end of the fieldwork period of the poll.
+     *
+     * @param fieldworkEnd
+     *            The end of the fieldwork period of the poll.
+     */
+    void setFieldworkEnd(final LocalDate fieldworkEnd) {
         this.fieldworkEnd = fieldworkEnd;
     }
 
@@ -55,7 +106,13 @@ public class InMemoryPoll implements Poll {
         return fieldworkStart;
     }
 
-    void setFieldworkStart(LocalDate fieldworkStart) {
+    /**
+     * Sets the start of the fieldwork period of the poll.
+     *
+     * @param fieldworkStart
+     *            The start of the fieldwork period of the poll.
+     */
+    void setFieldworkStart(final LocalDate fieldworkStart) {
         this.fieldworkStart = fieldworkStart;
     }
 
@@ -64,7 +121,13 @@ public class InMemoryPoll implements Poll {
         return pollingFirm;
     }
 
-    void setPollingFirm(String pollingFirm) {
+    /**
+     * Sets the polling firm that conducted the poll.
+     *
+     * @param pollingFirm
+     *            The polling firm that conducted the poll.
+     */
+    void setPollingFirm(final String pollingFirm) {
         this.pollingFirm = pollingFirm;
     }
 
@@ -73,11 +136,23 @@ public class InMemoryPoll implements Poll {
         return votingIntentionsFileSize;
     }
 
-    void setVotingIntentionsFileSize(long votingIntentionsFileSize) {
+    /**
+     * Sets the size of the file containing the voting intentions.
+     *
+     * @param votingIntentionsFileSize
+     *            The size of the file containing the voting intentions.
+     */
+    void setVotingIntentionsFileSize(final long votingIntentionsFileSize) {
         this.votingIntentionsFileSize = votingIntentionsFileSize;
     }
 
-    void setVotingIntentions(VotingIntentions votingIntentions) {
+    /**
+     * Sets the voting intentions for the poll.
+     *
+     * @param votingIntentions
+     *            The voting intentions for the poll.
+     */
+    void setVotingIntentions(final VotingIntentions votingIntentions) {
         this.votingIntentions = votingIntentions;
     }
 
