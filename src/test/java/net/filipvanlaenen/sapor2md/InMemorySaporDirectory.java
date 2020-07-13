@@ -9,7 +9,10 @@ import java.util.List;
  * used for testing purposes.
  */
 public final class InMemorySaporDirectory implements SaporDirectory {
-    
+
+    /**
+     * A list with the polls.
+     */
     private final List<Poll> polls = new ArrayList<Poll>();
 
     /**
@@ -33,7 +36,13 @@ public final class InMemorySaporDirectory implements SaporDirectory {
         return countryProperties;
     }
 
-    void addPoll(Poll poll) {   
+    /**
+     * Adds a poll.
+     *
+     * @param poll
+     *            A poll.
+     */
+    void addPoll(final Poll poll) {
         polls.add(poll);
     }
 
