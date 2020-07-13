@@ -9,14 +9,10 @@ import java.util.Set;
 /**
  * A class representing a seat projection. A seat projection consists of a
  * number of parliamentary groups with each of them a probability mass function
- * associated to them.
+ * in terms of numbers of seats associated to them.
  */
-public class SeatProjection {
+public class SeatProjection extends ProbabilityMassFunctionCombination<Integer> {
 
-    /**
-     * A map holding the probability mass functions per group.
-     */
-    private final Map<String, ProbabilityMassFunction<Integer>> map = new HashMap<>();
     /**
      * A map holding the adjusted medians per parliamentary group per parliament
      * size.
@@ -101,32 +97,6 @@ public class SeatProjection {
                 map.put((String) key, (ProbabilityMassFunction<Integer>) value);
             }
         }
-    }
-
-    /**
-     * Returns the probability of a parliamentary group obtaining exactly the
-     * specified number of seats.
-     *
-     * @param group
-     *            The name of the parliamentary group.
-     * @param noOfSeats
-     *            A number of seats.
-     * @return The probability of the parliamentary group to obtain exactly the
-     *         specified number of seats.
-     */
-    double getProbability(final String group, final Integer noOfSeats) {
-        return map.get(group).getProbability(noOfSeats);
-    }
-
-    /**
-     * Returns the median of a parliamentary group.
-     *
-     * @param group
-     *            The name of the parliamentary group.
-     * @return The median for the parliamentary group.
-     */
-    Integer getMedian(final String group) {
-        return map.get(group).getMedian();
     }
 
     /**
@@ -243,19 +213,6 @@ public class SeatProjection {
     }
 
     /**
-     * Calculates the medians.
-     *
-     * @return The medians.
-     */
-    private Map<String, Integer> calculateMedians() {
-        Map<String, Integer> medians = new HashMap<String, Integer>();
-        for (String g : map.keySet()) {
-            medians.put(g, map.get(g).getMedian());
-        }
-        return medians;
-    }
-
-    /**
      * Returns the adjusted median of a parliamentary group for a given size for a
      * parliament.
      *
@@ -272,25 +229,4 @@ public class SeatProjection {
         return adjustedMedians.get(size).get(group);
     }
 
-    /**
-     * Returns a set with all groups.
-     *
-     * @return A set containing all the groups.
-     */
-    Set<String> getGroups() {
-        return map.keySet();
-    }
-
-    /**
-     * Returns the confidence interval for a group.
-     *
-     * @param group
-     *            The name of the parliamentary group.
-     * @param confidence
-     *            The level of confidence required.
-     * @return The confidence interval for the given confidence for a group.
-     */
-    ConfidenceInterval<Integer> getConfidenceInterval(final String group, final double confidence) {
-        return map.get(group).getConfidenceInterval(confidence);
-    }
 }

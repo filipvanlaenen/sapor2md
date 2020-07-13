@@ -2,7 +2,6 @@ package net.filipvanlaenen.sapor2md;
 
 import java.util.Iterator;
 
-
 /**
  * Interface defining the behavior for a Sapor directory.
  */
@@ -22,15 +21,6 @@ public interface SaporDirectory {
      */
     default String getGitHubDirectoryURL() {
         return getCountryProperties().getGitHubDirectoryURL();
-    }
-
-    /**
-     * Returns the name of the parliament.
-     *
-     * @return The name of the parliament.
-     */
-    default String getParliamentName() {
-        return getCountryProperties().getParliamentName();
     }
 
     Iterator<Poll> getPolls();

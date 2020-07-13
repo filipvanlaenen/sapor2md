@@ -10,6 +10,8 @@ import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+import net.filipvanlaenen.sapor2md.RSS20Feed.RSS20FeedMode;
+
 /**
  * The command-line interface for this library.
  */
@@ -84,6 +86,27 @@ public final class CommandLineInterface {
             }
         },
         /**
+         * Command to produce an RSS 2.0 feed for a directory suitable for IFTTT to be
+         * posted to Twitter.
+         */
+        IftttRSS20Feed {
+
+            /**
+             * Produces an RSS 2.0 feed for a directory suitable for IFTTT to be posted to
+             * Twitter.
+             *
+             * @params args The arguments for the command, i.e. the directory for which to
+             *         produce the feed.
+             * @return A multiline string containing the feed.
+             */
+            @Override
+            String execute(final String... args) {
+                String directory = args[0];
+                RSS20Feed feed = new RSS20Feed(directory, RSS20FeedMode.IftttFeed);
+                return feed.toString();
+            }
+        },
+        /**
          * Command to list out the poll files from a set of directories.
          */
         PollFiles {
@@ -113,9 +136,6 @@ public final class CommandLineInterface {
                 return String.join("\n", pollFiles);
             }
         },
-        /**
-         * Command to produce an RSS 2.0 feed for a directory.
-         */
         RSS20Feed {
 
             /**
@@ -128,7 +148,7 @@ public final class CommandLineInterface {
             @Override
             String execute(final String... args) {
                 String directory = args[0];
-                RSS20Feed feed = new RSS20Feed(directory);
+                RSS20Feed feed = new RSS20Feed(directory, RSS20FeedMode.GitHubFeed);
                 return feed.toString();
             }
         };

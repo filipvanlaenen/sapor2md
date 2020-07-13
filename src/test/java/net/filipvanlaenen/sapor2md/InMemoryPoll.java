@@ -10,6 +10,7 @@ public class InMemoryPoll implements Poll {
     private LocalDate fieldworkEnd;
     private LocalDate fieldworkStart;
     private String pollingFirm;
+    private VotingIntentions votingIntentions;
     private long votingIntentionsFileSize;
 
     InMemoryPoll(String baseName) {
@@ -74,6 +75,10 @@ public class InMemoryPoll implements Poll {
 
     void setVotingIntentionsFileSize(long votingIntentionsFileSize) {
         this.votingIntentionsFileSize = votingIntentionsFileSize;
+    }
+
+    void setVotingIntentions(VotingIntentions votingIntentions) {
+        this.votingIntentions = votingIntentions;
     }
 
 }
