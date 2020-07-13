@@ -184,7 +184,7 @@ public class SeatProjectionTest {
     void cliProducesCertainSeatsMediansAndAdjustedMediansForProbabilityMassFunctionsSet() {
         String probabilityMassFunctions = "Choice | 0 | 1 | 2\n" + "Red Party | 0.4 | 0.35 | 0.25\n"
                 + "Blue Party | 0 | 0.65 | 0.35\n" + "Green Party | 0.75 | 0.25\n";
-        String actual = SeatProjection.calculateAdjustedMedians(probabilityMassFunctions, 3);
+        String actual = SeatProjection.calculateAdjustedMedians(probabilityMassFunctions, THREE);
         String expected = "Choice | CI95LB | Median | Adjusted Median\n" + "Red Party | 0 | 1 | 2\n"
                 + "Blue Party | 1 | 1 | 1\n" + "Green Party | 0 | 0 | 0\n";
         assertEquals(expected, actual);
