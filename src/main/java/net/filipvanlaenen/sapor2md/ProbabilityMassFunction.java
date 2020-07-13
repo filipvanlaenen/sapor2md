@@ -13,7 +13,7 @@ import java.util.Set;
  * @param <T>
  *            The type of the keys for the probability mass function.
  */
-public class ProbabilityMassFunction<T extends Comparable> {
+public class ProbabilityMassFunction<T extends Comparable<T>> {
     /**
      * The magic number one half.
      */

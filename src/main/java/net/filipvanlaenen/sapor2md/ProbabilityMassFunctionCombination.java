@@ -11,7 +11,7 @@ import java.util.Set;
  * may have a voting intention percentage share, a number of seats, or anything
  * else that is comparable as the discrete value.
  */
-public abstract class ProbabilityMassFunctionCombination<T extends Comparable> {
+public abstract class ProbabilityMassFunctionCombination<T extends Comparable<T>> {
     /**
      * A map holding the probability mass functions per group.
      */
