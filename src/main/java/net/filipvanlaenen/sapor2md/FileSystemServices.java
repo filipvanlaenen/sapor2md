@@ -3,10 +3,13 @@ package net.filipvanlaenen.sapor2md;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
+import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.attribute.FileTime;
 import java.time.OffsetDateTime;
 import java.time.ZoneOffset;
+import java.util.List;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 /**
@@ -54,5 +57,22 @@ public final class FileSystemServices {
             return null;
         }
         return OffsetDateTime.ofInstant(timestamp.toInstant(), ZoneOffset.systemDefault());
+    }
+
+    /**
+     * Returns a list with the names of the poll files in a directory.
+     *
+     * @param directory
+     *            The path to a directory.
+     * @return A list with the names of the poll files in the directory.
+     */
+    static List<String> getPollFilesList(final String directory) {
+        try (Stream<Path> walk = Files.walk(Paths.get(directory))) {
+            return walk.filter(Files::isRegularFile).map(x -> x.toString()).filter(f -> f.endsWith(".poll"))
+                    .collect(Collectors.toList());
+        } catch (IOException e) {
+            e.printStackTrace();
+            return null;
+        }
     }
 }

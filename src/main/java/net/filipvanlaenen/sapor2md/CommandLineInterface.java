@@ -125,13 +125,7 @@ public final class CommandLineInterface {
                 String[] directories = Arrays.copyOfRange(args, 1, args.length);
                 List<String> pollFiles = new ArrayList<String>();
                 for (String directory : directories) {
-                    try (Stream<Path> walk = Files.walk(Paths.get(directory))) {
-                        List<String> localPollFiles = walk.filter(Files::isRegularFile).map(x -> x.toString())
-                                .filter(f -> f.endsWith(".poll")).collect(Collectors.toList());
-                        pollFiles = mode.mergePollFiles(pollFiles, localPollFiles);
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                    }
+                    pollFiles = mode.mergePollFiles(pollFiles, FileSystemServices.getPollFilesList(directory));
                 }
                 return String.join("\n", pollFiles);
             }
