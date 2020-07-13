@@ -15,7 +15,7 @@ public class SeatProjection extends ProbabilityMassFunctionCombination<Integer> 
      * Magic number 0.95, or 95 percent.
      */
     private static final double NINETY_FIVE_PERCENT = 0.95D;
-    
+
     /**
      * A map holding the adjusted medians per parliamentary group per parliament
      * size.
