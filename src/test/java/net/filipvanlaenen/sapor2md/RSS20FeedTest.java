@@ -19,6 +19,49 @@ import net.filipvanlaenen.sapor2md.RSS20Feed.RSS20FeedMode;
  * Unit tests on the <code>RSS20Feed</code> class.
  */
 public class RSS20FeedTest {
+    /**
+     * Magic number three.
+     */
+    private static final int THREE = 3;
+    /**
+     * Magic number four.
+     */
+    private static final int FOUR = 4;
+    /**
+     * Magic number five.
+     */
+    private static final int FIVE = 5;
+    /**
+     * Magic number 0.95, or 95 percent.
+     */
+    private static final double NINETY_FIVE_PERCENT = 0.95D;
+    /**
+     * Magic number 2000.
+     */
+    private static final double TWO_THOUSAND = 2000D;
+    /**
+     * Lower bound for the 95 percent confidence interval for the red party.
+     */
+    private static final double RED_PARTY_CONFIDENCE_INTERVAL_LOWER_BOUND = 0.149D;
+    /**
+     * Upper bound for the 95 percent confidence interval for the red party.
+     */
+    private static final double RED_PARTY_CONFIDENCE_INTERVAL_UPPER_BOUND = 0.195D;
+    /**
+     * Lower bound for the 95 percent confidence interval for the green party.
+     */
+    private static final double GREEN_PARTY_CONFIDENCE_INTERVAL_LOWER_BOUND = 0.100D;
+    /**
+     * Upper bound for the 95 percent confidence interval for the green party.
+     */
+    private static final double GREEN_PARTY_CONFIDENCE_INTERVAL_UPPER_BOUND = 0.140D;
+    /**
+     * Magic number 2020, used as a year number.
+     */
+    private static final int TWO_THOUSAND_AND_TWENTY = 2020;
+    /**
+     * A country properties object for testing purposes.
+     */
     private InMemoryCountryProperties countryProperties;
 
     /**
@@ -29,10 +72,27 @@ public class RSS20FeedTest {
         countryProperties = new InMemoryCountryProperties();
         countryProperties.setParliamentName("Foo Parliament");
         countryProperties.setGitHubDirectoryURL("https://bar.github.io/foo_polls");
-        countryProperties.setTimestamp(createDateTime(2020, Month.JANUARY, 1, 0, 0));
+        countryProperties.setTimestamp(createDateTime(TWO_THOUSAND_AND_TWENTY, Month.JANUARY, 1, 0, 0));
     }
 
-    private OffsetDateTime createDateTime(int year, Month month, int dayOfMonth, int hour, int minute) {
+    /**
+     * Creates a date and time for a specified year, month, day, hour and minute
+     * with +01:00 as the time zone.
+     *
+     * @param year
+     *            A year.
+     * @param month
+     *            A month.
+     * @param dayOfMonth
+     *            A day of month.
+     * @param hour
+     *            An hour.
+     * @param minute
+     *            A minute.
+     * @return A date and time as specified, with +01:00 as the time zone.
+     */
+    private OffsetDateTime createDateTime(final int year, final Month month, final int dayOfMonth, final int hour,
+            final int minute) {
         LocalDateTime localDateTime = LocalDateTime.of(year, month, dayOfMonth, hour, minute);
         ZoneOffset offset = ZoneOffset.of("+01:00");
         return OffsetDateTime.of(localDateTime, offset);
@@ -80,20 +140,32 @@ public class RSS20FeedTest {
         assertEquals(expected, actual);
     }
 
-    private ProbabilityMassFunction<ProbabilityRange> createProbabilityMassFunctionForForVotingIntentionsConfidenceInterval(
-            double lowerBound, double upperBound) {
-        int noBelow = (int) (lowerBound * 2000);
+    /**
+     * Creates a probability mass function for the voting intentions such that the
+     * 95 percent confidence interval is as specified.
+     *
+     * @param lowerBound
+     *            The lower bound of the 95 percent confidence interval.
+     * @param upperBound
+     *            The lower bound of the 95 percent confidence interval.
+     * @return A probability mass function having the 95 percent confidence interval
+     *         as specified.
+     */
+    private ProbabilityMassFunction<ProbabilityRange> createProbabilityMassFunctionForConfidenceInterval(
+            final double lowerBound, final double upperBound) {
+        int noBelow = (int) (lowerBound * TWO_THOUSAND);
         List<Object> args = new ArrayList<Object>();
         for (int i = 0; i < noBelow; i++) {
-            args.add(new ProbabilityRange(((double) i) / 2000D, ((double) (i + 1)) / 2000D));
+            args.add(new ProbabilityRange(((double) i) / TWO_THOUSAND, ((double) (i + 1)) / TWO_THOUSAND));
             args.add(0D);
         }
-        int noBetween = (int) ((upperBound - lowerBound) * 2000);
-        double p = 0.95D / noBetween;
+        int noBetween = (int) ((upperBound - lowerBound) * TWO_THOUSAND);
+        double p = NINETY_FIVE_PERCENT / noBetween;
         for (int i = 0; i < noBetween; i++) {
-            args.add(new ProbabilityRange(((double) (noBelow + i)) / 2000D, ((double) (noBelow + i + 1)) / 2000D));
+            args.add(new ProbabilityRange(((double) (noBelow + i)) / TWO_THOUSAND,
+                    ((double) (noBelow + i + 1)) / TWO_THOUSAND));
             if (i == 0 || i == noBetween - 1) {
-                args.add(p + 0.025D);
+                args.add(p + (1D - NINETY_FIVE_PERCENT) / 2D);
             } else {
                 args.add(p);
             }
@@ -102,27 +174,41 @@ public class RSS20FeedTest {
     }
 
     /**
-     * Verifying that for a directory with a poll that has 1 simulation, a feed with
-     * a voting intentions item is produced.
+     * Creates a Sapor directory with one poll for which only one simulation has
+     * been calculated.
+     *
+     * @return A Sapor directory with one poll for which only one simulation has
+     *         been calculated.
      */
-    @Test
-    void produceFeedWithVotingIntentionsItemForDirectoryWithPollWithOneSimulations() {
+    private SaporDirectory createDirectoryWithPollWithOneSimulation() {
         InMemorySaporDirectory directory = new InMemorySaporDirectory(countryProperties);
         InMemoryPoll poll = new InMemoryPoll("2020-01-03-Baz");
         poll.setPollingFirm("Baz");
         poll.setCommissioners("Qux");
-        poll.setFieldworkStart(LocalDate.of(2020, Month.JANUARY, 2));
-        poll.setFieldworkEnd(LocalDate.of(2020, Month.JANUARY, 3));
-        poll.setVotingIntentionsFileSize(387423);
+        poll.setFieldworkStart(LocalDate.of(TWO_THOUSAND_AND_TWENTY, Month.JANUARY, 2));
+        poll.setFieldworkEnd(LocalDate.of(TWO_THOUSAND_AND_TWENTY, Month.JANUARY, THREE));
+        poll.setVotingIntentionsFileSize(FIVE);
         InMemoryStateSummary stateSummary = new InMemoryStateSummary();
         stateSummary.setNumberOfSimulations(1);
-        stateSummary.setTimestamp(createDateTime(2020, Month.JANUARY, 4, 0, 0));
+        stateSummary.setTimestamp(createDateTime(TWO_THOUSAND_AND_TWENTY, Month.JANUARY, FOUR, 0, 0));
         poll.setStateSummary(stateSummary);
         VotingIntentions votingIntentions = new VotingIntentions("Red Party",
-                createProbabilityMassFunctionForForVotingIntentionsConfidenceInterval(0.149, 0.195), "Green Party",
-                createProbabilityMassFunctionForForVotingIntentionsConfidenceInterval(0.100, 0.140));
+                createProbabilityMassFunctionForConfidenceInterval(RED_PARTY_CONFIDENCE_INTERVAL_LOWER_BOUND,
+                        RED_PARTY_CONFIDENCE_INTERVAL_UPPER_BOUND),
+                "Green Party", createProbabilityMassFunctionForConfidenceInterval(
+                        GREEN_PARTY_CONFIDENCE_INTERVAL_LOWER_BOUND, GREEN_PARTY_CONFIDENCE_INTERVAL_UPPER_BOUND));
         poll.setVotingIntentions(votingIntentions);
         directory.addPoll(poll);
+        return directory;
+    }
+
+    /**
+     * Verifying that for a directory with a poll that has 1 simulation, a feed with
+     * a voting intentions item is produced.
+     */
+    @Test
+    void produceFeedWithVotingIntentionsItemForDirectoryWithPollWithOneSimulation() {
+        SaporDirectory directory = createDirectoryWithPollWithOneSimulation();
         String actual = new RSS20Feed(directory, RSS20FeedMode.GitHubFeed).toString();
         StringBuilder sb = new StringBuilder();
         sb.append("<rss version=\"2.0\">\n");
@@ -134,10 +220,12 @@ public class RSS20FeedTest {
         sb.append("    <item>\n");
         sb.append("      <title>Opinion Poll by Baz for Qux, 2–3 January 2020 – Voting Intentions</title>\n");
         sb.append("      <link>https://bar.github.io/foo_polls/2020-01-03-Baz.html</link>\n");
-        sb.append(
-                "      <description><ul><li>Red Party: 14.9–19.5%</li><li>Green Party: 10.0–14.0%</li></ul></description>\n");
-        sb.append(
-                "      <enclosure url=\"https://bar.github.io/foo_polls/2020-01-03-Baz.png\" length=\"387423\" type=\"image/png\"/>\n");
+        sb.append("      <description><ul>");
+        sb.append("<li>Red Party: 14.9–19.5%</li>");
+        sb.append("<li>Green Party: 10.0–14.0%</li>");
+        sb.append("</ul></description>\n");
+        sb.append("      <enclosure url=\"https://bar.github.io/foo_polls/2020-01-03-Baz.png\" length=\"5\"");
+        sb.append(" type=\"image/png\"/>\n");
         sb.append("      <pubDate>Sat, 4 Jan 2020 00:00:00 +0100</pubDate>\n");
         sb.append("      <dc:date>2020-01-04T00:00:00+01:00</dc:date>\n");
         sb.append("    </item>\n");
@@ -152,21 +240,8 @@ public class RSS20FeedTest {
      * a voting intentions item is produced for IFTTT.
      */
     @Test
-    void produceIftttFeedWithVotingIntentionsItemForDirectoryWithPollWithOneSimulations() {
-        InMemorySaporDirectory directory = new InMemorySaporDirectory(countryProperties);
-        InMemoryPoll poll = new InMemoryPoll("2020-01-03-Baz");
-        poll.setPollingFirm("Baz");
-        poll.setCommissioners("Qux");
-        poll.setFieldworkStart(LocalDate.of(2020, Month.JANUARY, 2));
-        poll.setFieldworkEnd(LocalDate.of(2020, Month.JANUARY, 3));
-        poll.setVotingIntentionsFileSize(387423);
-        InMemoryStateSummary stateSummary = new InMemoryStateSummary();
-        stateSummary.setNumberOfSimulations(1);
-        stateSummary.setTimestamp(createDateTime(2020, Month.JANUARY, 4, 0, 0));
-        poll.setStateSummary(stateSummary);
-        VotingIntentions votingIntentions = new VotingIntentions();
-        poll.setVotingIntentions(votingIntentions);
-        directory.addPoll(poll);
+    void produceIftttFeedWithVotingIntentionsItemForDirectoryWithPollWithOneSimulation() {
+        SaporDirectory directory = createDirectoryWithPollWithOneSimulation();
         String actual = new RSS20Feed(directory, RSS20FeedMode.IftttFeed).toString();
         StringBuilder sb = new StringBuilder();
         sb.append("<rss version=\"2.0\">\n");
@@ -182,8 +257,8 @@ public class RSS20FeedTest {
         sb.append("Opinion poll by Baz for Qux, 2–3 January 2020<br/>");
         sb.append("<img src=\"https://bar.github.io/foo_polls/2020-01-03-Baz.png\"/><br/>");
         sb.append("Details on https://bar.github.io/foo_polls/2020-01-03-Baz.html]]></description>\n");
-        sb.append(
-                "      <enclosure url=\"https://bar.github.io/foo_polls/2020-01-03-Baz.png\" length=\"387423\" type=\"image/png\"/>\n");
+        sb.append("      <enclosure url=\"https://bar.github.io/foo_polls/2020-01-03-Baz.png\" length=\"5\"");
+        sb.append(" type=\"image/png\"/>\n");
         sb.append("      <pubDate>Sat, 4 Jan 2020 00:00:00 +0100</pubDate>\n");
         sb.append("      <dc:date>2020-01-04T00:00:00+01:00</dc:date>\n");
         sb.append("    </item>\n");
