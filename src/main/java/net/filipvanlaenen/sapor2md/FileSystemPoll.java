@@ -7,6 +7,9 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public class FileSystemPoll implements Poll {
@@ -32,12 +35,31 @@ public class FileSystemPoll implements Poll {
         this.directory = directory;
         filePath = directory + File.separator + pollFileName;
         baseName = pollFileName.substring(0, pollFileName.length() - 5);
-        Map<String, String> map = FileSystemServices.readFileIntoMap(filePath);
-        this.commissioners = map.get(COMMISSIONERS_KEY);
-        this.pollingFirm = map.get(POLLING_FIRM_KEY);
-        this.fieldworkEnd = LocalDate.parse(map.get(FIELDWORK_END_KEY), DateTimeFormatter.ISO_LOCAL_DATE);
-        this.fieldworkStart = LocalDate.parse(map.get(FIELDWORK_START_KEY), DateTimeFormatter.ISO_LOCAL_DATE);
+        List<Map<String, String>> content = readFileIntoDoubleMap(filePath);
+        Map<String, String> properties = content.get(0);
+        this.commissioners = properties.get(COMMISSIONERS_KEY);
+        this.pollingFirm = properties.get(POLLING_FIRM_KEY);
+        this.fieldworkEnd = LocalDate.parse(properties.get(FIELDWORK_END_KEY), DateTimeFormatter.ISO_LOCAL_DATE);
+        this.fieldworkStart = LocalDate.parse(properties.get(FIELDWORK_START_KEY), DateTimeFormatter.ISO_LOCAL_DATE);
         this.stateSummary = new FileSystemStateSummary(directory, baseName);
+    }
+
+    private List<Map<String, String>> readFileIntoDoubleMap(final String filePath) {
+        String content = FileSystemServices.readFileIntoString(filePath);
+        String[] lines = content.split("\n");
+        List<Map<String, String>> doubleMap = new ArrayList<Map<String, String>>();
+        doubleMap.add(new HashMap<String, String>());
+        doubleMap.add(new HashMap<String, String>());
+        int i = 0;
+        for (String line : lines) {
+            if (line.endsWith("==")) {
+                i = 1;
+            } else {
+                String[] elements = line.split("=");
+                doubleMap.get(i).put(elements[0], elements[1]);
+            }
+        }
+        return doubleMap;
     }
 
     @Override
