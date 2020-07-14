@@ -41,7 +41,7 @@ public final class FileSystemServices {
         }
         return contentBuilder.toString();
     }
-    
+
     static Map<String, String> readFileIntoMap(final String filePath) {
         String content = FileSystemServices.readFileIntoString(filePath);
         String[] lines = content.split("\n");
@@ -81,8 +81,8 @@ public final class FileSystemServices {
      */
     static List<String> getPollFilesList(final String directory) {
         try (Stream<Path> walk = Files.walk(Paths.get(directory))) {
-            return walk.filter(Files::isRegularFile).map(x -> x.toString()).filter(f -> f.endsWith(".poll"))
-                    .collect(Collectors.toList());
+            return walk.filter(Files::isRegularFile).map(x -> x.getFileName().toString())
+                    .filter(f -> f.endsWith(".poll")).collect(Collectors.toList());
         } catch (IOException e) {
             e.printStackTrace();
             return null;
