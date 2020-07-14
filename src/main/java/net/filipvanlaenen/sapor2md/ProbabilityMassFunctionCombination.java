@@ -1,8 +1,10 @@
 package net.filipvanlaenen.sapor2md;
 
+import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 /**
  * A class representing a probability masse function combination. Such a
@@ -21,12 +23,41 @@ public abstract class ProbabilityMassFunctionCombination<T extends Comparable<T>
     protected final Map<String, ProbabilityMassFunction<T>> map = new HashMap<>();
 
     /**
-     * Returns a set with all groups.
+     * Returns a set with all groups, sorted. The groups are sorted descending on
+     * median first, upper bound of the 95 percent confidence interval second, and
+     * lower bound of the 95 percent confidence interval third. If the median and
+     * the confidence intervals are equal, the groups are sorted alphabetically on
+     * their name.
      *
-     * @return A set containing all the groups.
+     * @return A set containing all the groups, sorted.
      */
-    Set<String> getGroups() {
-        return map.keySet();
+    List<String> getGroups() {
+        List<String> sortedGroups = new ArrayList<String>(map.keySet());
+        sortedGroups.sort(new Comparator<String>() {
+            @Override
+            public int compare(final String group1, final String group2) {
+                int compareMedian = getMedian(group2).compareTo(getMedian(group1));
+                if (compareMedian == 0) {
+                    ConfidenceInterval<T> c1 = getConfidenceInterval(group1, 0.95D);
+                    ConfidenceInterval<T> c2 = getConfidenceInterval(group2, 0.95D);
+                    int compareUpperBound = c2.getUpperBound().compareTo(c1.getUpperBound());
+                    if (compareUpperBound == 0) {
+                        int compareLowerBound = c2.getLowerBound().compareTo(c1.getLowerBound());
+                        if (compareLowerBound == 0) {
+                            return group1.compareToIgnoreCase(group2);
+                        } else {
+                            return compareLowerBound;
+                        }
+                    } else {
+                        return compareUpperBound;
+                    }
+                } else {
+                    return compareMedian;
+                }
+            }
+
+        });
+        return sortedGroups;
     }
 
     /**

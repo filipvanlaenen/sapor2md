@@ -29,7 +29,7 @@ public class SaporDirectoryTest {
         poll2.setFieldworkEnd(LocalDate.of(TWO_THOUSAND_AND_TWENTY, Month.JANUARY, 2));
         directory.addPoll(poll1);
         directory.addPoll(poll2);
-        assertEquals(poll2, directory.getPolls().next());
+        assertEquals(poll2, directory.getSortedPolls().next());
     }
 
     /**
@@ -47,7 +47,7 @@ public class SaporDirectoryTest {
         poll2.setFieldworkEnd(LocalDate.of(TWO_THOUSAND_AND_TWENTY, Month.JANUARY, 2));
         directory.addPoll(poll1);
         directory.addPoll(poll2);
-        assertEquals(poll2, directory.getPolls().next());
+        assertEquals(poll2, directory.getSortedPolls().next());
     }
 
     /**
@@ -68,7 +68,7 @@ public class SaporDirectoryTest {
         poll2.setPollingFirm("Baz");
         directory.addPoll(poll1);
         directory.addPoll(poll2);
-        assertEquals(poll2, directory.getPolls().next());
+        assertEquals(poll2, directory.getSortedPolls().next());
     }
 
 }

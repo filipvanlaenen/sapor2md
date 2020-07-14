@@ -68,7 +68,7 @@ public final class RSS20Feed {
         sb.append(saporDirectory.getCountryProperties().getParliamentName());
         sb.append("</description>\n");
         sb.append("    <pubDate>" + getPubDate().format(DateTimeFormatter.RFC_1123_DATE_TIME) + "</pubDate>\n");
-        Iterator<Poll> pollIterator = saporDirectory.getPolls();
+        Iterator<Poll> pollIterator = saporDirectory.getSortedPolls();
         while (pollIterator.hasNext()) {
             Poll poll = pollIterator.next();
             if (poll.hasStateSummary() && poll.getStateSummary().getNumberOfSimulations() >= 1) {

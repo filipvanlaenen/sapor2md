@@ -3,9 +3,8 @@ package net.filipvanlaenen.sapor2md;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
-import java.util.HashSet;
-import java.util.Set;
-
+import java.util.ArrayList;
+import java.util.List;
 import org.junit.jupiter.api.Test;
 
 /**
@@ -92,8 +91,8 @@ public class SeatProjectionTest {
         SeatProjection seatProjection = new SeatProjection("Red Party",
                 new ProbabilityMassFunction<Integer>(0, ONE_QUARTER, 1, THREE_QUARTERS), "Blue Party",
                 new ProbabilityMassFunction<Integer>(0, A_HALF, 1, A_HALF));
-        Set<String> actual = seatProjection.getGroups();
-        Set<String> expected = new HashSet<String>();
+        List<String> actual = seatProjection.getGroups();
+        List<String> expected = new ArrayList<String>();
         expected.add("Red Party");
         expected.add("Blue Party");
         assertEquals(expected, actual);
@@ -185,8 +184,8 @@ public class SeatProjectionTest {
         String probabilityMassFunctions = "Choice | 0 | 1 | 2\n" + "Red Party | 0.4 | 0.35 | 0.25\n"
                 + "Blue Party | 0 | 0.65 | 0.35\n" + "Green Party | 0.75 | 0.25\n";
         String actual = SeatProjection.calculateAdjustedMedians(probabilityMassFunctions, THREE);
-        String expected = "Choice | CI95LB | Median | Adjusted Median\n" + "Red Party | 0 | 1 | 2\n"
-                + "Blue Party | 1 | 1 | 1\n" + "Green Party | 0 | 0 | 0\n";
+        String expected = "Choice | CI95LB | Median | Adjusted Median\n" + "Blue Party | 1 | 1 | 1\n"
+                + "Red Party | 0 | 1 | 2\n" + "Green Party | 0 | 0 | 0\n";
         assertEquals(expected, actual);
     }
 }
