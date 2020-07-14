@@ -4,13 +4,36 @@ import java.io.File;
 import java.time.OffsetDateTime;
 import java.util.Map;
 
-public class FileSystemStateSummary implements StateSummary {
+/**
+ * Class implementing the <code>StateSummary</code> interface using the file
+ * system.
+ */
+public final class FileSystemStateSummary implements StateSummary {
+    /**
+     * The key for the property containing the number of simulations run on the
+     * poll.
+     */
     private static final String NUMBER_OF_SIMULATIONS_KEY = "NumberOfSimulations";
 
+    /**
+     * The number of simulations run on the poll.
+     */
     private final long numberOfSimulations;
+    /**
+     * The timestamp for the state summary file.
+     */
     private final OffsetDateTime timestamp;
 
-    FileSystemStateSummary(String directory, String baseName) {
+    /**
+     * Constructor taking the directory and the base name for the state summary as
+     * its parameters.
+     *
+     * @param directory
+     *            The directory in which the state summary resides.
+     * @param baseName
+     *            The base name for the poll.
+     */
+    FileSystemStateSummary(final String directory, final String baseName) {
         String filePath = directory + File.separator + baseName + "_state_summary.txt";
         Map<String, String> map = FileSystemServices.readFileIntoMap(filePath);
         this.numberOfSimulations = Long.parseLong(map.get(NUMBER_OF_SIMULATIONS_KEY));
