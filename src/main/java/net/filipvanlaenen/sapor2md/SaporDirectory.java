@@ -37,7 +37,7 @@ public abstract class SaporDirectory {
         List<Poll> sortedPolls = new ArrayList<Poll>(polls);
         sortedPolls.sort(new Comparator<Poll>() {
             @Override
-            public int compare(Poll poll1, Poll poll2) {
+            public int compare(final Poll poll1, final Poll poll2) {
                 int compareEndDate = poll2.getFieldworkEnd().compareTo(poll1.getFieldworkEnd());
                 if (compareEndDate == 0) {
                     int compareStartDate = poll2.getFieldworkStart().compareTo(poll1.getFieldworkStart());
