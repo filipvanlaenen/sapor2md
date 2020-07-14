@@ -10,6 +10,11 @@ import java.util.List;
  */
 public class VotingIntentions extends ProbabilityMassFunctionCombination<ProbabilityRange> {
     /**
+     * Magic number 2000.
+     */
+    private static final double TWO_THOUSAND = 2000D;
+
+    /**
      * Constructs voting intentions from an array of objects. The array has to have
      * an even length, with each uneven element the name of a parliamentary group,
      * and each even element a probability mass function.
@@ -54,7 +59,8 @@ public class VotingIntentions extends ProbabilityMassFunctionCombination<Probabi
                 arguments.add(label);
                 List<Object> pmfArguments = new ArrayList<Object>();
                 for (int i = 1; i < lineComponents.length; i++) {
-                    pmfArguments.add(new ProbabilityRange(((double) (i - 1)) / 2000D, ((double) i) / 2000D));
+                    pmfArguments
+                            .add(new ProbabilityRange(((double) (i - 1)) / TWO_THOUSAND, ((double) i) / TWO_THOUSAND));
                     pmfArguments.add(Double.parseDouble(lineComponents[i]));
                 }
                 arguments.add(new ProbabilityMassFunction<ProbabilityRange>(pmfArguments.toArray()));
