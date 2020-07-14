@@ -30,6 +30,7 @@ public class FileSystemPoll implements Poll {
     private final LocalDate fieldworkStart;
     private final String pollingFirm;
     private final StateSummary stateSummary;
+    private final VotingIntentions votingIntentions;
 
     FileSystemPoll(final String directory, final String pollFileName) {
         this.directory = directory;
@@ -42,6 +43,9 @@ public class FileSystemPoll implements Poll {
         this.fieldworkEnd = LocalDate.parse(properties.get(FIELDWORK_END_KEY), DateTimeFormatter.ISO_LOCAL_DATE);
         this.fieldworkStart = LocalDate.parse(properties.get(FIELDWORK_START_KEY), DateTimeFormatter.ISO_LOCAL_DATE);
         this.stateSummary = new FileSystemStateSummary(directory, baseName);
+        String votingIntentionsFilePath = directory + File.separator + baseName + "-dichotomies-probabilities.psv";
+        String votingIntentionsFileContent = FileSystemServices.readFileIntoString(votingIntentionsFilePath);
+        this.votingIntentions = VotingIntentions.parseFromString(votingIntentionsFileContent);
     }
 
     private List<Map<String, String>> readFileIntoDoubleMap(final String filePath) {
@@ -94,8 +98,7 @@ public class FileSystemPoll implements Poll {
 
     @Override
     public VotingIntentions getVotingIntentions() {
-        // TODO
-        return null;
+        return votingIntentions;
     }
 
     @Override

@@ -1,5 +1,8 @@
 package net.filipvanlaenen.sapor2md;
 
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  * A class representing voting intentions. Voting intentions consist of a number
  * of parliamentary groups with each of them a probability mass function in
@@ -32,5 +35,31 @@ public class VotingIntentions extends ProbabilityMassFunctionCombination<Probabi
                 map.put((String) key, (ProbabilityMassFunction<ProbabilityRange>) value);
             }
         }
+    }
+
+    /**
+     * Parses a string into a voting intentions object.
+     *
+     * @param probabilityMassFunctions
+     *            A string representation of voting intentions.
+     * @return A voting intentions object.
+     */
+    static VotingIntentions parseFromString(final String probabilityMassFunctions) {
+        List<Object> arguments = new ArrayList<Object>();
+        String[] lines = probabilityMassFunctions.split("\\R");
+        for (String line : lines) {
+            String[] lineComponents = line.split("\\|");
+            String label = lineComponents[0].trim();
+            if (!label.equals("Choice")) {
+                arguments.add(label);
+                List<Object> pmfArguments = new ArrayList<Object>();
+                for (int i = 1; i < lineComponents.length; i++) {
+                    pmfArguments.add(new ProbabilityRange(((double) (i - 1)) / 2000D, ((double) i) / 2000D));
+                    pmfArguments.add(Double.parseDouble(lineComponents[i]));
+                }
+                arguments.add(new ProbabilityMassFunction<ProbabilityRange>(pmfArguments.toArray()));
+            }
+        }
+        return new VotingIntentions(arguments.toArray());
     }
 }
