@@ -63,7 +63,7 @@ public final class RSS20Feed {
         sb.append("  <channel>\n");
         sb.append("    <title>All Registered Polls for the " + saporDirectory.getCountryProperties().getParliamentName()
                 + "</title>\n");
-        sb.append("    <link>" + saporDirectory.getGitHubDirectoryURL() + "</link>\n");
+        sb.append("    <link>" + saporDirectory.getCountryProperties().getGitHubDirectoryURL() + "</link>\n");
         sb.append("    <description>All Registered Polls for the ");
         sb.append(saporDirectory.getCountryProperties().getParliamentName());
         sb.append("</description>\n");
@@ -99,14 +99,14 @@ public final class RSS20Feed {
         sb.append(formatPeriod(poll.getFieldworkStart(), poll.getFieldworkEnd()));
         sb.append(" – Voting Intentions</title>\n");
         sb.append("      <link>");
-        sb.append(saporDirectory.getGitHubDirectoryURL());
+        sb.append(saporDirectory.getCountryProperties().getGitHubDirectoryURL());
         sb.append("/");
         sb.append(poll.getBaseName());
         sb.append(".html</link>\n");
         sb.append("      <description>" + feedMode.createVotingIntentionsItemDescription(poll, saporDirectory)
                 + "</description>\n");
         sb.append("      <enclosure url=\"");
-        sb.append(saporDirectory.getGitHubDirectoryURL());
+        sb.append(saporDirectory.getCountryProperties().getGitHubDirectoryURL());
         sb.append("/");
         sb.append(poll.getBaseName());
         sb.append(".png\" length=\"");
@@ -227,13 +227,13 @@ public final class RSS20Feed {
                 sb.append(formatPeriod(poll.getFieldworkStart(), poll.getFieldworkEnd()));
                 sb.append("<br/>");
                 sb.append("<img src=\"");
-                sb.append(saporDir.getGitHubDirectoryURL());
+                sb.append(saporDir.getCountryProperties().getGitHubDirectoryURL());
                 sb.append("/");
                 sb.append(poll.getBaseName());
                 sb.append(".png\"/>");
                 sb.append("<br/>");
                 sb.append("Details on ");
-                sb.append(saporDir.getGitHubDirectoryURL());
+                sb.append(saporDir.getCountryProperties().getGitHubDirectoryURL());
                 sb.append("/");
                 sb.append(poll.getBaseName());
                 sb.append(".html");

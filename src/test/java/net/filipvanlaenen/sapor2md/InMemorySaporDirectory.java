@@ -1,25 +1,10 @@
 package net.filipvanlaenen.sapor2md;
 
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
-
 /**
  * Class implementing the <code>SaporDirectory</code> interface in memory, to be
  * used for testing purposes.
  */
-public final class InMemorySaporDirectory implements SaporDirectory {
-
-    /**
-     * A list with the polls.
-     */
-    private final List<Poll> polls = new ArrayList<Poll>();
-
-    /**
-     * The in-memory country properties.
-     */
-    private final InMemoryCountryProperties countryProperties;
-
+public final class InMemorySaporDirectory extends SaporDirectory {
     /**
      * Constructor taking an instance of <code>InMemoryCountryProperties</code> as
      * the argument.
@@ -31,11 +16,6 @@ public final class InMemorySaporDirectory implements SaporDirectory {
         this.countryProperties = countryProperties;
     }
 
-    @Override
-    public CountryProperties getCountryProperties() {
-        return countryProperties;
-    }
-
     /**
      * Adds a poll.
      *
@@ -45,10 +25,4 @@ public final class InMemorySaporDirectory implements SaporDirectory {
     void addPoll(final Poll poll) {
         polls.add(poll);
     }
-
-    @Override
-    public Iterator<Poll> getPolls() {
-        return polls.iterator();
-    }
-
 }
