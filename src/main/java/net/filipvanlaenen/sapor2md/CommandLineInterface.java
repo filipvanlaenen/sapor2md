@@ -1,6 +1,5 @@
 package net.filipvanlaenen.sapor2md;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -116,8 +115,9 @@ public final class CommandLineInterface {
             @Override
             String execute(final String... args) {
                 PollFilesMode mode = PollFilesMode.valueOf(args[0]);
-                String[] directories = Arrays.copyOfRange(args, 1, args.length);
-                List<String> pollFiles = new ArrayList<String>();
+                String firstDirectory = args[1];
+                List<String> pollFiles = FileSystemServices.getPollFilesList(firstDirectory);
+                String[] directories = Arrays.copyOfRange(args, 2, args.length);
                 for (String directory : directories) {
                     pollFiles = mode.mergePollFiles(pollFiles, FileSystemServices.getPollFilesList(directory));
                 }
