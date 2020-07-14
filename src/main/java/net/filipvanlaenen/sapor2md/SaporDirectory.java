@@ -2,8 +2,10 @@ package net.filipvanlaenen.sapor2md;
 
 import java.util.ArrayList;
 import java.util.Comparator;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Set;
 
 /**
  * Abstract class defining the behavior for a Sapor directory and implementing
@@ -13,7 +15,7 @@ public abstract class SaporDirectory {
     /**
      * The polls.
      */
-    protected final List<Poll> polls = new ArrayList<Poll>();
+    protected final Set<Poll> polls = new HashSet<Poll>();
     /**
      * The country properties.
      */
