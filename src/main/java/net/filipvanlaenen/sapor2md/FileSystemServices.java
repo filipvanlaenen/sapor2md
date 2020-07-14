@@ -42,6 +42,14 @@ public final class FileSystemServices {
         return contentBuilder.toString();
     }
 
+    /**
+     * Reads a file from the file system and returns the result as a map, using
+     * <code>=</code> as the separator between the keys and the values.
+     *
+     * @param filePath
+     *            The path to the file to be read.
+     * @return The content of the file as a map.
+     */
     static Map<String, String> readFileIntoMap(final String filePath) {
         String content = FileSystemServices.readFileIntoString(filePath);
         String[] lines = content.split("\n");
