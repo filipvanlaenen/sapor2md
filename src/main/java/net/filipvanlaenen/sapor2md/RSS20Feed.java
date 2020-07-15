@@ -4,6 +4,7 @@ import java.time.LocalDate;
 import java.time.OffsetDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Iterator;
+import java.util.Locale;
 
 /**
  * Class producing an RSS 2.0 feed for a Sapor directory.
@@ -132,9 +133,9 @@ public final class RSS20Feed {
      * @return A string with the period formatted in a human-readable form.
      */
     private static String formatPeriod(final LocalDate start, final LocalDate end) {
-        DateTimeFormatter dayMonthYear = DateTimeFormatter.ofPattern("d MMMM yyyy");
-        DateTimeFormatter dayMonth = DateTimeFormatter.ofPattern("d MMMM");
-        DateTimeFormatter day = DateTimeFormatter.ofPattern("d");
+        DateTimeFormatter dayMonthYear = DateTimeFormatter.ofPattern("d MMMM yyyy", Locale.ENGLISH);
+        DateTimeFormatter dayMonth = DateTimeFormatter.ofPattern("d MMMM", Locale.ENGLISH);
+        DateTimeFormatter day = DateTimeFormatter.ofPattern("d", Locale.ENGLISH);
         if (start.getYear() != end.getYear()) {
             return start.format(dayMonthYear) + "–" + end.format(dayMonthYear);
         } else if (start.getMonth() != end.getMonth()) {
@@ -155,7 +156,7 @@ public final class RSS20Feed {
      * @return A string with the double formatted as percentage number.
      */
     private static String formatPercentageNumber(final double percentage) {
-        return String.format("%.1f", percentage * ONE_HUNDRED);
+        return String.format("%.1f", percentage * ONE_HUNDRED, Locale.ENGLISH);
     }
 
     /**
