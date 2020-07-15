@@ -12,11 +12,6 @@ import java.util.Map;
  */
 public class SeatProjection extends ProbabilityMassFunctionCombination<Integer> {
     /**
-     * Magic number 0.95, or 95 percent.
-     */
-    private static final double NINETY_FIVE_PERCENT = 0.95D;
-
-    /**
      * A map holding the adjusted medians per parliamentary group per parliament
      * size.
      */
@@ -25,8 +20,7 @@ public class SeatProjection extends ProbabilityMassFunctionCombination<Integer> 
     /**
      * Parses a string into a seat projection object.
      *
-     * @param probabilityMassFunctions
-     *            A string representation of a seat projection.
+     * @param probabilityMassFunctions A string representation of a seat projection.
      * @return A seat projection object.
      */
     private static SeatProjection parseFromString(final String probabilityMassFunctions) {
@@ -54,10 +48,9 @@ public class SeatProjection extends ProbabilityMassFunctionCombination<Integer> 
      * size. The seat projection is given as a string that is parsed into a seat
      * projection object.
      *
-     * @param probabilityMassFunctionsString
-     *            A string that can be parsed into a seat projection object.
-     * @param parliamentSize
-     *            The size of the parliament.
+     * @param probabilityMassFunctionsString A string that can be parsed into a seat
+     *                                       projection object.
+     * @param parliamentSize                 The size of the parliament.
      * @return A string with the lower bound of the 95 percent confidence interval,
      *         the median and the adjusted median for each parliamentary group.
      */
@@ -79,8 +72,7 @@ public class SeatProjection extends ProbabilityMassFunctionCombination<Integer> 
      * an even length, with each uneven element the name of a parliamentary group,
      * and each even element a probability mass function.
      *
-     * @param objects
-     *            An array defining a seat projection.
+     * @param objects An array defining a seat projection.
      */
     SeatProjection(final Object... objects) {
         if (objects.length % 2 == 1) {
@@ -105,8 +97,7 @@ public class SeatProjection extends ProbabilityMassFunctionCombination<Integer> 
     /**
      * Calculates the adjusted medians for a given size for a parliament.
      *
-     * @param size
-     *            The size of the parliament.
+     * @param size The size of the parliament.
      * @return The adjusted medians for the given parliament size.
      */
     private Map<String, Integer> calculateAdjustedMedians(final int size) {
@@ -136,15 +127,11 @@ public class SeatProjection extends ProbabilityMassFunctionCombination<Integer> 
      * doesn't work, the factor should be gradually lowered, until a solution can be
      * found .
      *
-     * @param medians
-     *            The medians.
-     * @param sumOfMedians
-     *            The sum of the medians.
-     * @param size
-     *            The requested size of the parliament.
-     * @param selectionFactor
-     *            The factor used to compare a candidate number of seats'
-     *            probability with the median's probability.
+     * @param medians         The medians.
+     * @param sumOfMedians    The sum of the medians.
+     * @param size            The requested size of the parliament.
+     * @param selectionFactor The factor used to compare a candidate number of
+     *                        seats' probability with the median's probability.
      * @return A seat projection that fills up the parliament, based on the medians.
      */
     private Map<String, Integer> adjustMedians(final Map<String, Integer> medians, final int sumOfMedians,
@@ -184,15 +171,11 @@ public class SeatProjection extends ProbabilityMassFunctionCombination<Integer> 
      * Selects the numbers of seats for all parties that are candidates to be
      * adjusted medians.
      *
-     * @param medians
-     *            The medians per group.
-     * @param sumOfMedians
-     *            The sum of the medians
-     * @param size
-     *            The size of the parliament.
-     * @param selectionFactor
-     *            The factor used to compare a candidate number of seats'
-     *            probability with the median's probability.
+     * @param medians         The medians per group.
+     * @param sumOfMedians    The sum of the medians
+     * @param size            The size of the parliament.
+     * @param selectionFactor The factor used to compare a candidate number of
+     *                        seats' probability with the median's probability.
      * @return The numbers of seats that are candidates to be adjusted medians, per
      *         group.
      */
@@ -219,10 +202,8 @@ public class SeatProjection extends ProbabilityMassFunctionCombination<Integer> 
      * Returns the adjusted median of a parliamentary group for a given size for a
      * parliament.
      *
-     * @param group
-     *            The name of the parliamentary group.
-     * @param size
-     *            The size of the parliament.
+     * @param group The name of the parliamentary group.
+     * @param size  The size of the parliament.
      * @return The adjusted median for the parliamentary group.
      */
     Integer getAdjustedMedian(final String group, final int size) {

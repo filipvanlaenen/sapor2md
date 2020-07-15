@@ -7,16 +7,19 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * A class representing a probability masse function combination. Such a
+ * A class representing a probability mass function combination. Such a
  * combination consists of a number of parliamentary groups with each of them a
  * probability mass function associated to them. The probability mass function
  * may have a voting intention percentage share, a number of seats, or anything
  * else that is comparable as the discrete value.
  *
- * @param <T>
- *            The type of the keys for the probability mass functions.
+ * @param <T> The type of the keys for the probability mass functions.
  */
 public abstract class ProbabilityMassFunctionCombination<T extends Comparable<T>> {
+    /**
+     * Magic number 0.95, or 95 percent.
+     */
+    protected static final double NINETY_FIVE_PERCENT = 0.95D;
     /**
      * A map holding the probability mass functions per group.
      */
@@ -38,8 +41,8 @@ public abstract class ProbabilityMassFunctionCombination<T extends Comparable<T>
             public int compare(final String group1, final String group2) {
                 int compareMedian = getMedian(group2).compareTo(getMedian(group1));
                 if (compareMedian == 0) {
-                    ConfidenceInterval<T> c1 = getConfidenceInterval(group1, 0.95D);
-                    ConfidenceInterval<T> c2 = getConfidenceInterval(group2, 0.95D);
+                    ConfidenceInterval<T> c1 = getConfidenceInterval(group1, NINETY_FIVE_PERCENT);
+                    ConfidenceInterval<T> c2 = getConfidenceInterval(group2, NINETY_FIVE_PERCENT);
                     int compareUpperBound = c2.getUpperBound().compareTo(c1.getUpperBound());
                     if (compareUpperBound == 0) {
                         int compareLowerBound = c2.getLowerBound().compareTo(c1.getLowerBound());
@@ -63,10 +66,8 @@ public abstract class ProbabilityMassFunctionCombination<T extends Comparable<T>
     /**
      * Returns the probability of a parliamentary group obtaining a value.
      *
-     * @param group
-     *            The name of the parliamentary group.
-     * @param value
-     *            A value.
+     * @param group The name of the parliamentary group.
+     * @param value A value.
      * @return The probability of the parliamentary group to obtain the value.
      */
     double getProbability(final String group, final T value) {
@@ -76,8 +77,7 @@ public abstract class ProbabilityMassFunctionCombination<T extends Comparable<T>
     /**
      * Returns the median of a parliamentary group.
      *
-     * @param group
-     *            The name of the parliamentary group.
+     * @param group The name of the parliamentary group.
      * @return The median for the parliamentary group.
      */
     T getMedian(final String group) {
@@ -87,10 +87,8 @@ public abstract class ProbabilityMassFunctionCombination<T extends Comparable<T>
     /**
      * Returns the confidence interval for a group.
      *
-     * @param group
-     *            The name of the parliamentary group.
-     * @param confidence
-     *            The level of confidence required.
+     * @param group      The name of the parliamentary group.
+     * @param confidence The level of confidence required.
      * @return The confidence interval for the given confidence for a group.
      */
     ConfidenceInterval<T> getConfidenceInterval(final String group, final double confidence) {
