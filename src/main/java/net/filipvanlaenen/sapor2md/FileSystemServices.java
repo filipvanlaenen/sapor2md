@@ -1,6 +1,7 @@
 package net.filipvanlaenen.sapor2md;
 
 import java.io.IOException;
+import java.nio.channels.FileChannel;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -109,6 +110,21 @@ public final class FileSystemServices {
         } catch (IOException e) {
             e.printStackTrace();
             return null;
+        }
+    }
+
+    /**
+     * Returns the size of a file.
+     *
+     * @param filePath The path to the file.
+     * @return The size of the file, or 0 if it doesn't exist.
+     */
+    static long getFileSize(final String filePath) {
+        try {
+            return FileChannel.open(Paths.get(filePath)).size();
+        } catch (IOException e) {
+            e.printStackTrace();
+            return 0;
         }
     }
 }

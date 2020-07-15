@@ -1,10 +1,6 @@
 package net.filipvanlaenen.sapor2md;
 
 import java.io.File;
-import java.io.IOException;
-import java.nio.channels.FileChannel;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
@@ -13,9 +9,10 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * Class implementing the <code>Poll</code> interface using the file system.
+ * Class implementing the abstract <code>Poll</code> class using the file
+ * system.
  */
-public final class FileSystemPoll implements Poll {
+public final class FileSystemPoll extends Poll {
     /**
      * The key for the property containing the name of the commissioners.
      */
@@ -38,62 +35,39 @@ public final class FileSystemPoll implements Poll {
      * The path to the poll file.
      */
     private final String filePath;
-    /**
-     * The directory where the poll resides.
-     */
-    private final String directory;
-    /**
-     * The base name of the poll.
-     */
-    private final String baseName;
-    /**
-     * The name of the commissioners of the poll.
-     */
-    private final String commissioners;
-    /**
-     * The end date of the fieldwork period.
-     */
-    private final LocalDate fieldworkEnd;
-    /**
-     * The start date of the fieldwork period.
-     */
-    private final LocalDate fieldworkStart;
-    /**
-     * The name of the polling firm that conducted the poll.
-     */
-    private final String pollingFirm;
-    /**
-     * The state summary for the poll.
-     */
-    private final StateSummary stateSummary;
-    /**
-     * The voting intentions for the poll.
-     */
-    private final VotingIntentions votingIntentions;
 
     /**
      * Constructor taking the directory in which the poll resides and the file name
      * of the poll as its parameters.
      *
-     * @param directory
-     *            The directory in which the poll resides.
-     * @param pollFileName
-     *            The name of the poll file.
+     * @param directory    The directory in which the poll resides.
+     * @param pollFileName The name of the poll file.
      */
     FileSystemPoll(final String directory, final String pollFileName) {
-        this.directory = directory;
+        super(extractBaseNameFromFileName(pollFileName));
         filePath = directory + File.separator + pollFileName;
-        baseName = pollFileName.substring(0, pollFileName.length() - ".poll".length());
         List<Map<String, String>> content = readFileIntoDoubleMap();
         Map<String, String> properties = content.get(0);
-        this.commissioners = properties.get(COMMISSIONERS_KEY);
-        this.pollingFirm = properties.get(POLLING_FIRM_KEY);
-        this.fieldworkEnd = LocalDate.parse(properties.get(FIELDWORK_END_KEY), DateTimeFormatter.ISO_LOCAL_DATE);
-        this.fieldworkStart = LocalDate.parse(properties.get(FIELDWORK_START_KEY), DateTimeFormatter.ISO_LOCAL_DATE);
-        this.stateSummary = FileSystemStateSummary.readFromFileSystem(directory, baseName);
-        String votingIntentionsFilePath = directory + File.separator + baseName + "-dichotomies-probabilities.psv";
+        setCommissioners(properties.get(COMMISSIONERS_KEY));
+        setPollingFirm(properties.get(POLLING_FIRM_KEY));
+        setFieldworkEnd(LocalDate.parse(properties.get(FIELDWORK_END_KEY), DateTimeFormatter.ISO_LOCAL_DATE));
+        setFieldworkStart(LocalDate.parse(properties.get(FIELDWORK_START_KEY), DateTimeFormatter.ISO_LOCAL_DATE));
+        setStateSummary(FileSystemStateSummary.readFromFileSystem(directory, getBaseName()));
+        String votingIntentionsFilePath = directory + File.separator + getBaseName() + "-dichotomies-probabilities.psv";
         String votingIntentionsFileContent = FileSystemServices.readFileIntoString(votingIntentionsFilePath);
-        this.votingIntentions = VotingIntentions.parseFromString(votingIntentionsFileContent);
+        setVotingIntentions(VotingIntentions.parseFromString(votingIntentionsFileContent));
+        setVotingIntentionsChartFileSize(
+                FileSystemServices.getFileSize(directory + File.separator + getBaseName() + ".png"));
+    }
+
+    /**
+     * Extracts the base name from the name of the poll file.
+     *
+     * @param pollFileName Name of the poll file.
+     * @return The base name.
+     */
+    static String extractBaseNameFromFileName(final String pollFileName) {
+        return pollFileName.substring(0, pollFileName.length() - ".poll".length());
     }
 
     /**
@@ -104,13 +78,24 @@ public final class FileSystemPoll implements Poll {
      */
     private List<Map<String, String>> readFileIntoDoubleMap() {
         String content = FileSystemServices.readFileIntoString(filePath);
+        return parseDoubleMapFromString(content);
+    }
+
+    /**
+     * Converts the content of a file to a double map.
+     *
+     * @param content A string with the content to be converted.
+     * @return A list containing two maps, representing the content of the poll
+     *         file.
+     */
+    static List<Map<String, String>> parseDoubleMapFromString(String content) {
         String[] lines = content.split("\n");
         List<Map<String, String>> doubleMap = new ArrayList<Map<String, String>>();
         doubleMap.add(new HashMap<String, String>());
         doubleMap.add(new HashMap<String, String>());
         int i = 0;
         for (String line : lines) {
-            if (line.endsWith("==")) {
+            if (line.equals("==")) {
                 i = 1;
             } else {
                 String[] elements = line.split("=");
@@ -118,51 +103,5 @@ public final class FileSystemPoll implements Poll {
             }
         }
         return doubleMap;
-    }
-
-    @Override
-    public String getBaseName() {
-        return baseName;
-    }
-
-    @Override
-    public StateSummary getStateSummary() {
-        return stateSummary;
-    }
-
-    @Override
-    public String getComissioners() {
-        return commissioners;
-    }
-
-    @Override
-    public LocalDate getFieldworkEnd() {
-        return fieldworkEnd;
-    }
-
-    @Override
-    public LocalDate getFieldworkStart() {
-        return fieldworkStart;
-    }
-
-    @Override
-    public String getPollingFirm() {
-        return pollingFirm;
-    }
-
-    @Override
-    public VotingIntentions getVotingIntentions() {
-        return votingIntentions;
-    }
-
-    @Override
-    public long getVotingIntentionsFileSize() {
-        Path votingIntentionsChart = Paths.get(directory + File.separator + baseName + ".png");
-        try {
-            return FileChannel.open(votingIntentionsChart).size();
-        } catch (IOException e) {
-            e.printStackTrace();
-            return 0;
-        }
     }
 }

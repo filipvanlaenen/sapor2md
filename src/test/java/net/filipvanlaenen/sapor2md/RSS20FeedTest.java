@@ -193,7 +193,7 @@ public class RSS20FeedTest {
         }
         poll.setFieldworkStart(LocalDate.of(TWO_THOUSAND_AND_TWENTY, Month.JANUARY, 2));
         poll.setFieldworkEnd(LocalDate.of(TWO_THOUSAND_AND_TWENTY, Month.JANUARY, THREE));
-        poll.setVotingIntentionsFileSize(FIVE);
+        poll.setVotingIntentionsChartFileSize(FIVE);
         InMemoryStateSummary stateSummary = new InMemoryStateSummary();
         stateSummary.setNumberOfSimulations(1);
         stateSummary.setTimestamp(createDateTime(TWO_THOUSAND_AND_TWENTY, Month.JANUARY, FOUR, 0, 0));

@@ -126,7 +126,7 @@ public final class RSS20Feed {
         sb.append("/");
         sb.append(poll.getBaseName());
         sb.append(".png\" length=\"");
-        sb.append(poll.getVotingIntentionsFileSize());
+        sb.append(poll.getVotingIntentionsChartFileSize());
         sb.append("\" type=\"image/png\"/>\n");
         OffsetDateTime timestamp = poll.getStateSummary().getTimestamp();
         sb.append("      <pubDate>" + timestamp.format(DateTimeFormatter.RFC_1123_DATE_TIME) + "</pubDate>\n");
