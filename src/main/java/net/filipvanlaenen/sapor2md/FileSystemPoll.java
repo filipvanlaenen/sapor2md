@@ -82,13 +82,13 @@ public final class FileSystemPoll extends Poll {
     }
 
     /**
-     * Converts the content of a file to a double map.
+     * Converts the content of a string to a double map.
      *
      * @param content A string with the content to be converted.
      * @return A list containing two maps, representing the content of the poll
      *         file.
      */
-    static List<Map<String, String>> parseDoubleMapFromString(String content) {
+    static List<Map<String, String>> parseDoubleMapFromString(final String content) {
         String[] lines = content.split("\n");
         List<Map<String, String>> doubleMap = new ArrayList<Map<String, String>>();
         doubleMap.add(new HashMap<String, String>());

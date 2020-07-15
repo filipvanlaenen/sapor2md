@@ -51,6 +51,17 @@ public final class FileSystemServices {
      */
     static Map<String, String> readFileIntoMap(final String filePath) {
         String content = FileSystemServices.readFileIntoString(filePath);
+        return parseMapFromString(content);
+    }
+
+    /**
+     * Converts the content of a string to a map, using <code>=</code> as the
+     * separator between the keys and the values.
+     *
+     * @param content A string with the content to be converted.
+     * @return A map.
+     */
+    static Map<String, String> parseMapFromString(final String content) {
         String[] lines = content.split("\n");
         Map<String, String> map = new HashMap<String, String>();
         for (String line : lines) {
