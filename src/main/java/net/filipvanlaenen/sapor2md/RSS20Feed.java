@@ -94,8 +94,10 @@ public final class RSS20Feed {
         sb.append("    <item>\n");
         sb.append("      <title>Opinion Poll by ");
         sb.append(poll.getPollingFirm());
-        sb.append(" for ");
-        sb.append(poll.getComissioners());
+        if (poll.getComissioners() != null) {
+            sb.append(" for ");
+            sb.append(poll.getComissioners());
+        }
         sb.append(", ");
         sb.append(formatPeriod(poll.getFieldworkStart(), poll.getFieldworkEnd()));
         sb.append(" – Voting Intentions</title>\n");
@@ -222,8 +224,10 @@ public final class RSS20Feed {
                 sb.append("<br/>");
                 sb.append("Opinion poll by ");
                 sb.append(poll.getPollingFirm());
-                sb.append(" for ");
-                sb.append(poll.getComissioners());
+                if (poll.getComissioners() != null) {
+                    sb.append(" for ");
+                    sb.append(poll.getComissioners());
+                }
                 sb.append(", ");
                 sb.append(formatPeriod(poll.getFieldworkStart(), poll.getFieldworkEnd()));
                 sb.append("<br/>");
