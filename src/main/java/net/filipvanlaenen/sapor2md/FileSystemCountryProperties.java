@@ -1,14 +1,13 @@
 package net.filipvanlaenen.sapor2md;
 
 import java.io.File;
-import java.time.OffsetDateTime;
 import java.util.Map;
 
 /**
- * Class implementing the <code>CountryProperties</code> interface against a
- * file system.
+ * Class implementing the abstract <code>CountryProperties</code> class against
+ * a file system.
  */
-public final class FileSystemCountryProperties implements CountryProperties {
+public final class FileSystemCountryProperties extends CountryProperties {
 
     /**
      * The file name for the country properties.
@@ -27,41 +26,17 @@ public final class FileSystemCountryProperties implements CountryProperties {
      * The path to the country properties file.
      */
     private final String filePath;
-    /**
-     * The URL to the GitHub directory.
-     */
-    private final String gitHubDirectoryURL;
-    /**
-     * The name of the parliament.
-     */
-    private final String parliamentName;
 
     /**
      * Constructor taking the path to the Sapor directory as the argument.
      *
-     * @param directory
-     *            The path to the Sapor directory.
+     * @param directory The path to the Sapor directory.
      */
     FileSystemCountryProperties(final String directory) {
         filePath = directory + File.separator + COUNTRY_PROPERTIES_FILE_NAME;
         Map<String, String> map = FileSystemServices.readFileIntoMap(filePath);
-        this.gitHubDirectoryURL = map.get(GITHUB_DIRECTORY_URL_KEY);
-        this.parliamentName = map.get(PARLIAMENT_NAME_KEY);
+        setGitHubDirectoryURL(map.get(GITHUB_DIRECTORY_URL_KEY));
+        setParliamentName(map.get(PARLIAMENT_NAME_KEY));
+        setTimestamp(FileSystemServices.getTimestamp(filePath));
     }
-
-    @Override
-    public String getGitHubDirectoryURL() {
-        return gitHubDirectoryURL;
-    }
-
-    @Override
-    public String getParliamentName() {
-        return parliamentName;
-    }
-
-    @Override
-    public OffsetDateTime getTimestamp() {
-        return FileSystemServices.getTimestamp(filePath);
-    }
-
 }
