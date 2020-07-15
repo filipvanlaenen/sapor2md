@@ -90,7 +90,7 @@ public final class FileSystemPoll implements Poll {
         this.pollingFirm = properties.get(POLLING_FIRM_KEY);
         this.fieldworkEnd = LocalDate.parse(properties.get(FIELDWORK_END_KEY), DateTimeFormatter.ISO_LOCAL_DATE);
         this.fieldworkStart = LocalDate.parse(properties.get(FIELDWORK_START_KEY), DateTimeFormatter.ISO_LOCAL_DATE);
-        this.stateSummary = new FileSystemStateSummary(directory, baseName);
+        this.stateSummary = FileSystemStateSummary.readFromFileSystem(directory, baseName);
         String votingIntentionsFilePath = directory + File.separator + baseName + "-dichotomies-probabilities.psv";
         String votingIntentionsFileContent = FileSystemServices.readFileIntoString(votingIntentionsFilePath);
         this.votingIntentions = VotingIntentions.parseFromString(votingIntentionsFileContent);
