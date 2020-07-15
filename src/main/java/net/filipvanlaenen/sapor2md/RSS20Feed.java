@@ -28,6 +28,10 @@ public final class RSS20Feed {
      * The mode for the RSS 2.0 feed.
      */
     private final RSS20FeedMode feedMode;
+    /**
+     * The file system directory for the RSS 2.0 feed.
+     */
+    private String directory;
 
     /**
      * Constructor taking the file system path for the Sapor directory as an
@@ -38,6 +42,7 @@ public final class RSS20Feed {
      */
     RSS20Feed(final String directory, final RSS20FeedMode feedMode) {
         this(new FileSystemSaporDirectory(directory), feedMode);
+        this.directory = directory;
     }
 
     /**
@@ -85,7 +90,7 @@ public final class RSS20Feed {
      * @return True if no problem occurred, false otherwise.
      */
     boolean writeToFileSystem() {
-        String filePath = saporDirectory + File.separator + feedMode.getFeedFileName();
+        String filePath = directory + File.separator + feedMode.getFeedFileName();
         return FileSystemServices.writeStringToFile(toString(), filePath);
     }
 
