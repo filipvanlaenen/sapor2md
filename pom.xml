@@ -12,7 +12,7 @@
 
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-    <java.version>1.8</java.version>
+    <java.version>11</java.version>
     <project.build.javaVersion>${java.version}</project.build.javaVersion>
     <maven.compile.sourceLevel>${java.version}</maven.compile.sourceLevel>
     <maven.compile.targetLevel>${java.version}</maven.compile.targetLevel>
@@ -61,7 +61,7 @@
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-pmd-plugin</artifactId>
-        <version>3.6</version>
+        <version>3.13.0</version>
         <configuration>
           <sourceEncoding>${project.build.sourceEncoding}</sourceEncoding>
           <targetJdk>${project.build.javaVersion}</targetJdk>

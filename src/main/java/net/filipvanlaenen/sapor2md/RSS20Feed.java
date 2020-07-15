@@ -1,5 +1,6 @@
 package net.filipvanlaenen.sapor2md;
 
+import java.io.File;
 import java.time.LocalDate;
 import java.time.OffsetDateTime;
 import java.time.format.DateTimeFormatter;
@@ -32,10 +33,8 @@ public final class RSS20Feed {
      * Constructor taking the file system path for the Sapor directory as an
      * argument.
      *
-     * @param directory
-     *            The file system path to the Sapor directory.
-     * @param feedMode
-     *            The mode of the feed.
+     * @param directory The file system path to the Sapor directory.
+     * @param feedMode  The mode of the feed.
      */
     RSS20Feed(final String directory, final RSS20FeedMode feedMode) {
         this(new FileSystemSaporDirectory(directory), feedMode);
@@ -44,10 +43,8 @@ public final class RSS20Feed {
     /**
      * Constructor taking a <code>SaporDirectory</code> object as an argument.
      *
-     * @param saporDirectory
-     *            A Sapor directory.
-     * @param feedMode
-     *            The mode of the feed.
+     * @param saporDirectory A Sapor directory.
+     * @param feedMode       The mode of the feed.
      */
     RSS20Feed(final SaporDirectory saporDirectory, final RSS20FeedMode feedMode) {
         this.saporDirectory = saporDirectory;
@@ -82,11 +79,21 @@ public final class RSS20Feed {
     }
 
     /**
+     * Writes the feed to the file system, using the default name for the feed,
+     * returning <code>true</code> if no problem occurred.
+     *
+     * @return True if no problem occurred, false otherwise.
+     */
+    boolean writeToFileSystem() {
+        String filePath = saporDirectory + File.separator + feedMode.getFeedFileName();
+        return FileSystemServices.writeStringToFile(toString(), filePath);
+    }
+
+    /**
      * Creates an item for the voting intentions for a poll.
      *
-     * @param poll
-     *            The poll for which an item should be created with the voting
-     *            intentions.
+     * @param poll The poll for which an item should be created with the voting
+     *             intentions.
      * @return A string representing the item to be included in the feed.
      */
     private String createVotingIntentionsItem(final Poll poll) {
@@ -128,10 +135,8 @@ public final class RSS20Feed {
      * following forms: 1–2 January 2020, 1 January–2 February 2020 or 1 January
      * 2020–31 December 2021.
      *
-     * @param start
-     *            The start of the period.
-     * @param end
-     *            The end of the period.
+     * @param start The start of the period.
+     * @param end   The end of the period.
      * @return A string with the period formatted in a human-readable form.
      */
     private static String formatPeriod(final LocalDate start, final LocalDate end) {
@@ -153,8 +158,7 @@ public final class RSS20Feed {
      * Formats a double as a percentage number. The double is multiplied with 100
      * and formatted with one digit behind the decimal point.
      *
-     * @param percentage
-     *            The double to be formatted.
+     * @param percentage The double to be formatted.
      * @return A string with the double formatted as percentage number.
      */
     private static String formatPercentageNumber(final double percentage) {
@@ -166,8 +170,7 @@ public final class RSS20Feed {
      * form. It takes the lower bound of the lower probability range and the upper
      * bound of the upper probability ranges as the lower an upper bounds.
      *
-     * @param ci
-     *            The confidence interval.
+     * @param ci The confidence interval.
      * @return A string with the confidence interval formatted in a human-readable
      *         form.
      */
@@ -210,6 +213,11 @@ public final class RSS20Feed {
                 sb.append("</ul>");
                 return sb.toString();
             }
+
+            @Override
+            String getFeedFileName() {
+                return "rss.xml";
+            }
         },
         /**
          * Mode for the RSS 2.0 feed to be consumed by IFTTT to produce Twitter
@@ -245,19 +253,29 @@ public final class RSS20Feed {
                 sb.append("]]>");
                 return sb.toString();
             }
+
+            @Override
+            String getFeedFileName() {
+                return "rss-ifttt.xml";
+            }
         };
 
         /**
          * Creates the description field for an item about the voting intentions for a
          * poll.
          *
-         * @param poll
-         *            The poll.
-         * @param saporDir
-         *            The Sapor directory.
+         * @param poll     The poll.
+         * @param saporDir The Sapor directory.
          * @return A string with the content of the description field for an item about
          *         the voting intentions for a poll.
          */
         abstract String createVotingIntentionsItemDescription(Poll poll, SaporDirectory saporDir);
+
+        /**
+         * Returns the file name for the feed.
+         *
+         * @return The file name for the feed.
+         */
+        abstract String getFeedFileName();
     }
 }

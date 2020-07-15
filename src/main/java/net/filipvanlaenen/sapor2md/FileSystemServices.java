@@ -28,8 +28,7 @@ public final class FileSystemServices {
     /**
      * Reads a file from the file system and returns the result as a single string.
      *
-     * @param filePath
-     *            The path to the file to be read.
+     * @param filePath The path to the file to be read.
      * @return The content of the file as a single multiline string.
      */
     static String readFileIntoString(final String filePath) {
@@ -46,8 +45,7 @@ public final class FileSystemServices {
      * Reads a file from the file system and returns the result as a map, using
      * <code>=</code> as the separator between the keys and the values.
      *
-     * @param filePath
-     *            The path to the file to be read.
+     * @param filePath The path to the file to be read.
      * @return The content of the file as a map.
      */
     static Map<String, String> readFileIntoMap(final String filePath) {
@@ -62,11 +60,29 @@ public final class FileSystemServices {
     }
 
     /**
+     * Writes a string to a file on the file system. Returns <code>false</code> if
+     * an <code>IOException</code> was thrown, and <code>true</code> otherwise.
+     *
+     * @param content  The content to be written to the file.
+     * @param filePath The path to the file.
+     * @return True if the string was written to the file, or false if an
+     *         IOException was thrown in the process.
+     */
+    static boolean writeStringToFile(final String content, final String filePath) {
+        try {
+            Files.writeString(Paths.get(filePath), content, StandardCharsets.UTF_8);
+        } catch (IOException e) {
+            e.printStackTrace();
+            return false;
+        }
+        return true;
+    }
+
+    /**
      * Returns the last modified timestamp of a file as an
      * <code>OffsetDataTime</code>.
      *
-     * @param filePath
-     *            The path to the file.
+     * @param filePath The path to the file.
      * @return The last modified timestamp.
      */
     static OffsetDateTime getTimestamp(final String filePath) {
@@ -83,8 +99,7 @@ public final class FileSystemServices {
     /**
      * Returns a list with the names of the poll files in a directory.
      *
-     * @param directory
-     *            The path to a directory.
+     * @param directory The path to a directory.
      * @return A list with the names of the poll files in the directory.
      */
     static List<String> getPollFilesList(final String directory) {

@@ -12,8 +12,7 @@ public final class CommandLineInterface {
     /**
      * Main entry point for the command-line interface.
      *
-     * @param args
-     *            The arguments from the command-line.
+     * @param args The arguments from the command-line.
      */
     public static void main(final String... args) {
         CommandLineInterface cli = new CommandLineInterface(args);
@@ -34,10 +33,9 @@ public final class CommandLineInterface {
      * Creates a command-line interface object that can run the requested command
      * with the remaining arguments.
      *
-     * @param args
-     *            The arguments from the command-line, of which the first should be
-     *            the name of the command to be executed, and the rest according to
-     *            what arguments the command needs.
+     * @param args The arguments from the command-line, of which the first should be
+     *             the name of the command to be executed, and the rest according to
+     *             what arguments the command needs.
      */
     private CommandLineInterface(final String... args) {
         command = args[0];
@@ -65,9 +63,8 @@ public final class CommandLineInterface {
              * Calculates the adjusted medians based on the seat projection in a file and a
              * parliament size.
              *
-             * @param args
-             *            The arguments for the command, i.e. the file name for the seat
-             *            projection and a parliament size.
+             * @param args The arguments for the command, i.e. the file name for the seat
+             *             projection and a parliament size.
              * @return A string with the lower bound of the 95 percent confidence interval,
              *         the median and the adjusted median for each parliamentary group.
              */
@@ -90,13 +87,14 @@ public final class CommandLineInterface {
              *
              * @params args The arguments for the command, i.e. the directory for which to
              *         produce the feed.
-             * @return A multiline string containing the feed.
+             * @return A message reporting whether an IFTTT RSS 2.0 feed has been produced.
              */
             @Override
             String execute(final String... args) {
                 String directory = args[0];
                 RSS20Feed feed = new RSS20Feed(directory, RSS20FeedMode.IftttFeed);
-                return feed.toString();
+                boolean success = feed.writeToFileSystem();
+                return success ? "Produced an IFTTT RSS 2.0 feed." : "Could not produce an IFTTT RSS 2.0 feed.";
             }
         },
         /**
@@ -107,9 +105,8 @@ public final class CommandLineInterface {
              * Lists all the poll files found in a set of directories, either all of them or
              * the ones that are common to all directories.
              *
-             * @param args
-             *            The arguments for the command, i.e. the mode (All or Common) and
-             *            the list of directories.
+             * @param args The arguments for the command, i.e. the mode (All or Common) and
+             *             the list of directories.
              * @return A multiline string, with on each line the name of a poll file.
              */
             @Override
@@ -134,21 +131,21 @@ public final class CommandLineInterface {
              *
              * @params args The arguments for the command, i.e. the directory for which to
              *         produce the feed.
-             * @return A multiline string containing the feed.
+             * @return A message reporting whether an RSS 2.0 feed has been produced.
              */
             @Override
             String execute(final String... args) {
                 String directory = args[0];
                 RSS20Feed feed = new RSS20Feed(directory, RSS20FeedMode.GitHubFeed);
-                return feed.toString();
+                boolean success = feed.writeToFileSystem();
+                return success ? "Produced an RSS 2.0 feed." : "Could not produce an RSS 2.0 feed.";
             }
         };
 
         /**
          * Executes the command.
          *
-         * @param args
-         *            The arguments for the command.
+         * @param args The arguments for the command.
          * @return The string output resulting from executing the command.
          */
         abstract String execute(String... args);
