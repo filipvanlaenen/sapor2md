@@ -145,7 +145,7 @@ public final class RSS20Feed {
      * @param end   The end of the period.
      * @return A string with the period formatted in a human-readable form.
      */
-    private static String formatPeriod(final LocalDate start, final LocalDate end) {
+    static String formatPeriod(final LocalDate start, final LocalDate end) {
         DateTimeFormatter dayMonthYear = DateTimeFormatter.ofPattern("d MMMM yyyy", Locale.ENGLISH);
         DateTimeFormatter dayMonth = DateTimeFormatter.ofPattern("d MMMM", Locale.ENGLISH);
         DateTimeFormatter day = DateTimeFormatter.ofPattern("d", Locale.ENGLISH);

@@ -60,6 +60,18 @@ public class RSS20FeedTest {
      */
     private static final int TWO_THOUSAND_AND_TWENTY = 2020;
     /**
+     * Magic number 2021, used as a year number.
+     */
+    private static final int TWO_THOUSAND_AND_TWENTY_ONE = 2021;
+    /**
+     * Local date representing 2 January 2020.
+     */
+    private static final LocalDate SECOND_OF_JANUARY_2020 = LocalDate.of(TWO_THOUSAND_AND_TWENTY, Month.JANUARY, 2);
+    /**
+     * Local date representing 3 January 2020.
+     */
+    private static final LocalDate THIRD_OF_JANUARY_2020 = LocalDate.of(TWO_THOUSAND_AND_TWENTY, Month.JANUARY, THREE);
+    /**
      * A country properties object for testing purposes.
      */
     private InMemoryCountryProperties countryProperties;
@@ -79,16 +91,11 @@ public class RSS20FeedTest {
      * Creates a date and time for a specified year, month, day, hour and minute
      * with +01:00 as the time zone.
      *
-     * @param year
-     *            A year.
-     * @param month
-     *            A month.
-     * @param dayOfMonth
-     *            A day of month.
-     * @param hour
-     *            An hour.
-     * @param minute
-     *            A minute.
+     * @param year       A year.
+     * @param month      A month.
+     * @param dayOfMonth A day of month.
+     * @param hour       An hour.
+     * @param minute     A minute.
      * @return A date and time as specified, with +01:00 as the time zone.
      */
     private OffsetDateTime createDateTime(final int year, final Month month, final int dayOfMonth, final int hour,
@@ -146,10 +153,8 @@ public class RSS20FeedTest {
      * Creates a probability mass function for the voting intentions such that the
      * 95 percent confidence interval is as specified.
      *
-     * @param lowerBound
-     *            The lower bound of the 95 percent confidence interval.
-     * @param upperBound
-     *            The lower bound of the 95 percent confidence interval.
+     * @param lowerBound The lower bound of the 95 percent confidence interval.
+     * @param upperBound The lower bound of the 95 percent confidence interval.
      * @return A probability mass function having the 95 percent confidence interval
      *         as specified.
      */
@@ -179,8 +184,7 @@ public class RSS20FeedTest {
      * Creates a Sapor directory with one poll for which only one simulation has
      * been calculated.
      *
-     * @param hasCommissioners
-     *            Whether the poll shoud have commissioners or not.
+     * @param hasCommissioners Whether the poll shoud have commissioners or not.
      * @return A Sapor directory with one poll for which only one simulation has
      *         been calculated.
      */
@@ -191,8 +195,8 @@ public class RSS20FeedTest {
         if (hasCommissioners) {
             poll.setCommissioners("Qux");
         }
-        poll.setFieldworkStart(LocalDate.of(TWO_THOUSAND_AND_TWENTY, Month.JANUARY, 2));
-        poll.setFieldworkEnd(LocalDate.of(TWO_THOUSAND_AND_TWENTY, Month.JANUARY, THREE));
+        poll.setFieldworkStart(SECOND_OF_JANUARY_2020);
+        poll.setFieldworkEnd(THIRD_OF_JANUARY_2020);
         poll.setVotingIntentionsChartFileSize(FIVE);
         InMemoryStateSummary stateSummary = new InMemoryStateSummary();
         stateSummary.setNumberOfSimulations(1);
@@ -342,5 +346,43 @@ public class RSS20FeedTest {
         sb.append("</rss>");
         String expected = sb.toString();
         assertEquals(expected, actual);
+    }
+
+    /**
+     * Verifying that when a period has the same start and end date, it is formatted
+     * as a simple date.
+     */
+    @Test
+    void formattedPeriodWithSameStartAndEndDateIsFormattedAsADate() {
+        assertEquals("2 January 2020", RSS20Feed.formatPeriod(SECOND_OF_JANUARY_2020, SECOND_OF_JANUARY_2020));
+    }
+
+    /**
+     * Verifying that when a period falls within the same month, it is formatted
+     * separating the day of month only.
+     */
+    @Test
+    void formattedPeriodWithinSameMonthSeparatesDayOfMonthOnly() {
+        assertEquals("2–3 January 2020", RSS20Feed.formatPeriod(SECOND_OF_JANUARY_2020, THIRD_OF_JANUARY_2020));
+    }
+
+    /**
+     * Verifying that when a period falls within the same year but not the same
+     * month, it is formatted separating the day of month and month only.
+     */
+    @Test
+    void formattedPeriodWithinSameYearSeparatesDayOfMonthAndMonth() {
+        assertEquals("2 January–2 February 2020", RSS20Feed.formatPeriod(SECOND_OF_JANUARY_2020,
+                LocalDate.of(TWO_THOUSAND_AND_TWENTY, Month.FEBRUARY, 2)));
+    }
+
+    /**
+     * Verifying that when a period spans across years, it is formatted as two dates
+     * separated.
+     */
+    @Test
+    void formattedPeriodAcrossYearsSeparatesDates() {
+        assertEquals("2 January 2020–2 January 2021", RSS20Feed.formatPeriod(SECOND_OF_JANUARY_2020,
+                LocalDate.of(TWO_THOUSAND_AND_TWENTY_ONE, Month.JANUARY, 2)));
     }
 }
