@@ -10,14 +10,13 @@ public final class FileSystemSaporDirectory extends SaporDirectory {
     /**
      * Constructor using the path to the Sapor directory as the parameter.
      *
-     * @param directory
-     *            The path to the Sapor directory.
+     * @param directory The path to the Sapor directory.
      */
     FileSystemSaporDirectory(final String directory) {
-        this.countryProperties = new FileSystemCountryProperties(directory);
+        super(new FileSystemCountryProperties(directory));
         List<String> pollFileNames = FileSystemServices.getPollFilesList(directory);
         for (String pollFileName : pollFileNames) {
-            polls.add(new FileSystemPoll(directory, pollFileName));
+            addPoll(new FileSystemPoll(directory, pollFileName));
         }
     }
 }

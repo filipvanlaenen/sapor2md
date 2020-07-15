@@ -15,11 +15,21 @@ public abstract class SaporDirectory {
     /**
      * The polls.
      */
-    protected final Set<Poll> polls = new HashSet<Poll>();
+    private final Set<Poll> polls = new HashSet<Poll>();
     /**
      * The country properties.
      */
-    protected CountryProperties countryProperties;
+    private CountryProperties countryProperties;
+
+    /**
+     * Constructor taking an instance of <code>CountryProperties</code> as the
+     * argument.
+     *
+     * @param countryProperties The country properties for the Sapor directory.
+     */
+    SaporDirectory(final CountryProperties countryProperties) {
+        this.countryProperties = countryProperties;
+    }
 
     /**
      * Returns the country properties.
@@ -28,6 +38,15 @@ public abstract class SaporDirectory {
      */
     CountryProperties getCountryProperties() {
         return countryProperties;
+    }
+
+    /**
+     * Adds a poll.
+     *
+     * @param poll A poll.
+     */
+    void addPoll(final Poll poll) {
+        polls.add(poll);
     }
 
     /**
@@ -44,19 +63,34 @@ public abstract class SaporDirectory {
         sortedPolls.sort(new Comparator<Poll>() {
             @Override
             public int compare(final Poll poll1, final Poll poll2) {
-                int compareEndDate = poll2.getFieldworkEnd().compareTo(poll1.getFieldworkEnd());
-                if (compareEndDate == 0) {
-                    int compareStartDate = poll2.getFieldworkStart().compareTo(poll1.getFieldworkStart());
-                    if (compareStartDate == 0) {
-                        return poll1.getPollingFirm().compareToIgnoreCase(poll2.getPollingFirm());
-                    } else {
-                        return compareStartDate;
-                    }
-                } else {
-                    return compareEndDate;
-                }
+                return comparePolls(poll1, poll2);
             }
         });
         return sortedPolls.iterator();
+    }
+
+    /**
+     * Compares two polls in order to sort them. Polls are sorted reversed
+     * chronologically by the end date of the fieldwork period, and if the end dates
+     * are equal, reversed chronologically by the start date of the fieldwork
+     * period, and if the fieldwork periods are equal, alphabetically by the name of
+     * the polling firm.
+     *
+     * @param poll1 The first poll.
+     * @param poll2 The second poll.
+     * @return The comparison result.
+     */
+    int comparePolls(final Poll poll1, final Poll poll2) {
+        int compareEndDate = poll2.getFieldworkEnd().compareTo(poll1.getFieldworkEnd());
+        if (compareEndDate == 0) {
+            int compareStartDate = poll2.getFieldworkStart().compareTo(poll1.getFieldworkStart());
+            if (compareStartDate == 0) {
+                return poll1.getPollingFirm().compareToIgnoreCase(poll2.getPollingFirm());
+            } else {
+                return compareStartDate;
+            }
+        } else {
+            return compareEndDate;
+        }
     }
 }

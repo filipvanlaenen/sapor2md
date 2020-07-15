@@ -9,20 +9,9 @@ public final class InMemorySaporDirectory extends SaporDirectory {
      * Constructor taking an instance of <code>InMemoryCountryProperties</code> as
      * the argument.
      *
-     * @param countryProperties
-     *            The country properties for the Sapor directory.
+     * @param countryProperties The country properties for the Sapor directory.
      */
     InMemorySaporDirectory(final InMemoryCountryProperties countryProperties) {
-        this.countryProperties = countryProperties;
-    }
-
-    /**
-     * Adds a poll.
-     *
-     * @param poll
-     *            A poll.
-     */
-    void addPoll(final Poll poll) {
-        polls.add(poll);
+        super(countryProperties);
     }
 }
