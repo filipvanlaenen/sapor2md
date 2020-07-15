@@ -19,8 +19,7 @@ public class VotingIntentions extends ProbabilityMassFunctionCombination<Probabi
      * an even length, with each uneven element the name of a parliamentary group,
      * and each even element a probability mass function.
      *
-     * @param objects
-     *            An array defining voting intentions.
+     * @param objects An array defining voting intentions.
      */
     VotingIntentions(final Object... objects) {
         if (objects.length % 2 == 1) {
@@ -37,7 +36,7 @@ public class VotingIntentions extends ProbabilityMassFunctionCombination<Probabi
                 throw new IllegalArgumentException(
                         "The uneven arguments to construct voting intentions should be probability mass functions.");
             } else {
-                map.put((String) key, (ProbabilityMassFunction<ProbabilityRange>) value);
+                getMap().put((String) key, (ProbabilityMassFunction<ProbabilityRange>) value);
             }
         }
     }
@@ -45,8 +44,7 @@ public class VotingIntentions extends ProbabilityMassFunctionCombination<Probabi
     /**
      * Parses a string into a voting intentions object.
      *
-     * @param probabilityMassFunctions
-     *            A string representation of voting intentions.
+     * @param probabilityMassFunctions A string representation of voting intentions.
      * @return A voting intentions object.
      */
     static VotingIntentions parseFromString(final String probabilityMassFunctions) {

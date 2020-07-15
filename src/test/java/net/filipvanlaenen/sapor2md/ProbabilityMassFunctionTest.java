@@ -156,4 +156,14 @@ public class ProbabilityMassFunctionTest {
                 THREE_EIGHTHS, THREE, ONE_EIGHTH);
         assertEquals(2, pmf.getConfidenceInterval(THREE_QUARTERS).getUpperBound());
     }
+
+    /**
+     * Test verifying the calculation of the upper bound of the confidence interval
+     * if the confidence interval spans the first element only.
+     */
+    @Test
+    void upperBoundOfMinimalConfidenceIntervalIsCalculatedCorrectly() {
+        ProbabilityMassFunction<Integer> pmf = new ProbabilityMassFunction<Integer>(0, 1D, 1, 0D);
+        assertEquals(0, pmf.getConfidenceInterval(THREE_QUARTERS).getUpperBound());
+    }
 }

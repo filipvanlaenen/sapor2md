@@ -89,7 +89,7 @@ public class SeatProjection extends ProbabilityMassFunctionCombination<Integer> 
                 throw new IllegalArgumentException(
                         "The uneven arguments to construct a seat projection should be probability mass functions.");
             } else {
-                map.put((String) key, (ProbabilityMassFunction<Integer>) value);
+                getMap().put((String) key, (ProbabilityMassFunction<Integer>) value);
             }
         }
     }
@@ -102,8 +102,8 @@ public class SeatProjection extends ProbabilityMassFunctionCombination<Integer> 
      */
     private Map<String, Integer> calculateAdjustedMedians(final int size) {
         int sumOfMedians = 0;
-        for (String g : map.keySet()) {
-            sumOfMedians += map.get(g).getMedian();
+        for (String g : getMap().keySet()) {
+            sumOfMedians += getMap().get(g).getMedian();
         }
         Map<String, Integer> medians = calculateMedians();
         if (sumOfMedians == size) {
@@ -139,15 +139,15 @@ public class SeatProjection extends ProbabilityMassFunctionCombination<Integer> 
         Map<String, Integer> possibleResult = new HashMap<String, Integer>();
         Map<String, List<Integer>> candidateNosOfSeats = selectCandidateNosOfSeatsToBeAdjustedMedians(medians,
                 sumOfMedians, size, selectionFactor);
-        int noOfGroups = map.size();
-        String[] groups = new ArrayList<String>(map.keySet()).toArray(new String[noOfGroups]);
+        int noOfGroups = getMap().size();
+        String[] groups = new ArrayList<String>(getMap().keySet()).toArray(new String[noOfGroups]);
         double highestProbability = 0D;
         int[] counter = new int[noOfGroups];
         while (counter[noOfGroups - 1] < candidateNosOfSeats.get(groups[noOfGroups - 1]).size()) {
             double p = 1D;
             int s = 0;
             for (int k = 0; k < noOfGroups; k++) {
-                p *= map.get(groups[k]).getProbability(candidateNosOfSeats.get(groups[k]).get(counter[k]));
+                p *= getMap().get(groups[k]).getProbability(candidateNosOfSeats.get(groups[k]).get(counter[k]));
                 s += candidateNosOfSeats.get(groups[k]).get(counter[k]);
             }
             if (s == size && p > highestProbability) {
@@ -182,10 +182,10 @@ public class SeatProjection extends ProbabilityMassFunctionCombination<Integer> 
     private Map<String, List<Integer>> selectCandidateNosOfSeatsToBeAdjustedMedians(final Map<String, Integer> medians,
             final int sumOfMedians, final int size, final double selectionFactor) {
         Map<String, List<Integer>> candidateNosOfSeats = new HashMap<String, List<Integer>>();
-        for (String g : map.keySet()) {
+        for (String g : getMap().keySet()) {
             List<Integer> candidateNoOfSeats = new ArrayList<Integer>();
             Integer median = medians.get(g);
-            ProbabilityMassFunction<Integer> pmf = map.get(g);
+            ProbabilityMassFunction<Integer> pmf = getMap().get(g);
             double medianProbability = pmf.getProbability(median);
             for (Integer noOfSeats : pmf.keySet()) {
                 if (((size > sumOfMedians) && (noOfSeats >= median) || (size < sumOfMedians) && (noOfSeats <= median))

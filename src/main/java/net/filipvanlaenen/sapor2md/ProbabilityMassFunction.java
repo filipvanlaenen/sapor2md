@@ -136,7 +136,7 @@ public class ProbabilityMassFunction<T extends Comparable<T>> {
         double lowerProbabilityBound = (1D - confidence) / 2D;
         double upperProbabilityBound = 1D - lowerProbabilityBound;
         T lowerBound = null;
-        T upperBound = null;
+        T upperBound = keys.get(0);
         double accumulatedProbability = 0D;
         for (T key : keys) {
             accumulatedProbability += map.get(key);
