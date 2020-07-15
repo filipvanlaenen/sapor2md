@@ -62,7 +62,8 @@ public final class RSS20Feed {
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder();
-        sb.append("<rss version=\"2.0\">\n");
+        sb.append("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n");
+        sb.append("<rss version=\"2.0\" xmlns:dc=\"http://purl.org/dc/elements/1.1/\">\n");
         sb.append("  <channel>\n");
         sb.append("    <title>All Registered Polls for the " + saporDirectory.getCountryProperties().getParliamentName()
                 + "</title>\n");

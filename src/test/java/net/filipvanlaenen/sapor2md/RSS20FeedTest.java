@@ -106,7 +106,8 @@ public class RSS20FeedTest {
         SaporDirectory directory = new InMemorySaporDirectory(countryProperties);
         String actual = new RSS20Feed(directory, RSS20FeedMode.GitHubFeed).toString();
         StringBuilder sb = new StringBuilder();
-        sb.append("<rss version=\"2.0\">\n");
+        sb.append("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n");
+        sb.append("<rss version=\"2.0\" xmlns:dc=\"http://purl.org/dc/elements/1.1/\">\n");
         sb.append("  <channel>\n");
         sb.append("    <title>All Registered Polls for the Foo Parliament</title>\n");
         sb.append("    <link>https://bar.github.io/foo_polls</link>\n");
@@ -128,7 +129,8 @@ public class RSS20FeedTest {
         directory.addPoll(new InMemoryPoll("2020-01-03-Baz"));
         String actual = new RSS20Feed(directory, RSS20FeedMode.GitHubFeed).toString();
         StringBuilder sb = new StringBuilder();
-        sb.append("<rss version=\"2.0\">\n");
+        sb.append("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n");
+        sb.append("<rss version=\"2.0\" xmlns:dc=\"http://purl.org/dc/elements/1.1/\">\n");
         sb.append("  <channel>\n");
         sb.append("    <title>All Registered Polls for the Foo Parliament</title>\n");
         sb.append("    <link>https://bar.github.io/foo_polls</link>\n");
@@ -215,7 +217,8 @@ public class RSS20FeedTest {
         SaporDirectory directory = createDirectoryWithPollWithOneSimulation(true);
         String actual = new RSS20Feed(directory, RSS20FeedMode.GitHubFeed).toString();
         StringBuilder sb = new StringBuilder();
-        sb.append("<rss version=\"2.0\">\n");
+        sb.append("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n");
+        sb.append("<rss version=\"2.0\" xmlns:dc=\"http://purl.org/dc/elements/1.1/\">\n");
         sb.append("  <channel>\n");
         sb.append("    <title>All Registered Polls for the Foo Parliament</title>\n");
         sb.append("    <link>https://bar.github.io/foo_polls</link>\n");
@@ -248,7 +251,8 @@ public class RSS20FeedTest {
         SaporDirectory directory = createDirectoryWithPollWithOneSimulation(false);
         String actual = new RSS20Feed(directory, RSS20FeedMode.GitHubFeed).toString();
         StringBuilder sb = new StringBuilder();
-        sb.append("<rss version=\"2.0\">\n");
+        sb.append("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n");
+        sb.append("<rss version=\"2.0\" xmlns:dc=\"http://purl.org/dc/elements/1.1/\">\n");
         sb.append("  <channel>\n");
         sb.append("    <title>All Registered Polls for the Foo Parliament</title>\n");
         sb.append("    <link>https://bar.github.io/foo_polls</link>\n");
@@ -281,7 +285,8 @@ public class RSS20FeedTest {
         SaporDirectory directory = createDirectoryWithPollWithOneSimulation(true);
         String actual = new RSS20Feed(directory, RSS20FeedMode.IftttFeed).toString();
         StringBuilder sb = new StringBuilder();
-        sb.append("<rss version=\"2.0\">\n");
+        sb.append("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n");
+        sb.append("<rss version=\"2.0\" xmlns:dc=\"http://purl.org/dc/elements/1.1/\">\n");
         sb.append("  <channel>\n");
         sb.append("    <title>All Registered Polls for the Foo Parliament</title>\n");
         sb.append("    <link>https://bar.github.io/foo_polls</link>\n");
@@ -314,7 +319,8 @@ public class RSS20FeedTest {
         SaporDirectory directory = createDirectoryWithPollWithOneSimulation(false);
         String actual = new RSS20Feed(directory, RSS20FeedMode.IftttFeed).toString();
         StringBuilder sb = new StringBuilder();
-        sb.append("<rss version=\"2.0\">\n");
+        sb.append("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n");
+        sb.append("<rss version=\"2.0\" xmlns:dc=\"http://purl.org/dc/elements/1.1/\">\n");
         sb.append("  <channel>\n");
         sb.append("    <title>All Registered Polls for the Foo Parliament</title>\n");
         sb.append("    <link>https://bar.github.io/foo_polls</link>\n");
