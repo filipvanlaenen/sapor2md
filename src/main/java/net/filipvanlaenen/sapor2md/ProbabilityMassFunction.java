@@ -10,8 +10,7 @@ import java.util.Set;
 /**
  * A class representing a probability mass function.
  *
- * @param <T>
- *            The type of the keys for the probability mass function.
+ * @param <T> The type of the keys for the probability mass function.
  */
 public class ProbabilityMassFunction<T extends Comparable<T>> {
     /**
@@ -37,8 +36,7 @@ public class ProbabilityMassFunction<T extends Comparable<T>> {
      * has to have an even length, with each uneven element an instance of the key
      * class, and each even element a probability.
      *
-     * @param objects
-     *            An array defining a probability mass function.
+     * @param objects An array defining a probability mass function.
      */
     ProbabilityMassFunction(final Object... objects) {
         if (objects.length % 2 == 1) {
@@ -60,8 +58,7 @@ public class ProbabilityMassFunction<T extends Comparable<T>> {
     /**
      * Returns the probability for a key.
      *
-     * @param key
-     *            The key.
+     * @param key The key.
      * @return The probability for the key.
      */
     double getProbability(final Object key) {
@@ -111,8 +108,7 @@ public class ProbabilityMassFunction<T extends Comparable<T>> {
     /**
      * Returns a confidence interval on the probability mass function.
      *
-     * @param confidence
-     *            The level of confidence for the interval.
+     * @param confidence The level of confidence for the interval.
      * @return The confidence interval.
      */
     ConfidenceInterval<T> getConfidenceInterval(final double confidence) {
@@ -125,8 +121,7 @@ public class ProbabilityMassFunction<T extends Comparable<T>> {
     /**
      * Calculates a confidence interval.
      *
-     * @param confidence
-     *            The level of confidence for the interval.
+     * @param confidence The level of confidence for the interval.
      * @return The confidence interval as a pair of Ts.
      */
     private ConfidenceInterval<T> calculateConfidenceInterval(final double confidence) {
@@ -136,14 +131,17 @@ public class ProbabilityMassFunction<T extends Comparable<T>> {
         double lowerProbabilityBound = (1D - confidence) / 2D;
         double upperProbabilityBound = 1D - lowerProbabilityBound;
         T lowerBound = null;
-        T upperBound = keys.get(0);
+        T upperBound = null;
         double accumulatedProbability = 0D;
+        double previousAccumulatedProbability;
         for (T key : keys) {
+            previousAccumulatedProbability = accumulatedProbability;
             accumulatedProbability += map.get(key);
             if (lowerBound == null && accumulatedProbability > lowerProbabilityBound) {
                 lowerBound = key;
             }
-            if (accumulatedProbability <= upperProbabilityBound) {
+            if (previousAccumulatedProbability < upperProbabilityBound
+                    && accumulatedProbability >= upperProbabilityBound) {
                 upperBound = key;
             }
         }

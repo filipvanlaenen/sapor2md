@@ -32,6 +32,14 @@ public class RSS20FeedTest {
      */
     private static final int FIVE = 5;
     /**
+     * Magic number six.
+     */
+    private static final int SIX = 6;
+    /**
+     * The magic number a half.
+     */
+    private static final double A_HALF = 0.5D;
+    /**
      * Magic number 0.95, or 95 percent.
      */
     private static final double NINETY_FIVE_PERCENT = 0.95D;
@@ -72,6 +80,12 @@ public class RSS20FeedTest {
      */
     private static final LocalDate THIRD_OF_JANUARY_2020 = LocalDate.of(TWO_THOUSAND_AND_TWENTY, Month.JANUARY, THREE);
     /**
+     * Magic number one million (1,048,576), the threshold for when to include seat
+     * projections in an RSS 2.0 feed.
+     */
+    private static final long ONE_MILLION = 1048576;
+
+    /**
      * A country properties object for testing purposes.
      */
     private InMemoryCountryProperties countryProperties;
@@ -82,8 +96,9 @@ public class RSS20FeedTest {
     @BeforeEach
     void createCountryProperties() {
         countryProperties = new InMemoryCountryProperties();
-        countryProperties.setParliamentName("Foo Parliament");
         countryProperties.setGitHubDirectoryURL("https://bar.github.io/foo_polls");
+        countryProperties.setNumberOfSeats(SIX);
+        countryProperties.setParliamentName("Foo Parliament");
         countryProperties.setTimestamp(createDateTime(TWO_THOUSAND_AND_TWENTY, Month.JANUARY, 1, 0, 0));
     }
 
@@ -181,14 +196,13 @@ public class RSS20FeedTest {
     }
 
     /**
-     * Creates a Sapor directory with one poll for which only one simulation has
-     * been calculated.
+     * Creates a Sapor directory with one poll.
      *
-     * @param hasCommissioners Whether the poll shoud have commissioners or not.
-     * @return A Sapor directory with one poll for which only one simulation has
-     *         been calculated.
+     * @param numberOfSimulations The number of simulations run on the poll.
+     * @param hasCommissioners    Whether the poll shoud have commissioners or not.
+     * @return A Sapor directory with one poll.
      */
-    private SaporDirectory createDirectoryWithPollWithOneSimulation(final boolean hasCommissioners) {
+    private SaporDirectory createDirectoryWithPoll(final long numberOfSimulations, final boolean hasCommissioners) {
         InMemorySaporDirectory directory = new InMemorySaporDirectory(countryProperties);
         InMemoryPoll poll = new InMemoryPoll("2020-01-03-Baz");
         poll.setPollingFirm("Baz");
@@ -198,8 +212,9 @@ public class RSS20FeedTest {
         poll.setFieldworkStart(SECOND_OF_JANUARY_2020);
         poll.setFieldworkEnd(THIRD_OF_JANUARY_2020);
         poll.setVotingIntentionsChartFileSize(FIVE);
+        poll.setSeatProjectionsChartFileSize(SIX);
         InMemoryStateSummary stateSummary = new InMemoryStateSummary();
-        stateSummary.setNumberOfSimulations(1);
+        stateSummary.setNumberOfSimulations(numberOfSimulations);
         stateSummary.setTimestamp(createDateTime(TWO_THOUSAND_AND_TWENTY, Month.JANUARY, FOUR, 0, 0));
         poll.setStateSummary(stateSummary);
         VotingIntentions votingIntentions = new VotingIntentions("Red Party",
@@ -208,6 +223,10 @@ public class RSS20FeedTest {
                 "Green Party", createProbabilityMassFunctionForConfidenceInterval(
                         GREEN_PARTY_CONFIDENCE_INTERVAL_LOWER_BOUND, GREEN_PARTY_CONFIDENCE_INTERVAL_UPPER_BOUND));
         poll.setVotingIntentions(votingIntentions);
+        SeatProjection seatProjection = new SeatProjection("Red Party",
+                new ProbabilityMassFunction<Integer>(0, 0D, 1, 0D, 2, 0D, 3, 0D, 4, A_HALF, 5, A_HALF), "Green Party",
+                new ProbabilityMassFunction<Integer>(0, 0D, 1, A_HALF, 2, A_HALF));
+        poll.setSeatProjection(seatProjection);
         directory.addPoll(poll);
         return directory;
     }
@@ -218,7 +237,7 @@ public class RSS20FeedTest {
      */
     @Test
     void produceFeedWithVotingIntentionsItemForDirectoryWithPollWithOneSimulation() {
-        SaporDirectory directory = createDirectoryWithPollWithOneSimulation(true);
+        SaporDirectory directory = createDirectoryWithPoll(1, true);
         String actual = new RSS20Feed(directory, RSS20FeedMode.GitHubFeed).toString();
         StringBuilder sb = new StringBuilder();
         sb.append("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n");
@@ -252,7 +271,7 @@ public class RSS20FeedTest {
      */
     @Test
     void produceFeedWithVotingIntentionsItemForDirectoryWithPollWithoutCommissionnersWithOneSimulation() {
-        SaporDirectory directory = createDirectoryWithPollWithOneSimulation(false);
+        SaporDirectory directory = createDirectoryWithPoll(1, false);
         String actual = new RSS20Feed(directory, RSS20FeedMode.GitHubFeed).toString();
         StringBuilder sb = new StringBuilder();
         sb.append("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n");
@@ -281,12 +300,104 @@ public class RSS20FeedTest {
     }
 
     /**
+     * Verifying that for a directory with a poll that has one million simulations,
+     * a feed with all items is produced.
+     */
+    @Test
+    void produceFeedWithAllItemsForDirectoryWithPollWithOneMillionSimulations() {
+        SaporDirectory directory = createDirectoryWithPoll(ONE_MILLION, true);
+        String actual = new RSS20Feed(directory, RSS20FeedMode.GitHubFeed).toString();
+        StringBuilder sb = new StringBuilder();
+        sb.append("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n");
+        sb.append("<rss version=\"2.0\" xmlns:dc=\"http://purl.org/dc/elements/1.1/\">\n");
+        sb.append("  <channel>\n");
+        sb.append("    <title>All Registered Polls for the Foo Parliament</title>\n");
+        sb.append("    <link>https://bar.github.io/foo_polls</link>\n");
+        sb.append("    <description>All Registered Polls for the Foo Parliament</description>\n");
+        sb.append("    <pubDate>Wed, 1 Jan 2020 00:00:00 +0100</pubDate>\n");
+        sb.append("    <item>\n");
+        sb.append("      <title>Opinion Poll by Baz for Qux, 2–3 January 2020 – Seat Projections</title>\n");
+        sb.append("      <link>https://bar.github.io/foo_polls/2020-01-03-Baz.html#seats</link>\n");
+        sb.append("      <description><ul>");
+        sb.append("<li>Red Party: 4–5 seats</li>");
+        sb.append("<li>Green Party: 1–2 seats</li>");
+        sb.append("</ul></description>\n");
+        sb.append("      <enclosure url=\"https://bar.github.io/foo_polls/2020-01-03-Baz-seats.png\" length=\"6\"");
+        sb.append(" type=\"image/png\"/>\n");
+        sb.append("      <pubDate>Sat, 4 Jan 2020 00:00:00 +0100</pubDate>\n");
+        sb.append("      <dc:date>2020-01-04T00:00:00+01:00</dc:date>\n");
+        sb.append("    </item>\n");
+        sb.append("    <item>\n");
+        sb.append("      <title>Opinion Poll by Baz for Qux, 2–3 January 2020 – Voting Intentions</title>\n");
+        sb.append("      <link>https://bar.github.io/foo_polls/2020-01-03-Baz.html</link>\n");
+        sb.append("      <description><ul>");
+        sb.append("<li>Red Party: 14.9–19.5%</li>");
+        sb.append("<li>Green Party: 10.0–14.0%</li>");
+        sb.append("</ul></description>\n");
+        sb.append("      <enclosure url=\"https://bar.github.io/foo_polls/2020-01-03-Baz.png\" length=\"5\"");
+        sb.append(" type=\"image/png\"/>\n");
+        sb.append("      <pubDate>Sat, 4 Jan 2020 00:00:00 +0100</pubDate>\n");
+        sb.append("      <dc:date>2020-01-04T00:00:00+01:00</dc:date>\n");
+        sb.append("    </item>\n");
+        sb.append("  </channel>\n");
+        sb.append("</rss>");
+        String expected = sb.toString();
+        assertEquals(expected, actual);
+    }
+
+    /**
+     * Verifying that for a directory with a poll without commissioners that has one
+     * million simulations, a feed with all items is produced.
+     */
+    @Test
+    void produceFeedWithAllItemsForDirectoryWithPollWithoutCommissionnersWithOneMillionSimulations() {
+        SaporDirectory directory = createDirectoryWithPoll(ONE_MILLION, false);
+        String actual = new RSS20Feed(directory, RSS20FeedMode.GitHubFeed).toString();
+        StringBuilder sb = new StringBuilder();
+        sb.append("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n");
+        sb.append("<rss version=\"2.0\" xmlns:dc=\"http://purl.org/dc/elements/1.1/\">\n");
+        sb.append("  <channel>\n");
+        sb.append("    <title>All Registered Polls for the Foo Parliament</title>\n");
+        sb.append("    <link>https://bar.github.io/foo_polls</link>\n");
+        sb.append("    <description>All Registered Polls for the Foo Parliament</description>\n");
+        sb.append("    <pubDate>Wed, 1 Jan 2020 00:00:00 +0100</pubDate>\n");
+        sb.append("    <item>\n");
+        sb.append("      <title>Opinion Poll by Baz, 2–3 January 2020 – Seat Projections</title>\n");
+        sb.append("      <link>https://bar.github.io/foo_polls/2020-01-03-Baz.html#seats</link>\n");
+        sb.append("      <description><ul>");
+        sb.append("<li>Red Party: 4–5 seats</li>");
+        sb.append("<li>Green Party: 1–2 seats</li>");
+        sb.append("</ul></description>\n");
+        sb.append("      <enclosure url=\"https://bar.github.io/foo_polls/2020-01-03-Baz-seats.png\" length=\"6\"");
+        sb.append(" type=\"image/png\"/>\n");
+        sb.append("      <pubDate>Sat, 4 Jan 2020 00:00:00 +0100</pubDate>\n");
+        sb.append("      <dc:date>2020-01-04T00:00:00+01:00</dc:date>\n");
+        sb.append("    </item>\n");
+        sb.append("    <item>\n");
+        sb.append("      <title>Opinion Poll by Baz, 2–3 January 2020 – Voting Intentions</title>\n");
+        sb.append("      <link>https://bar.github.io/foo_polls/2020-01-03-Baz.html</link>\n");
+        sb.append("      <description><ul>");
+        sb.append("<li>Red Party: 14.9–19.5%</li>");
+        sb.append("<li>Green Party: 10.0–14.0%</li>");
+        sb.append("</ul></description>\n");
+        sb.append("      <enclosure url=\"https://bar.github.io/foo_polls/2020-01-03-Baz.png\" length=\"5\"");
+        sb.append(" type=\"image/png\"/>\n");
+        sb.append("      <pubDate>Sat, 4 Jan 2020 00:00:00 +0100</pubDate>\n");
+        sb.append("      <dc:date>2020-01-04T00:00:00+01:00</dc:date>\n");
+        sb.append("    </item>\n");
+        sb.append("  </channel>\n");
+        sb.append("</rss>");
+        String expected = sb.toString();
+        assertEquals(expected, actual);
+    }
+
+    /**
      * Verifying that for a directory with a poll that has 1 simulation, a feed with
      * a voting intentions item is produced for IFTTT.
      */
     @Test
     void produceIftttFeedWithVotingIntentionsItemForDirectoryWithPollWithOneSimulation() {
-        SaporDirectory directory = createDirectoryWithPollWithOneSimulation(true);
+        SaporDirectory directory = createDirectoryWithPoll(1, true);
         String actual = new RSS20Feed(directory, RSS20FeedMode.IftttFeed).toString();
         StringBuilder sb = new StringBuilder();
         sb.append("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n");
@@ -320,7 +431,7 @@ public class RSS20FeedTest {
      */
     @Test
     void produceIftttFeedWithVotingIntentionsItemForDirectoryWithPollWithoutCommissionersWithOneSimulation() {
-        SaporDirectory directory = createDirectoryWithPollWithOneSimulation(false);
+        SaporDirectory directory = createDirectoryWithPoll(1, false);
         String actual = new RSS20Feed(directory, RSS20FeedMode.IftttFeed).toString();
         StringBuilder sb = new StringBuilder();
         sb.append("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n");
@@ -330,6 +441,100 @@ public class RSS20FeedTest {
         sb.append("    <link>https://bar.github.io/foo_polls</link>\n");
         sb.append("    <description>All Registered Polls for the Foo Parliament</description>\n");
         sb.append("    <pubDate>Wed, 1 Jan 2020 00:00:00 +0100</pubDate>\n");
+        sb.append("    <item>\n");
+        sb.append("      <title>Opinion Poll by Baz, 2–3 January 2020 – Voting Intentions</title>\n");
+        sb.append("      <link>https://bar.github.io/foo_polls/2020-01-03-Baz.html</link>\n");
+        sb.append("      <description><![CDATA[Voting intentions for the Foo Parliament<br/>");
+        sb.append("Opinion poll by Baz, 2–3 January 2020<br/>");
+        sb.append("<img src=\"https://bar.github.io/foo_polls/2020-01-03-Baz.png\"/><br/>");
+        sb.append("Details on https://bar.github.io/foo_polls/2020-01-03-Baz.html]]></description>\n");
+        sb.append("      <enclosure url=\"https://bar.github.io/foo_polls/2020-01-03-Baz.png\" length=\"5\"");
+        sb.append(" type=\"image/png\"/>\n");
+        sb.append("      <pubDate>Sat, 4 Jan 2020 00:00:00 +0100</pubDate>\n");
+        sb.append("      <dc:date>2020-01-04T00:00:00+01:00</dc:date>\n");
+        sb.append("    </item>\n");
+        sb.append("  </channel>\n");
+        sb.append("</rss>");
+        String expected = sb.toString();
+        assertEquals(expected, actual);
+    }
+
+    /**
+     * Verifying that for a directory with a poll that has 1 million simulations, a
+     * feed with all items is produced for IFTTT.
+     */
+    @Test
+    void produceIftttFeedWithAllItemsForDirectoryWithPollWithAMillionSimulations() {
+        SaporDirectory directory = createDirectoryWithPoll(ONE_MILLION, true);
+        String actual = new RSS20Feed(directory, RSS20FeedMode.IftttFeed).toString();
+        StringBuilder sb = new StringBuilder();
+        sb.append("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n");
+        sb.append("<rss version=\"2.0\" xmlns:dc=\"http://purl.org/dc/elements/1.1/\">\n");
+        sb.append("  <channel>\n");
+        sb.append("    <title>All Registered Polls for the Foo Parliament</title>\n");
+        sb.append("    <link>https://bar.github.io/foo_polls</link>\n");
+        sb.append("    <description>All Registered Polls for the Foo Parliament</description>\n");
+        sb.append("    <pubDate>Wed, 1 Jan 2020 00:00:00 +0100</pubDate>\n");
+        sb.append("    <item>\n");
+        sb.append("      <title>Opinion Poll by Baz for Qux, 2–3 January 2020 – Seat Projections</title>\n");
+        sb.append("      <link>https://bar.github.io/foo_polls/2020-01-03-Baz.html#seats</link>\n");
+        sb.append("      <description><![CDATA[Seat projections for the Foo Parliament<br/>");
+        sb.append("4 seats needed for a majority<br/>");
+        sb.append("Opinion poll by Baz for Qux, 2–3 January 2020<br/>");
+        sb.append("<img src=\"https://bar.github.io/foo_polls/2020-01-03-Baz-seats.png\"/><br/>");
+        sb.append("Details on https://bar.github.io/foo_polls/2020-01-03-Baz.html]]></description>\n");
+        sb.append("      <enclosure url=\"https://bar.github.io/foo_polls/2020-01-03-Baz-seats.png\" length=\"6\"");
+        sb.append(" type=\"image/png\"/>\n");
+        sb.append("      <pubDate>Sat, 4 Jan 2020 00:00:00 +0100</pubDate>\n");
+        sb.append("      <dc:date>2020-01-04T00:00:00+01:00</dc:date>\n");
+        sb.append("    </item>\n");
+        sb.append("    <item>\n");
+        sb.append("      <title>Opinion Poll by Baz for Qux, 2–3 January 2020 – Voting Intentions</title>\n");
+        sb.append("      <link>https://bar.github.io/foo_polls/2020-01-03-Baz.html</link>\n");
+        sb.append("      <description><![CDATA[Voting intentions for the Foo Parliament<br/>");
+        sb.append("Opinion poll by Baz for Qux, 2–3 January 2020<br/>");
+        sb.append("<img src=\"https://bar.github.io/foo_polls/2020-01-03-Baz.png\"/><br/>");
+        sb.append("Details on https://bar.github.io/foo_polls/2020-01-03-Baz.html]]></description>\n");
+        sb.append("      <enclosure url=\"https://bar.github.io/foo_polls/2020-01-03-Baz.png\" length=\"5\"");
+        sb.append(" type=\"image/png\"/>\n");
+        sb.append("      <pubDate>Sat, 4 Jan 2020 00:00:00 +0100</pubDate>\n");
+        sb.append("      <dc:date>2020-01-04T00:00:00+01:00</dc:date>\n");
+        sb.append("    </item>\n");
+        sb.append("  </channel>\n");
+        sb.append("</rss>");
+        String expected = sb.toString();
+        assertEquals(expected, actual);
+    }
+
+    /**
+     * Verifying that for a directory with a poll without commissioners that has 1
+     * million simulations, a feed with all items is produced for IFTTT.
+     */
+    @Test
+    void produceIftttFeedWithAllItemsForDirectoryWithPollWithoutCommissionersWithAMillionSimulations() {
+        SaporDirectory directory = createDirectoryWithPoll(ONE_MILLION, false);
+        String actual = new RSS20Feed(directory, RSS20FeedMode.IftttFeed).toString();
+        StringBuilder sb = new StringBuilder();
+        sb.append("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n");
+        sb.append("<rss version=\"2.0\" xmlns:dc=\"http://purl.org/dc/elements/1.1/\">\n");
+        sb.append("  <channel>\n");
+        sb.append("    <title>All Registered Polls for the Foo Parliament</title>\n");
+        sb.append("    <link>https://bar.github.io/foo_polls</link>\n");
+        sb.append("    <description>All Registered Polls for the Foo Parliament</description>\n");
+        sb.append("    <pubDate>Wed, 1 Jan 2020 00:00:00 +0100</pubDate>\n");
+        sb.append("    <item>\n");
+        sb.append("      <title>Opinion Poll by Baz, 2–3 January 2020 – Seat Projections</title>\n");
+        sb.append("      <link>https://bar.github.io/foo_polls/2020-01-03-Baz.html#seats</link>\n");
+        sb.append("      <description><![CDATA[Seat projections for the Foo Parliament<br/>");
+        sb.append("4 seats needed for a majority<br/>");
+        sb.append("Opinion poll by Baz, 2–3 January 2020<br/>");
+        sb.append("<img src=\"https://bar.github.io/foo_polls/2020-01-03-Baz-seats.png\"/><br/>");
+        sb.append("Details on https://bar.github.io/foo_polls/2020-01-03-Baz.html]]></description>\n");
+        sb.append("      <enclosure url=\"https://bar.github.io/foo_polls/2020-01-03-Baz-seats.png\" length=\"6\"");
+        sb.append(" type=\"image/png\"/>\n");
+        sb.append("      <pubDate>Sat, 4 Jan 2020 00:00:00 +0100</pubDate>\n");
+        sb.append("      <dc:date>2020-01-04T00:00:00+01:00</dc:date>\n");
+        sb.append("    </item>\n");
         sb.append("    <item>\n");
         sb.append("      <title>Opinion Poll by Baz, 2–3 January 2020 – Voting Intentions</title>\n");
         sb.append("      <link>https://bar.github.io/foo_polls/2020-01-03-Baz.html</link>\n");

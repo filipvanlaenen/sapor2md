@@ -23,7 +23,7 @@ public class SeatProjection extends ProbabilityMassFunctionCombination<Integer> 
      * @param probabilityMassFunctions A string representation of a seat projection.
      * @return A seat projection object.
      */
-    private static SeatProjection parseFromString(final String probabilityMassFunctions) {
+    static SeatProjection parseFromString(final String probabilityMassFunctions) {
         List<Object> arguments = new ArrayList<Object>();
         String[] lines = probabilityMassFunctions.split("\\R");
         for (String line : lines) {

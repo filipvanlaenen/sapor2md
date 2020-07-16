@@ -18,6 +18,10 @@ public final class FileSystemCountryProperties extends CountryProperties {
      */
     private static final String GITHUB_DIRECTORY_URL_KEY = "GitHubDirectoryURL";
     /**
+     * The key for the number of seats.
+     */
+    private static final String NUMBER_OF_SEATS_KEY = "NumberOfSeats";
+    /**
      * The key for the parliament name.
      */
     private static final String PARLIAMENT_NAME_KEY = "ParliamentName";
@@ -36,6 +40,7 @@ public final class FileSystemCountryProperties extends CountryProperties {
         filePath = directory + File.separator + COUNTRY_PROPERTIES_FILE_NAME;
         Map<String, String> map = FileSystemServices.readFileIntoMap(filePath);
         setGitHubDirectoryURL(map.get(GITHUB_DIRECTORY_URL_KEY));
+        setNumberOfSeats(Integer.parseInt(map.get(NUMBER_OF_SEATS_KEY)));
         setParliamentName(map.get(PARLIAMENT_NAME_KEY));
         setTimestamp(FileSystemServices.getTimestamp(filePath));
     }

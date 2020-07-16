@@ -28,6 +28,15 @@ public abstract class Poll {
      */
     private String pollingFirm;
     /**
+     * The seat projection for the poll.
+     */
+    private SeatProjection seatProjection;
+    /**
+     * The size of the file containing the chart with the seat projections per party
+     * for the poll.
+     */
+    private long seatProjectionsChartFileSize;
+    /**
      * The state summary for the poll.
      */
     private StateSummary stateSummary;
@@ -129,6 +138,43 @@ public abstract class Poll {
      */
     void setPollingFirm(final String pollingFirm) {
         this.pollingFirm = pollingFirm;
+    }
+    
+    /**
+     * Returns the seat projection for the poll.
+     *
+     * @return The seat projection for the poll.
+     */
+    SeatProjection getSeatProjection() {
+        return seatProjection;
+    }
+
+    /**
+     * Sets the seat projection for the poll.
+     *
+     * @param seatProjection The seat projection for the poll.
+     */
+    void setSeatProjection(final SeatProjection seatProjection) {
+        this.seatProjection = seatProjection;
+    }
+
+    /**
+     * Returns the size of the file with the seat projections per party chart.
+     *
+     * @return The size of the file with the seat projections per party chart.
+     */
+    long getSeatProjectionsChartFileSize() {
+        return seatProjectionsChartFileSize;
+    }
+
+    /**
+     * Sets the size of the file containing the seat projections per party chart.
+     *
+     * @param votingIntentionsChartFileSize The size of the file containing the seat
+     *                                      projections per party chart.
+     */
+    void setSeatProjectionsChartFileSize(final long seatProjectionsChartFileSize) {
+        this.seatProjectionsChartFileSize = seatProjectionsChartFileSize;
     }
 
     /**

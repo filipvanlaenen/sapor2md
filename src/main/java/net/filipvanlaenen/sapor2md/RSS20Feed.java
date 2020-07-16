@@ -19,6 +19,11 @@ public final class RSS20Feed {
      * Magic number 100.
      */
     private static final double ONE_HUNDRED = 100D;
+    /**
+     * Magic number one million (1,048,576), the threshold for when to include seat
+     * projections in an RSS 2.0 feed.
+     */
+    private static final long ONE_MILLION = 1048576;
 
     /**
      * The Sapor directory for the RSS 2.0 feed.
@@ -76,6 +81,9 @@ public final class RSS20Feed {
         Iterator<Poll> pollIterator = saporDirectory.getSortedPolls();
         while (pollIterator.hasNext()) {
             Poll poll = pollIterator.next();
+            if (poll.hasStateSummary() && poll.getStateSummary().getNumberOfSimulations() >= ONE_MILLION) {
+                sb.append(createSeatProjectionsItem(poll));
+            }
             if (poll.hasStateSummary() && poll.getStateSummary().getNumberOfSimulations() >= 1) {
                 sb.append(createVotingIntentionsItem(poll));
             }
@@ -147,6 +155,46 @@ public final class RSS20Feed {
     }
 
     /**
+     * Creates an item for the seat projections per party for a poll.
+     *
+     * @param poll The poll for which an item should be created with the seat
+     *             projections per party.
+     * @return A string representing the item to be included in the feed.
+     */
+    private String createSeatProjectionsItem(final Poll poll) {
+        StringBuilder sb = new StringBuilder();
+        sb.append("    <item>\n");
+        sb.append("      <title>Opinion Poll by ");
+        sb.append(xmlEncode(poll.getPollingFirm()));
+        if (poll.getComissioners() != null) {
+            sb.append(" for " + xmlEncode(poll.getComissioners()));
+        }
+        sb.append(", ");
+        sb.append(formatPeriod(poll.getFieldworkStart(), poll.getFieldworkEnd()));
+        sb.append(" – Seat Projections</title>\n");
+        sb.append("      <link>");
+        sb.append(saporDirectory.getCountryProperties().getGitHubDirectoryURL());
+        sb.append("/");
+        sb.append(poll.getBaseName());
+        sb.append(".html#seats</link>\n");
+        sb.append("      <description>");
+        sb.append(feedMode.createSeatProjectionsItemDescription(poll, saporDirectory));
+        sb.append("</description>\n");
+        sb.append("      <enclosure url=\"");
+        sb.append(saporDirectory.getCountryProperties().getGitHubDirectoryURL());
+        sb.append("/");
+        sb.append(poll.getBaseName());
+        sb.append("-seats.png\" length=\"");
+        sb.append(poll.getSeatProjectionsChartFileSize());
+        sb.append("\" type=\"image/png\"/>\n");
+        OffsetDateTime timestamp = poll.getStateSummary().getTimestamp();
+        sb.append("      <pubDate>" + timestamp.format(DateTimeFormatter.RFC_1123_DATE_TIME) + "</pubDate>\n");
+        sb.append("      <dc:date>" + timestamp.format(DateTimeFormatter.ISO_DATE_TIME) + "</dc:date>\n");
+        sb.append("    </item>\n");
+        return sb.toString();
+    }
+
+    /**
      * Formats a period, consisting of two dates, to a human-readable form. Common
      * elements in the dates are joined, such that the result takes one of the
      * following forms: 1–2 January 2020, 1 January–2 February 2020 or 1 January
@@ -197,6 +245,27 @@ public final class RSS20Feed {
     }
 
     /**
+     * Formats a confidence interval with seats to a human readable form.
+     *
+     * @param ci The confidence interval.
+     * @return A string with the confidence interval formatted in a human-readable
+     *         form.
+     */
+    private static String formatSeatsConfidenceInterval(final ConfidenceInterval<Integer> ci) {
+        int lowerBound = ci.getLowerBound();
+        int upperBound = ci.getUpperBound();
+        if (upperBound == 0) {
+            return "0 seats";
+        } else if (lowerBound == 1 && upperBound == 1) {
+            return "1 seat";
+        } else if (lowerBound == upperBound) {
+            return lowerBound + " seats";
+        } else {
+            return lowerBound + "–" + upperBound + " seats";
+        }
+    }
+
+    /**
      * Returns the date to be used as the publication date for the entire feed.
      *
      * @return The publication date for the feed.
@@ -214,6 +283,11 @@ public final class RSS20Feed {
          * website.
          */
         GitHubFeed {
+            @Override
+            String getFeedFileName() {
+                return "rss.xml";
+            }
+
             @Override
             String createVotingIntentionsItemDescription(final Poll poll, final SaporDirectory saporDir) {
                 StringBuilder sb = new StringBuilder();
@@ -233,8 +307,21 @@ public final class RSS20Feed {
             }
 
             @Override
-            String getFeedFileName() {
-                return "rss.xml";
+            String createSeatProjectionsItemDescription(Poll poll, SaporDirectory saporDir) {
+                StringBuilder sb = new StringBuilder();
+                sb.append("<ul>");
+                SeatProjection seatProjection = poll.getSeatProjection();
+                ConfidenceInterval<Integer> ci;
+                for (String group : seatProjection.getGroups()) {
+                    sb.append("<li>");
+                    sb.append(xmlEncode(group));
+                    sb.append(": ");
+                    ci = seatProjection.getConfidenceInterval(group, NINETY_FIVE_PERCENT);
+                    sb.append(formatSeatsConfidenceInterval(ci));
+                    sb.append("</li>");
+                }
+                sb.append("</ul>");
+                return sb.toString();
             }
         },
         /**
@@ -242,6 +329,11 @@ public final class RSS20Feed {
          * messages.
          */
         IftttFeed {
+            @Override
+            String getFeedFileName() {
+                return "rss-ifttt.xml";
+            }
+
             @Override
             String createVotingIntentionsItemDescription(final Poll poll, final SaporDirectory saporDir) {
                 StringBuilder sb = new StringBuilder();
@@ -273,8 +365,35 @@ public final class RSS20Feed {
             }
 
             @Override
-            String getFeedFileName() {
-                return "rss-ifttt.xml";
+            String createSeatProjectionsItemDescription(Poll poll, SaporDirectory saporDir) {
+                StringBuilder sb = new StringBuilder();
+                sb.append("<![CDATA[");
+                sb.append("Seat projections for the ");
+                sb.append(xmlEncode(saporDir.getCountryProperties().getParliamentName()));
+                sb.append("<br/>");
+                sb.append(saporDir.getCountryProperties().getNumberOfSeatsForMajority());
+                sb.append(" seats needed for a majority<br/>");
+                sb.append("Opinion poll by ");
+                sb.append(poll.getPollingFirm());
+                if (poll.getComissioners() != null) {
+                    sb.append(" for " + xmlEncode(poll.getComissioners()));
+                }
+                sb.append(", ");
+                sb.append(formatPeriod(poll.getFieldworkStart(), poll.getFieldworkEnd()));
+                sb.append("<br/>");
+                sb.append("<img src=\"");
+                sb.append(saporDir.getCountryProperties().getGitHubDirectoryURL());
+                sb.append("/");
+                sb.append(poll.getBaseName());
+                sb.append("-seats.png\"/>");
+                sb.append("<br/>");
+                sb.append("Details on ");
+                sb.append(saporDir.getCountryProperties().getGitHubDirectoryURL());
+                sb.append("/");
+                sb.append(poll.getBaseName());
+                sb.append(".html");
+                sb.append("]]>");
+                return sb.toString();
             }
         };
 
@@ -282,12 +401,23 @@ public final class RSS20Feed {
          * Creates the description field for an item about the voting intentions for a
          * poll.
          *
-         * @param poll     The poll.
-         * @param saporDir The Sapor directory.
+         * @param poll           The poll.
+         * @param saporDirectory The Sapor directory.
          * @return A string with the content of the description field for an item about
          *         the voting intentions for a poll.
          */
         abstract String createVotingIntentionsItemDescription(Poll poll, SaporDirectory saporDir);
+
+        /**
+         * Creates the description field for an item about the seat projections per
+         * party for a poll.
+         *
+         * @param poll           The poll.
+         * @param saporDirectory The Sapor directory.
+         * @return A string with the content of the description field for an item about
+         *         the seat projections per party for a poll.
+         */
+        abstract String createSeatProjectionsItemDescription(Poll poll, SaporDirectory saporDir);
 
         /**
          * Returns the file name for the feed.

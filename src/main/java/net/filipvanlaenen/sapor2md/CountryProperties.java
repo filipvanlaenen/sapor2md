@@ -12,6 +12,10 @@ public abstract class CountryProperties {
      */
     private String gitHubDirectoryURL;
     /**
+     * The number of seats in the parliament.
+     */
+    private int numberOfSeats;
+    /**
      * The name of the parliament.
      */
     private String parliamentName;
@@ -34,8 +38,35 @@ public abstract class CountryProperties {
      *
      * @param gitHubDirectoryURL The URL to the GitHub directory.
      */
-    protected void setGitHubDirectoryURL(final String gitHubDirectoryURL) {
+    void setGitHubDirectoryURL(final String gitHubDirectoryURL) {
         this.gitHubDirectoryURL = gitHubDirectoryURL;
+    }
+
+    /**
+     * Returns the number of seats.
+     *
+     * @return The number of seats.
+     */
+    int getNumberOfSeats() {
+        return numberOfSeats;
+    }
+    
+    /**
+     * Sets the number of seats in the parliament.
+     *
+     * @param numberOfSeats The number of seats in the parliament.
+     */
+    void setNumberOfSeats(final int numberOfSeats) {
+        this.numberOfSeats = numberOfSeats;
+    }
+
+    /**
+     * Returns the number of seats needed for a majority.
+     *
+     * @return The number of seats needed for a majority.
+     */
+    int getNumberOfSeatsForMajority() {
+        return numberOfSeats / 2 + 1;
     }
 
     /**
@@ -52,7 +83,7 @@ public abstract class CountryProperties {
      *
      * @param parliamentName The name of the parliament.
      */
-    protected void setParliamentName(final String parliamentName) {
+    void setParliamentName(final String parliamentName) {
         this.parliamentName = parliamentName;
     }
 
@@ -70,7 +101,7 @@ public abstract class CountryProperties {
      *
      * @param timestamp The timestamp for the country property file.
      */
-    protected void setTimestamp(final OffsetDateTime timestamp) {
+    void setTimestamp(final OffsetDateTime timestamp) {
         this.timestamp = timestamp;
     }
 }
