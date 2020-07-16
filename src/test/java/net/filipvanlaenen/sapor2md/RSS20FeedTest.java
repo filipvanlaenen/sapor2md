@@ -385,4 +385,12 @@ public class RSS20FeedTest {
         assertEquals("2 January 2020–2 January 2021", RSS20Feed.formatPeriod(SECOND_OF_JANUARY_2020,
                 LocalDate.of(TWO_THOUSAND_AND_TWENTY_ONE, Month.JANUARY, 2)));
     }
+
+    /**
+     * Verifying that the XML encoding converts a string correctly.
+     */
+    @Test
+    void xmlEncodeConvertsCorrectly() {
+        assertEquals("&lt;&amp;&gt;&lt;&amp;&gt;", RSS20Feed.xmlEncode("<&><&>"));
+    }
 }

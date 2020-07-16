@@ -65,11 +65,12 @@ public final class RSS20Feed {
         sb.append("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n");
         sb.append("<rss version=\"2.0\" xmlns:dc=\"http://purl.org/dc/elements/1.1/\">\n");
         sb.append("  <channel>\n");
-        sb.append("    <title>All Registered Polls for the " + saporDirectory.getCountryProperties().getParliamentName()
-                + "</title>\n");
+        sb.append("    <title>All Registered Polls for the ");
+        sb.append(xmlEncode(saporDirectory.getCountryProperties().getParliamentName()));
+        sb.append("</title>\n");
         sb.append("    <link>" + saporDirectory.getCountryProperties().getGitHubDirectoryURL() + "</link>\n");
         sb.append("    <description>All Registered Polls for the ");
-        sb.append(saporDirectory.getCountryProperties().getParliamentName());
+        sb.append(xmlEncode(saporDirectory.getCountryProperties().getParliamentName()));
         sb.append("</description>\n");
         sb.append("    <pubDate>" + getPubDate().format(DateTimeFormatter.RFC_1123_DATE_TIME) + "</pubDate>\n");
         Iterator<Poll> pollIterator = saporDirectory.getSortedPolls();
@@ -82,6 +83,16 @@ public final class RSS20Feed {
         sb.append("  </channel>\n");
         sb.append("</rss>");
         return sb.toString();
+    }
+
+    /**
+     * Encodes a text string such that in can be included in an XML document.
+     *
+     * @param text The text string to be encoded.
+     * @return The result of the encoding.
+     */
+    static String xmlEncode(final String text) {
+        return text.replaceAll("&", "&amp;").replaceAll("<", "&lt;").replaceAll(">", "&gt;");
     }
 
     /**
@@ -106,10 +117,9 @@ public final class RSS20Feed {
         StringBuilder sb = new StringBuilder();
         sb.append("    <item>\n");
         sb.append("      <title>Opinion Poll by ");
-        sb.append(poll.getPollingFirm());
+        sb.append(xmlEncode(poll.getPollingFirm()));
         if (poll.getComissioners() != null) {
-            sb.append(" for ");
-            sb.append(poll.getComissioners());
+            sb.append(" for " + xmlEncode(poll.getComissioners()));
         }
         sb.append(", ");
         sb.append(formatPeriod(poll.getFieldworkStart(), poll.getFieldworkEnd()));
@@ -119,8 +129,9 @@ public final class RSS20Feed {
         sb.append("/");
         sb.append(poll.getBaseName());
         sb.append(".html</link>\n");
-        sb.append("      <description>" + feedMode.createVotingIntentionsItemDescription(poll, saporDirectory)
-                + "</description>\n");
+        sb.append("      <description>");
+        sb.append(feedMode.createVotingIntentionsItemDescription(poll, saporDirectory));
+        sb.append("</description>\n");
         sb.append("      <enclosure url=\"");
         sb.append(saporDirectory.getCountryProperties().getGitHubDirectoryURL());
         sb.append("/");
@@ -208,12 +219,13 @@ public final class RSS20Feed {
                 StringBuilder sb = new StringBuilder();
                 sb.append("<ul>");
                 VotingIntentions votingIntentions = poll.getVotingIntentions();
+                ConfidenceInterval<ProbabilityRange> ci;
                 for (String group : votingIntentions.getGroups()) {
                     sb.append("<li>");
-                    sb.append(group);
+                    sb.append(xmlEncode(group));
                     sb.append(": ");
-                    sb.append(formatProbabilityRangeConfidenceInterval(
-                            votingIntentions.getConfidenceInterval(group, NINETY_FIVE_PERCENT)));
+                    ci = votingIntentions.getConfidenceInterval(group, NINETY_FIVE_PERCENT);
+                    sb.append(formatProbabilityRangeConfidenceInterval(ci));
                     sb.append("</li>");
                 }
                 sb.append("</ul>");
@@ -234,13 +246,13 @@ public final class RSS20Feed {
             String createVotingIntentionsItemDescription(final Poll poll, final SaporDirectory saporDir) {
                 StringBuilder sb = new StringBuilder();
                 sb.append("<![CDATA[");
-                sb.append("Voting intentions for the " + saporDir.getCountryProperties().getParliamentName());
+                sb.append("Voting intentions for the ");
+                sb.append(xmlEncode(saporDir.getCountryProperties().getParliamentName()));
                 sb.append("<br/>");
                 sb.append("Opinion poll by ");
                 sb.append(poll.getPollingFirm());
                 if (poll.getComissioners() != null) {
-                    sb.append(" for ");
-                    sb.append(poll.getComissioners());
+                    sb.append(" for " + xmlEncode(poll.getComissioners()));
                 }
                 sb.append(", ");
                 sb.append(formatPeriod(poll.getFieldworkStart(), poll.getFieldworkEnd()));
