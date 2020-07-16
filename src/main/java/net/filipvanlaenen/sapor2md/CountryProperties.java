@@ -1,6 +1,7 @@
 package net.filipvanlaenen.sapor2md;
 
 import java.time.OffsetDateTime;
+import java.util.Map;
 
 /**
  * Abstract class defining the behavior of the country properties and
@@ -8,21 +9,41 @@ import java.time.OffsetDateTime;
  */
 public abstract class CountryProperties {
     /**
+     * The key for the property containing the URL to the GitHub directory.
+     */
+    static final String GITHUB_DIRECTORY_URL_KEY = "GitHubDirectoryURL";
+    /**
+     * The key for the number of seats.
+     */
+    static final String NUMBER_OF_SEATS_KEY = "NumberOfSeats";
+    /**
+     * The key for the parliament name.
+     */
+    static final String PARLIAMENT_NAME_KEY = "ParliamentName";
+
+    /**
      * The URL to the GitHub directory.
      */
-    private String gitHubDirectoryURL;
+    private final String gitHubDirectoryURL;
     /**
      * The number of seats in the parliament.
      */
-    private int numberOfSeats;
+    private final int numberOfSeats;
     /**
      * The name of the parliament.
      */
-    private String parliamentName;
+    private final String parliamentName;
     /**
      * The timestamp for the country properties file.
      */
-    private OffsetDateTime timestamp;
+    private final OffsetDateTime timestamp;
+
+    CountryProperties(Map<String, String> map, final OffsetDateTime timestamp) {
+        gitHubDirectoryURL = map.get(GITHUB_DIRECTORY_URL_KEY);
+        numberOfSeats = Integer.parseInt(map.get(NUMBER_OF_SEATS_KEY));
+        parliamentName = map.get(PARLIAMENT_NAME_KEY);
+        this.timestamp = timestamp;
+    }
 
     /**
      * Returns the URL of the GitHub directory.
@@ -31,24 +52,6 @@ public abstract class CountryProperties {
      */
     String getGitHubDirectoryURL() {
         return gitHubDirectoryURL;
-    }
-
-    /**
-     * Sets the URL to the GitHub directory.
-     *
-     * @param gitHubDirectoryURL The URL to the GitHub directory.
-     */
-    void setGitHubDirectoryURL(final String gitHubDirectoryURL) {
-        this.gitHubDirectoryURL = gitHubDirectoryURL;
-    }
-
-    /**
-     * Sets the number of seats in the parliament.
-     *
-     * @param numberOfSeats The number of seats in the parliament.
-     */
-    void setNumberOfSeats(final int numberOfSeats) {
-        this.numberOfSeats = numberOfSeats;
     }
 
     /**
@@ -70,29 +73,11 @@ public abstract class CountryProperties {
     }
 
     /**
-     * Sets the name of the parliament.
-     *
-     * @param parliamentName The name of the parliament.
-     */
-    void setParliamentName(final String parliamentName) {
-        this.parliamentName = parliamentName;
-    }
-
-    /**
      * Returns the last modified timestamp of the file.
      *
      * @return The last modified timestamp.
      */
     OffsetDateTime getTimestamp() {
         return timestamp;
-    }
-
-    /**
-     * Sets the timestamp for the country property file.
-     *
-     * @param timestamp The timestamp for the country property file.
-     */
-    void setTimestamp(final OffsetDateTime timestamp) {
-        this.timestamp = timestamp;
     }
 }

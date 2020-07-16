@@ -8,7 +8,9 @@ import java.time.Month;
 import java.time.OffsetDateTime;
 import java.time.ZoneOffset;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -88,18 +90,19 @@ public class RSS20FeedTest {
     /**
      * A country properties object for testing purposes.
      */
-    private InMemoryCountryProperties countryProperties;
+    private CountryProperties countryProperties;
 
     /**
      * Creates the in-memory country properties for the test.
      */
     @BeforeEach
     void createCountryProperties() {
-        countryProperties = new InMemoryCountryProperties();
-        countryProperties.setGitHubDirectoryURL("https://bar.github.io/foo_polls");
-        countryProperties.setNumberOfSeats(SIX);
-        countryProperties.setParliamentName("Foo Parliament");
-        countryProperties.setTimestamp(createDateTime(TWO_THOUSAND_AND_TWENTY, Month.JANUARY, 1, 0, 0));
+        Map<String, String> map = new HashMap<String, String>();
+        map.put(CountryProperties.NUMBER_OF_SEATS_KEY, Integer.toString(SIX));
+        map.put(CountryProperties.GITHUB_DIRECTORY_URL_KEY, "https://bar.github.io/foo_polls");
+        map.put(CountryProperties.PARLIAMENT_NAME_KEY, "Foo Parliament");
+        OffsetDateTime timestamp = createDateTime(TWO_THOUSAND_AND_TWENTY, Month.JANUARY, 1, 0, 0);
+        countryProperties = new InMemoryCountryProperties(map, timestamp);
     }
 
     /**

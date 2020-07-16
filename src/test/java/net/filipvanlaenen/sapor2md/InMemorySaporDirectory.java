@@ -11,7 +11,7 @@ public final class InMemorySaporDirectory extends SaporDirectory {
      *
      * @param countryProperties The country properties for the Sapor directory.
      */
-    InMemorySaporDirectory(final InMemoryCountryProperties countryProperties) {
+    InMemorySaporDirectory(final CountryProperties countryProperties) {
         super(countryProperties);
     }
 }

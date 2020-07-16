@@ -5,7 +5,10 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.time.LocalDate;
 import java.time.Month;
+import java.util.HashMap;
+import java.util.Map;
 
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 /**
@@ -24,6 +27,14 @@ public class SaporDirectoryTest {
      * Local date representing 2 January 2020.
      */
     private static final LocalDate SECOND_OF_JANUARY_2020 = LocalDate.of(TWO_THOUSAND_AND_TWENTY, Month.JANUARY, 2);
+    private CountryProperties countryProperties;
+
+    @BeforeEach
+    void createCountryProperties() {
+        Map<String, String> map = new HashMap<String, String>();
+        map.put(CountryProperties.NUMBER_OF_SEATS_KEY, Integer.toString(1));
+        countryProperties = new InMemoryCountryProperties(map, null);
+    }
 
     /**
      * Verifying that the polls are returned and sorted in chronologically
@@ -31,7 +42,7 @@ public class SaporDirectoryTest {
      */
     @Test
     void getPollsSortsPolls() {
-        InMemorySaporDirectory directory = new InMemorySaporDirectory(new InMemoryCountryProperties());
+        InMemorySaporDirectory directory = new InMemorySaporDirectory(countryProperties);
         InMemoryPoll poll1 = new InMemoryPoll("2020-01-01-Baz");
         poll1.setFieldworkEnd(FIRST_OF_JANUARY_2020);
         InMemoryPoll poll2 = new InMemoryPoll("2020-01-02-Baz");
@@ -47,7 +58,7 @@ public class SaporDirectoryTest {
      */
     @Test
     void comparePollsSortsPollsChronologicallyReversedByFieldworkEndDate() {
-        InMemorySaporDirectory directory = new InMemorySaporDirectory(new InMemoryCountryProperties());
+        InMemorySaporDirectory directory = new InMemorySaporDirectory(countryProperties);
         InMemoryPoll poll1 = new InMemoryPoll("2020-01-01-Baz");
         poll1.setFieldworkEnd(FIRST_OF_JANUARY_2020);
         InMemoryPoll poll2 = new InMemoryPoll("2020-01-02-Baz");
@@ -64,7 +75,7 @@ public class SaporDirectoryTest {
      */
     @Test
     void comparePollsSortsPollsChronologicallyReversedByFieldworkEndAndStartDate() {
-        InMemorySaporDirectory directory = new InMemorySaporDirectory(new InMemoryCountryProperties());
+        InMemorySaporDirectory directory = new InMemorySaporDirectory(countryProperties);
         InMemoryPoll poll1 = new InMemoryPoll("2020-01-02-Baz");
         poll1.setFieldworkStart(FIRST_OF_JANUARY_2020);
         poll1.setFieldworkEnd(SECOND_OF_JANUARY_2020);
@@ -83,7 +94,7 @@ public class SaporDirectoryTest {
      */
     @Test
     void comparePollsSortsPollsAlphabeticallyIfFieldworkPeriodsAreEqual() {
-        InMemorySaporDirectory directory = new InMemorySaporDirectory(new InMemoryCountryProperties());
+        InMemorySaporDirectory directory = new InMemorySaporDirectory(countryProperties);
         InMemoryPoll poll1 = new InMemoryPoll("2020-01-02-Qux");
         poll1.setFieldworkStart(FIRST_OF_JANUARY_2020);
         poll1.setFieldworkEnd(FIRST_OF_JANUARY_2020);

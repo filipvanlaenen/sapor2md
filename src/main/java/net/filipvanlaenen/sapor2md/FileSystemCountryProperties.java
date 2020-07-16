@@ -1,6 +1,7 @@
 package net.filipvanlaenen.sapor2md;
 
 import java.io.File;
+import java.time.OffsetDateTime;
 import java.util.Map;
 
 /**
@@ -8,28 +9,10 @@ import java.util.Map;
  * a file system.
  */
 public final class FileSystemCountryProperties extends CountryProperties {
-
     /**
      * The file name for the country properties.
      */
     private static final String COUNTRY_PROPERTIES_FILE_NAME = "country.properties";
-    /**
-     * The key for the property containing the URL to the GitHub directory.
-     */
-    private static final String GITHUB_DIRECTORY_URL_KEY = "GitHubDirectoryURL";
-    /**
-     * The key for the number of seats.
-     */
-    private static final String NUMBER_OF_SEATS_KEY = "NumberOfSeats";
-    /**
-     * The key for the parliament name.
-     */
-    private static final String PARLIAMENT_NAME_KEY = "ParliamentName";
-
-    /**
-     * The path to the country properties file.
-     */
-    private final String filePath;
 
     /**
      * Constructor taking the path to the Sapor directory as the argument.
@@ -37,11 +20,18 @@ public final class FileSystemCountryProperties extends CountryProperties {
      * @param directory The path to the Sapor directory.
      */
     FileSystemCountryProperties(final String directory) {
-        filePath = directory + File.separator + COUNTRY_PROPERTIES_FILE_NAME;
-        Map<String, String> map = FileSystemServices.readFileIntoMap(filePath);
-        setGitHubDirectoryURL(map.get(GITHUB_DIRECTORY_URL_KEY));
-        setNumberOfSeats(Integer.parseInt(map.get(NUMBER_OF_SEATS_KEY)));
-        setParliamentName(map.get(PARLIAMENT_NAME_KEY));
-        setTimestamp(FileSystemServices.getTimestamp(filePath));
+        super(readCountryPropertiesFileIntoMap(directory), readTimestamp(directory));
+    }
+
+    private static OffsetDateTime readTimestamp(String directory) {
+        return FileSystemServices.getTimestamp(createFilePath(directory));
+    }
+
+    private static Map<String, String> readCountryPropertiesFileIntoMap(final String directory) {
+        return FileSystemServices.readFileIntoMap(createFilePath(directory));
+    }
+
+    static String createFilePath(final String directory) {
+        return directory + File.separator + COUNTRY_PROPERTIES_FILE_NAME;
     }
 }
