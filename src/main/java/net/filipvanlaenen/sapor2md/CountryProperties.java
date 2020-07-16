@@ -38,7 +38,14 @@ public abstract class CountryProperties {
      */
     private final OffsetDateTime timestamp;
 
-    CountryProperties(Map<String, String> map, final OffsetDateTime timestamp) {
+    /**
+     * Constructor taking a map with the properties and a timestamp as its
+     * parameters.
+     *
+     * @param map       The map containing the country properties.
+     * @param timestamp The last modified timestamp of the file.
+     */
+    CountryProperties(final Map<String, String> map, final OffsetDateTime timestamp) {
         gitHubDirectoryURL = map.get(GITHUB_DIRECTORY_URL_KEY);
         numberOfSeats = Integer.parseInt(map.get(NUMBER_OF_SEATS_KEY));
         parliamentName = map.get(PARLIAMENT_NAME_KEY);

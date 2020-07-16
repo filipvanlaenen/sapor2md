@@ -154,8 +154,8 @@ public final class CommandLineInterface {
             @Override
             String execute(final String... args) {
                 String directory = args[0];
-                RSS20Feed.execute(directory);
-                IftttRSS20Feed.execute(directory);
+                System.out.println(RSS20Feed.execute(directory));
+                System.out.println(IftttRSS20Feed.execute(directory));
                 return "Done.";
             }
         };
