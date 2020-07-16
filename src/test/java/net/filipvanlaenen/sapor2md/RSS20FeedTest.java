@@ -598,4 +598,44 @@ public class RSS20FeedTest {
     void xmlEncodeConvertsCorrectly() {
         assertEquals("&lt;&amp;&gt;&lt;&amp;&gt;", RSS20Feed.xmlEncode("<&><&>"));
     }
+
+    /**
+     * Verifying the correct formatting of a confidence interval with 0 seats.
+     */
+    @Test
+    void confidenceIntervalWithZeroSeatsFormattedCorrectly() {
+        ProbabilityMassFunction<Integer> pmf = new ProbabilityMassFunction<Integer>(0, 1D);
+        ConfidenceInterval<Integer> ci = pmf.getConfidenceInterval(NINETY_FIVE_PERCENT);
+        assertEquals("0 seats", RSS20Feed.formatSeatsConfidenceInterval(ci));
+    }
+
+    /**
+     * Verifying the correct formatting of a confidence interval with 0–1 seats.
+     */
+    @Test
+    void confidenceIntervalWithZeroToOneSeatsFormattedCorrectly() {
+        ProbabilityMassFunction<Integer> pmf = new ProbabilityMassFunction<Integer>(0, A_HALF, 1, A_HALF);
+        ConfidenceInterval<Integer> ci = pmf.getConfidenceInterval(NINETY_FIVE_PERCENT);
+        assertEquals("0–1 seats", RSS20Feed.formatSeatsConfidenceInterval(ci));
+    }
+
+    /**
+     * Verifying the correct formatting of a confidence interval with 1 seat.
+     */
+    @Test
+    void confidenceIntervalWithOneSeatFormattedCorrectly() {
+        ProbabilityMassFunction<Integer> pmf = new ProbabilityMassFunction<Integer>(0, 0D, 1, 1D);
+        ConfidenceInterval<Integer> ci = pmf.getConfidenceInterval(NINETY_FIVE_PERCENT);
+        assertEquals("1 seat", RSS20Feed.formatSeatsConfidenceInterval(ci));
+    }
+
+    /**
+     * Verifying the correct formatting of a confidence interval with 2 seats.
+     */
+    @Test
+    void confidenceIntervalWithTwoSeatsFormattedCorrectly() {
+        ProbabilityMassFunction<Integer> pmf = new ProbabilityMassFunction<Integer>(0, 0D, 1, 0D, 2, 1D);
+        ConfidenceInterval<Integer> ci = pmf.getConfidenceInterval(NINETY_FIVE_PERCENT);
+        assertEquals("2 seats", RSS20Feed.formatSeatsConfidenceInterval(ci));
+    }
 }

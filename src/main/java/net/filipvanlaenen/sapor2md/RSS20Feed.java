@@ -251,7 +251,7 @@ public final class RSS20Feed {
      * @return A string with the confidence interval formatted in a human-readable
      *         form.
      */
-    private static String formatSeatsConfidenceInterval(final ConfidenceInterval<Integer> ci) {
+    static String formatSeatsConfidenceInterval(final ConfidenceInterval<Integer> ci) {
         int lowerBound = ci.getLowerBound();
         int upperBound = ci.getUpperBound();
         if (upperBound == 0) {

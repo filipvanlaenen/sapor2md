@@ -43,15 +43,6 @@ public abstract class CountryProperties {
     }
 
     /**
-     * Returns the number of seats.
-     *
-     * @return The number of seats.
-     */
-    int getNumberOfSeats() {
-        return numberOfSeats;
-    }
-
-    /**
      * Sets the number of seats in the parliament.
      *
      * @param numberOfSeats The number of seats in the parliament.
