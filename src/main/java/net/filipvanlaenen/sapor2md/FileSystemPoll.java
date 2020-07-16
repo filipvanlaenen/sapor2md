@@ -58,7 +58,8 @@ public final class FileSystemPoll extends Poll {
         setVotingIntentions(VotingIntentions.parseFromString(votingIntentionsFileContent));
         setVotingIntentionsChartFileSize(
                 FileSystemServices.getFileSize(directory + File.separator + getBaseName() + ".png"));
-        String seatProjectionFilePath = directory + File.separator + getBaseName() + "-polychotomy-seats-probabilities.psv";
+        String seatProjectionFilePath = directory + File.separator + getBaseName()
+                + "-polychotomy-seats-probabilities.psv";
         String seatProjectionFileContent = FileSystemServices.readFileIntoString(seatProjectionFilePath);
         setSeatProjection(SeatProjection.parseFromString(seatProjectionFileContent));
         setSeatProjectionsChartFileSize(

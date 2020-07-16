@@ -139,7 +139,7 @@ public abstract class Poll {
     void setPollingFirm(final String pollingFirm) {
         this.pollingFirm = pollingFirm;
     }
-    
+
     /**
      * Returns the seat projection for the poll.
      *
@@ -170,8 +170,8 @@ public abstract class Poll {
     /**
      * Sets the size of the file containing the seat projections per party chart.
      *
-     * @param votingIntentionsChartFileSize The size of the file containing the seat
-     *                                      projections per party chart.
+     * @param seatProjectionsChartFileSize The size of the file containing the seat
+     *                                     projections per party chart.
      */
     void setSeatProjectionsChartFileSize(final long seatProjectionsChartFileSize) {
         this.seatProjectionsChartFileSize = seatProjectionsChartFileSize;

@@ -224,8 +224,8 @@ public class RSS20FeedTest {
                         GREEN_PARTY_CONFIDENCE_INTERVAL_LOWER_BOUND, GREEN_PARTY_CONFIDENCE_INTERVAL_UPPER_BOUND));
         poll.setVotingIntentions(votingIntentions);
         SeatProjection seatProjection = new SeatProjection("Red Party",
-                new ProbabilityMassFunction<Integer>(0, 0D, 1, 0D, 2, 0D, 3, 0D, 4, A_HALF, 5, A_HALF), "Green Party",
-                new ProbabilityMassFunction<Integer>(0, 0D, 1, A_HALF, 2, A_HALF));
+                new ProbabilityMassFunction<Integer>(0, 0D, 1, 0D, 2, 0D, THREE, 0D, FOUR, A_HALF, FIVE, A_HALF),
+                "Green Party", new ProbabilityMassFunction<Integer>(0, 0D, 1, A_HALF, 2, A_HALF));
         poll.setSeatProjection(seatProjection);
         directory.addPoll(poll);
         return directory;

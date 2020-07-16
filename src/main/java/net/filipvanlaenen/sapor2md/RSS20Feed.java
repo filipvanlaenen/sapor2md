@@ -307,7 +307,7 @@ public final class RSS20Feed {
             }
 
             @Override
-            String createSeatProjectionsItemDescription(Poll poll, SaporDirectory saporDir) {
+            String createSeatProjectionsItemDescription(final Poll poll, final SaporDirectory saporDir) {
                 StringBuilder sb = new StringBuilder();
                 sb.append("<ul>");
                 SeatProjection seatProjection = poll.getSeatProjection();
@@ -365,7 +365,7 @@ public final class RSS20Feed {
             }
 
             @Override
-            String createSeatProjectionsItemDescription(Poll poll, SaporDirectory saporDir) {
+            String createSeatProjectionsItemDescription(final Poll poll, final SaporDirectory saporDir) {
                 StringBuilder sb = new StringBuilder();
                 sb.append("<![CDATA[");
                 sb.append("Seat projections for the ");
@@ -401,8 +401,8 @@ public final class RSS20Feed {
          * Creates the description field for an item about the voting intentions for a
          * poll.
          *
-         * @param poll           The poll.
-         * @param saporDirectory The Sapor directory.
+         * @param poll     The poll.
+         * @param saporDir The Sapor directory.
          * @return A string with the content of the description field for an item about
          *         the voting intentions for a poll.
          */
@@ -412,8 +412,8 @@ public final class RSS20Feed {
          * Creates the description field for an item about the seat projections per
          * party for a poll.
          *
-         * @param poll           The poll.
-         * @param saporDirectory The Sapor directory.
+         * @param poll     The poll.
+         * @param saporDir The Sapor directory.
          * @return A string with the content of the description field for an item about
          *         the seat projections per party for a poll.
          */

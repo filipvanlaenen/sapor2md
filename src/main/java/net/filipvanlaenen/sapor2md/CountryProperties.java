@@ -50,7 +50,7 @@ public abstract class CountryProperties {
     int getNumberOfSeats() {
         return numberOfSeats;
     }
-    
+
     /**
      * Sets the number of seats in the parliament.
      *
