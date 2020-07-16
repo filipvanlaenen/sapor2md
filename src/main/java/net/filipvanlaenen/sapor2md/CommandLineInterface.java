@@ -125,7 +125,6 @@ public final class CommandLineInterface {
          * Command to produce the official RSS 2.0 feed for the GitHub website.
          */
         RSS20Feed {
-
             /**
              * Produces an RSS 2.0 feed for a directory.
              *
@@ -139,6 +138,25 @@ public final class CommandLineInterface {
                 RSS20Feed feed = new RSS20Feed(directory, RSS20FeedMode.GitHubFeed);
                 boolean success = feed.writeToFileSystem();
                 return success ? "Produced an RSS 2.0 feed." : "Could not produce an RSS 2.0 feed.";
+            }
+        },
+        /**
+         * Command to calling to other commands to produce the entire site.
+         */
+        Site {
+            /**
+             * Produces the site for a directory.
+             *
+             * @params args The arguments for the command, i.e. the directory for which to
+             *         produce the site.
+             * @return A message reporting whether the site has been produced.
+             */
+            @Override
+            String execute(final String... args) {
+                String directory = args[0];
+                RSS20Feed.execute(directory);
+                IftttRSS20Feed.execute(directory);
+                return "Done.";
             }
         };
 
