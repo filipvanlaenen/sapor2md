@@ -27,8 +27,14 @@ public class SaporDirectoryTest {
      * Local date representing 2 January 2020.
      */
     private static final LocalDate SECOND_OF_JANUARY_2020 = LocalDate.of(TWO_THOUSAND_AND_TWENTY, Month.JANUARY, 2);
+    /**
+     * The country properties to be used by the tests.
+     */
     private CountryProperties countryProperties;
 
+    /**
+     * Creates country properties to be used by the tests.
+     */
     @BeforeEach
     void createCountryProperties() {
         Map<String, String> map = new HashMap<String, String>();
