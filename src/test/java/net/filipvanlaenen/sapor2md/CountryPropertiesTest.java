@@ -12,6 +12,9 @@ import java.util.Map;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+/**
+ * Tests on the <code>CountryProperties</code> class.
+ */
 public class CountryPropertiesTest {
     /**
      * Magic number four.
