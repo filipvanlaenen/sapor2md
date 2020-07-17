@@ -3,8 +3,6 @@ package net.filipvanlaenen.sapor2md;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-import java.time.LocalDate;
-import java.time.Month;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -15,18 +13,6 @@ import org.junit.jupiter.api.Test;
  * Unit tests on the <code>SaporDirectory</code> class.
  */
 public class SaporDirectoryTest {
-    /**
-     * Magic number 2020, used as a year number.
-     */
-    private static final int TWO_THOUSAND_AND_TWENTY = 2020;
-    /**
-     * Local date representing 1 January 2020.
-     */
-    private static final LocalDate FIRST_OF_JANUARY_2020 = LocalDate.of(TWO_THOUSAND_AND_TWENTY, Month.JANUARY, 1);
-    /**
-     * Local date representing 2 January 2020.
-     */
-    private static final LocalDate SECOND_OF_JANUARY_2020 = LocalDate.of(TWO_THOUSAND_AND_TWENTY, Month.JANUARY, 2);
     /**
      * The country properties to be used by the tests.
      */
@@ -49,10 +35,14 @@ public class SaporDirectoryTest {
     @Test
     void getPollsSortsPolls() {
         InMemorySaporDirectory directory = new InMemorySaporDirectory(countryProperties);
-        InMemoryPoll poll1 = new InMemoryPoll("2020-01-01-Baz");
-        poll1.setFieldworkEnd(FIRST_OF_JANUARY_2020);
-        InMemoryPoll poll2 = new InMemoryPoll("2020-01-02-Baz");
-        poll2.setFieldworkEnd(SECOND_OF_JANUARY_2020);
+        Map<String, String> properties1 = new HashMap<String, String>();
+        properties1.put(Poll.FIELDWORK_START_KEY, "2020-01-01");
+        properties1.put(Poll.FIELDWORK_END_KEY, "2020-01-01");
+        InMemoryPoll poll1 = new InMemoryPoll("2020-01-01-Baz", properties1);
+        Map<String, String> properties2 = new HashMap<String, String>();
+        properties2.put(Poll.FIELDWORK_START_KEY, "2020-01-02");
+        properties2.put(Poll.FIELDWORK_END_KEY, "2020-01-02");
+        InMemoryPoll poll2 = new InMemoryPoll("2020-01-02-Baz", properties2);
         directory.addPoll(poll1);
         directory.addPoll(poll2);
         assertEquals(poll2, directory.getSortedPolls().next());
@@ -65,10 +55,14 @@ public class SaporDirectoryTest {
     @Test
     void comparePollsSortsPollsChronologicallyReversedByFieldworkEndDate() {
         InMemorySaporDirectory directory = new InMemorySaporDirectory(countryProperties);
-        InMemoryPoll poll1 = new InMemoryPoll("2020-01-01-Baz");
-        poll1.setFieldworkEnd(FIRST_OF_JANUARY_2020);
-        InMemoryPoll poll2 = new InMemoryPoll("2020-01-02-Baz");
-        poll2.setFieldworkEnd(SECOND_OF_JANUARY_2020);
+        Map<String, String> properties1 = new HashMap<String, String>();
+        properties1.put(Poll.FIELDWORK_START_KEY, "2020-01-01");
+        properties1.put(Poll.FIELDWORK_END_KEY, "2020-01-01");
+        InMemoryPoll poll1 = new InMemoryPoll("2020-01-01-Baz", properties1);
+        Map<String, String> properties2 = new HashMap<String, String>();
+        properties2.put(Poll.FIELDWORK_START_KEY, "2020-01-02");
+        properties2.put(Poll.FIELDWORK_END_KEY, "2020-01-02");
+        InMemoryPoll poll2 = new InMemoryPoll("2020-01-02-Baz", properties2);
         directory.addPoll(poll1);
         directory.addPoll(poll2);
         assertTrue(directory.comparePolls(poll1, poll2) > 0);
@@ -82,12 +76,14 @@ public class SaporDirectoryTest {
     @Test
     void comparePollsSortsPollsChronologicallyReversedByFieldworkEndAndStartDate() {
         InMemorySaporDirectory directory = new InMemorySaporDirectory(countryProperties);
-        InMemoryPoll poll1 = new InMemoryPoll("2020-01-02-Baz");
-        poll1.setFieldworkStart(FIRST_OF_JANUARY_2020);
-        poll1.setFieldworkEnd(SECOND_OF_JANUARY_2020);
-        InMemoryPoll poll2 = new InMemoryPoll("2020-01-02-Qux");
-        poll2.setFieldworkStart(SECOND_OF_JANUARY_2020);
-        poll2.setFieldworkEnd(SECOND_OF_JANUARY_2020);
+        Map<String, String> properties1 = new HashMap<String, String>();
+        properties1.put(Poll.FIELDWORK_START_KEY, "2020-01-01");
+        properties1.put(Poll.FIELDWORK_END_KEY, "2020-01-02");
+        InMemoryPoll poll1 = new InMemoryPoll("2020-01-02-Baz", properties1);
+        Map<String, String> properties2 = new HashMap<String, String>();
+        properties2.put(Poll.FIELDWORK_START_KEY, "2020-01-02");
+        properties2.put(Poll.FIELDWORK_END_KEY, "2020-01-02");
+        InMemoryPoll poll2 = new InMemoryPoll("2020-01-02-Qux", properties2);
         directory.addPoll(poll1);
         directory.addPoll(poll2);
         assertTrue(directory.comparePolls(poll1, poll2) > 0);
@@ -101,14 +97,16 @@ public class SaporDirectoryTest {
     @Test
     void comparePollsSortsPollsAlphabeticallyIfFieldworkPeriodsAreEqual() {
         InMemorySaporDirectory directory = new InMemorySaporDirectory(countryProperties);
-        InMemoryPoll poll1 = new InMemoryPoll("2020-01-02-Qux");
-        poll1.setFieldworkStart(FIRST_OF_JANUARY_2020);
-        poll1.setFieldworkEnd(FIRST_OF_JANUARY_2020);
-        poll1.setPollingFirm("Qux");
-        InMemoryPoll poll2 = new InMemoryPoll("2020-01-02-Baz");
-        poll2.setFieldworkStart(FIRST_OF_JANUARY_2020);
-        poll2.setFieldworkEnd(FIRST_OF_JANUARY_2020);
-        poll2.setPollingFirm("Baz");
+        Map<String, String> properties1 = new HashMap<String, String>();
+        properties1.put(Poll.FIELDWORK_START_KEY, "2020-01-01");
+        properties1.put(Poll.FIELDWORK_END_KEY, "2020-01-01");
+        properties1.put(Poll.POLLING_FIRM_KEY, "Qux");
+        InMemoryPoll poll1 = new InMemoryPoll("2020-01-02-Qux", properties1);
+        Map<String, String> properties2 = new HashMap<String, String>();
+        properties2.put(Poll.FIELDWORK_START_KEY, "2020-01-01");
+        properties2.put(Poll.FIELDWORK_END_KEY, "2020-01-01");
+        properties2.put(Poll.POLLING_FIRM_KEY, "Baz");
+        InMemoryPoll poll2 = new InMemoryPoll("2020-01-02-Baz", properties2);
         directory.addPoll(poll1);
         directory.addPoll(poll2);
         assertTrue(directory.comparePolls(poll1, poll2) > 0);

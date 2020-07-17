@@ -1,6 +1,8 @@
 package net.filipvanlaenen.sapor2md;
 
 import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+import java.util.Map;
 
 /**
  * An abstract class defining the behavior of a poll and implementing common
@@ -8,25 +10,43 @@ import java.time.LocalDate;
  */
 public abstract class Poll {
     /**
+     * The key for the property containing the name of the commissioners.
+     */
+    static final String COMMISSIONERS_KEY = "Commissioners";
+    /**
+     * The key for the property containing the name of the polling firm that
+     * conducted the poll.
+     */
+    static final String POLLING_FIRM_KEY = "PollingFirm";
+    /**
+     * The key for the property containing the end date for the fieldwork period.
+     */
+    static final String FIELDWORK_END_KEY = "FieldworkEnd";
+    /**
+     * The key for the property containing the start date for the fieldwork period.
+     */
+    static final String FIELDWORK_START_KEY = "FieldworkStart";
+
+    /**
      * The base name for the poll.
      */
     private final String baseName;
     /**
      * The commissioners of the poll.
      */
-    private String commissioners;
+    private final String commissioners;
     /**
      * The end of the fieldwork period.
      */
-    private LocalDate fieldworkEnd;
+    private final LocalDate fieldworkEnd;
     /**
      * The start of the fieldwork period.
      */
-    private LocalDate fieldworkStart;
+    private final LocalDate fieldworkStart;
     /**
      * The polling firm that conducted the poll.
      */
-    private String pollingFirm;
+    private final String pollingFirm;
     /**
      * The size of the file containing the chart with the seating plan projection
      * for the poll.
@@ -56,12 +76,18 @@ public abstract class Poll {
     private long votingIntentionsChartFileSize;
 
     /**
-     * Constructor taking the base name as the argument.
+     * Constructor taking the base name and a map with the properties as the
+     * argument.
      *
-     * @param baseName The base name of the poll.
+     * @param baseName   The base name of the poll.
+     * @param properties The map containing the country properties.
      */
-    Poll(final String baseName) {
+    Poll(final String baseName, final Map<String, String> properties) {
         this.baseName = baseName;
+        commissioners = properties.get(COMMISSIONERS_KEY);
+        pollingFirm = properties.get(POLLING_FIRM_KEY);
+        fieldworkEnd = LocalDate.parse(properties.get(FIELDWORK_END_KEY), DateTimeFormatter.ISO_LOCAL_DATE);
+        fieldworkStart = LocalDate.parse(properties.get(FIELDWORK_START_KEY), DateTimeFormatter.ISO_LOCAL_DATE);
     }
 
     /**
@@ -83,30 +109,12 @@ public abstract class Poll {
     }
 
     /**
-     * Sets the commissioners for the poll.
-     *
-     * @param commissioners The commissioners for the poll.
-     */
-    void setCommissioners(final String commissioners) {
-        this.commissioners = commissioners;
-    }
-
-    /**
      * Returns the end of the fieldwork period.
      *
      * @return The end of the fieldwork period.
      */
     LocalDate getFieldworkEnd() {
         return fieldworkEnd;
-    }
-
-    /**
-     * Sets the end of the fieldwork period of the poll.
-     *
-     * @param fieldworkEnd The end of the fieldwork period of the poll.
-     */
-    void setFieldworkEnd(final LocalDate fieldworkEnd) {
-        this.fieldworkEnd = fieldworkEnd;
     }
 
     /**
@@ -119,30 +127,12 @@ public abstract class Poll {
     }
 
     /**
-     * Sets the start of the fieldwork period of the poll.
-     *
-     * @param fieldworkStart The start of the fieldwork period of the poll.
-     */
-    void setFieldworkStart(final LocalDate fieldworkStart) {
-        this.fieldworkStart = fieldworkStart;
-    }
-
-    /**
      * Returns the polling firm that conducted the poll.
      *
      * @return The polling firm that conducted the poll.
      */
     String getPollingFirm() {
         return pollingFirm;
-    }
-
-    /**
-     * Sets the polling firm that conducted the poll.
-     *
-     * @param pollingFirm The polling firm that conducted the poll.
-     */
-    void setPollingFirm(final String pollingFirm) {
-        this.pollingFirm = pollingFirm;
     }
 
     /**

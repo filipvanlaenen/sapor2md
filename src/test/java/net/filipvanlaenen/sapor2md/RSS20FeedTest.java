@@ -155,7 +155,10 @@ public class RSS20FeedTest {
     @Test
     void produceEmptyFeedForDirectoryWithPollThatHasNotBeenCalculated() {
         InMemorySaporDirectory directory = new InMemorySaporDirectory(countryProperties);
-        directory.addPoll(new InMemoryPoll("2020-01-03-Baz"));
+        Map<String, String> properties = new HashMap<String, String>();
+        properties.put(Poll.FIELDWORK_START_KEY, "2020-01-02");
+        properties.put(Poll.FIELDWORK_END_KEY, "2020-01-03");
+        directory.addPoll(new InMemoryPoll("2020-01-03-Baz", properties));
         String actual = new RSS20Feed(directory, RSS20FeedMode.GitHubFeed).toString();
         StringBuilder sb = new StringBuilder();
         sb.append("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n");
@@ -211,13 +214,14 @@ public class RSS20FeedTest {
      */
     private SaporDirectory createDirectoryWithPoll(final long numberOfSimulations, final boolean hasCommissioners) {
         InMemorySaporDirectory directory = new InMemorySaporDirectory(countryProperties);
-        InMemoryPoll poll = new InMemoryPoll("2020-01-03-Baz");
-        poll.setPollingFirm("Baz");
+        Map<String, String> properties = new HashMap<String, String>();
+        properties.put(Poll.POLLING_FIRM_KEY, "Baz");
         if (hasCommissioners) {
-            poll.setCommissioners("Qux");
+            properties.put(Poll.COMMISSIONERS_KEY, "Qux");
         }
-        poll.setFieldworkStart(SECOND_OF_JANUARY_2020);
-        poll.setFieldworkEnd(THIRD_OF_JANUARY_2020);
+        properties.put(Poll.FIELDWORK_START_KEY, "2020-01-02");
+        properties.put(Poll.FIELDWORK_END_KEY, "2020-01-03");
+        InMemoryPoll poll = new InMemoryPoll("2020-01-03-Baz", properties);
         poll.setVotingIntentionsChartFileSize(FIVE);
         poll.setSeatProjectionsChartFileSize(SIX);
         poll.setSeatingPlanProjectionChartFileSize(SEVEN);

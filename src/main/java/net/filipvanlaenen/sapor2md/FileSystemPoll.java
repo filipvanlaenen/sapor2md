@@ -1,8 +1,6 @@
 package net.filipvanlaenen.sapor2md;
 
 import java.io.File;
-import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -14,29 +12,6 @@ import java.util.Map;
  */
 public final class FileSystemPoll extends Poll {
     /**
-     * The key for the property containing the name of the commissioners.
-     */
-    private static final String COMMISSIONERS_KEY = "Commissioners";
-    /**
-     * The key for the property containing the name of the polling firm that
-     * conducted the poll.
-     */
-    private static final String POLLING_FIRM_KEY = "PollingFirm";
-    /**
-     * The key for the property containing the end date for the fieldwork period.
-     */
-    private static final String FIELDWORK_END_KEY = "FieldworkEnd";
-    /**
-     * The key for the property containing the start date for the fieldwork period.
-     */
-    private static final String FIELDWORK_START_KEY = "FieldworkStart";
-
-    /**
-     * The path to the poll file.
-     */
-    private final String filePath;
-
-    /**
      * Constructor taking the directory in which the poll resides and the file name
      * of the poll as its parameters.
      *
@@ -44,14 +19,7 @@ public final class FileSystemPoll extends Poll {
      * @param pollFileName The name of the poll file.
      */
     FileSystemPoll(final String directory, final String pollFileName) {
-        super(extractBaseNameFromFileName(pollFileName));
-        filePath = directory + File.separator + pollFileName;
-        List<Map<String, String>> content = readFileIntoDoubleMap();
-        Map<String, String> properties = content.get(0);
-        setCommissioners(properties.get(COMMISSIONERS_KEY));
-        setPollingFirm(properties.get(POLLING_FIRM_KEY));
-        setFieldworkEnd(LocalDate.parse(properties.get(FIELDWORK_END_KEY), DateTimeFormatter.ISO_LOCAL_DATE));
-        setFieldworkStart(LocalDate.parse(properties.get(FIELDWORK_START_KEY), DateTimeFormatter.ISO_LOCAL_DATE));
+        super(extractBaseNameFromFileName(pollFileName), readFileIntoDoubleMap(directory, pollFileName).get(0));
         setStateSummary(FileSystemStateSummary.readFromFileSystem(directory, getBaseName()));
         String votingIntentionsFilePath = directory + File.separator + getBaseName() + "-dichotomies-probabilities.psv";
         String votingIntentionsFileContent = FileSystemServices.readFileIntoString(votingIntentionsFilePath);
@@ -81,10 +49,13 @@ public final class FileSystemPoll extends Poll {
     /**
      * Reads the content of the poll file, and places the result in a double map.
      *
+     * @param directory    The directory in which the poll resides.
+     * @param pollFileName The name of the poll file.
      * @return A list containing two maps, representing the content of the poll
      *         file.
      */
-    private List<Map<String, String>> readFileIntoDoubleMap() {
+    private static List<Map<String, String>> readFileIntoDoubleMap(final String directory, final String pollFileName) {
+        String filePath = directory + File.separator + pollFileName;
         String content = FileSystemServices.readFileIntoString(filePath);
         return parseDoubleMapFromString(content);
     }
