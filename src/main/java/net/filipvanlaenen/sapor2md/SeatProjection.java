@@ -1,6 +1,7 @@
 package net.filipvanlaenen.sapor2md;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -58,7 +59,7 @@ public class SeatProjection extends ProbabilityMassFunctionCombination<Integer> 
         SeatProjection seatProjection = SeatProjection.parseFromString(probabilityMassFunctionsString);
         StringBuilder contentBuilder = new StringBuilder();
         contentBuilder.append("Choice | CI95LB | Median | Adjusted Median\n");
-        for (String group : seatProjection.getGroups()) {
+        for (String group : seatProjection.getSortedGroups()) {
             contentBuilder.append(group).append(" | ")
                     .append(seatProjection.getConfidenceInterval(group, NINETY_FIVE_PERCENT).getLowerBound())
                     .append(" | ").append(seatProjection.getMedian(group)).append(" | ")
@@ -213,4 +214,27 @@ public class SeatProjection extends ProbabilityMassFunctionCombination<Integer> 
         return adjustedMedians.get(size).get(group);
     }
 
+    /**
+     * Returns a set with all groups, sorted by adjusted median. If the adjusted
+     * medians are equal, the groups are sorted alphabetically by name.
+     *
+     * @return A set containing all the groups, sorted by adjusted median.
+     */
+    List<String> getGroupsSortedByAdjustedMedian(final int numberOfSeats) {
+        List<String> sortedGroups = new ArrayList<String>(getMap().keySet());
+        sortedGroups.sort(new Comparator<String>() {
+            @Override
+            public int compare(final String group1, final String group2) {
+                Integer adjustedMedian1 = getAdjustedMedian(group1, numberOfSeats);
+                Integer adjustedMedian2 = getAdjustedMedian(group2, numberOfSeats);
+                int compareAdjustedMedian = adjustedMedian2.compareTo(adjustedMedian1);
+                if (compareAdjustedMedian == 0) {
+                    return group1.compareToIgnoreCase(group2);
+                } else {
+                    return compareAdjustedMedian;
+                }
+            }
+        });
+        return sortedGroups;
+    }
 }

@@ -62,6 +62,8 @@ public final class FileSystemPoll extends Poll {
                 + "-polychotomy-seats-probabilities.psv";
         String seatProjectionFileContent = FileSystemServices.readFileIntoString(seatProjectionFilePath);
         setSeatProjection(SeatProjection.parseFromString(seatProjectionFileContent));
+        setSeatingPlanProjectionChartFileSize(
+                FileSystemServices.getFileSize(directory + File.separator + getBaseName() + "-seating-plan.png"));
         setSeatProjectionsChartFileSize(
                 FileSystemServices.getFileSize(directory + File.separator + getBaseName() + "-seats.png"));
     }

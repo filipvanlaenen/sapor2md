@@ -70,6 +70,14 @@ public class CountryPropertiesTest {
     }
 
     /**
+     * Verifying that the number of seats is wired correctly from the map.
+     */
+    @Test
+    void constructorWiresNumberOfSeatsCorrectly() {
+        assertEquals(SIX, countryProperties.getNumberOfSeats());
+    }
+
+    /**
      * Verifying that the number of seats for majority is calculated correctly for
      * an even number of seats.
      */

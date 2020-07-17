@@ -28,6 +28,11 @@ public abstract class Poll {
      */
     private String pollingFirm;
     /**
+     * The size of the file containing the chart with the seating plan projection
+     * for the poll.
+     */
+    private long seatingPlanProjectionChartFileSize;
+    /**
      * The seat projection for the poll.
      */
     private SeatProjection seatProjection;
@@ -140,6 +145,25 @@ public abstract class Poll {
         this.pollingFirm = pollingFirm;
     }
 
+    /**
+     * Returns the size of the file with the seating plan projection chart.
+     *
+     * @return The size of the file with the seating plan projection chart.
+     */
+    long getSeatingPlanProjectionChartFileSize() {
+        return seatingPlanProjectionChartFileSize;
+    }
+
+    /**
+     * Sets the size of the file containing the seating plan projection chart.
+     *
+     * @param seatProjectionsChartFileSize The size of the file containing the seating plan
+     *                                     projection chart.
+     */
+    void setSeatingPlanProjectionChartFileSize(final long seatingPlanProjectionChartFileSize) {
+        this.seatingPlanProjectionChartFileSize = seatingPlanProjectionChartFileSize;
+    }
+    
     /**
      * Returns the seat projection for the poll.
      *

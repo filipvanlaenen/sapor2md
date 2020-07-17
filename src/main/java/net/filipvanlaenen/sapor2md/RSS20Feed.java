@@ -82,6 +82,7 @@ public final class RSS20Feed {
         while (pollIterator.hasNext()) {
             Poll poll = pollIterator.next();
             if (poll.hasStateSummary() && poll.getStateSummary().getNumberOfSimulations() >= ONE_MILLION) {
+                sb.append(createSeatingPlanProjectionItem(poll));
                 sb.append(createSeatProjectionsItem(poll));
             }
             if (poll.hasStateSummary() && poll.getStateSummary().getNumberOfSimulations() >= 1) {
@@ -195,6 +196,46 @@ public final class RSS20Feed {
     }
 
     /**
+     * Creates an item for the seating plan projection for a poll.
+     *
+     * @param poll The poll for which an item should be created with the seating
+     *             plan projection.
+     * @return A string representing the item to be included in the feed.
+     */
+    private String createSeatingPlanProjectionItem(final Poll poll) {
+        StringBuilder sb = new StringBuilder();
+        sb.append("    <item>\n");
+        sb.append("      <title>Opinion Poll by ");
+        sb.append(xmlEncode(poll.getPollingFirm()));
+        if (poll.getComissioners() != null) {
+            sb.append(" for " + xmlEncode(poll.getComissioners()));
+        }
+        sb.append(", ");
+        sb.append(formatPeriod(poll.getFieldworkStart(), poll.getFieldworkEnd()));
+        sb.append(" – Seating Plan Projection</title>\n");
+        sb.append("      <link>");
+        sb.append(saporDirectory.getCountryProperties().getGitHubDirectoryURL());
+        sb.append("/");
+        sb.append(poll.getBaseName());
+        sb.append(".html#seating-plan</link>\n");
+        sb.append("      <description>");
+        sb.append(feedMode.createSeatingPlanProjectionItemDescription(poll, saporDirectory));
+        sb.append("</description>\n");
+        sb.append("      <enclosure url=\"");
+        sb.append(saporDirectory.getCountryProperties().getGitHubDirectoryURL());
+        sb.append("/");
+        sb.append(poll.getBaseName());
+        sb.append("-seating-plan.png\" length=\"");
+        sb.append(poll.getSeatingPlanProjectionChartFileSize());
+        sb.append("\" type=\"image/png\"/>\n");
+        OffsetDateTime timestamp = poll.getStateSummary().getTimestamp();
+        sb.append("      <pubDate>" + timestamp.format(DateTimeFormatter.RFC_1123_DATE_TIME) + "</pubDate>\n");
+        sb.append("      <dc:date>" + timestamp.format(DateTimeFormatter.ISO_DATE_TIME) + "</dc:date>\n");
+        sb.append("    </item>\n");
+        return sb.toString();
+    }
+
+    /**
      * Formats a period, consisting of two dates, to a human-readable form. Common
      * elements in the dates are joined, such that the result takes one of the
      * following forms: 1–2 January 2020, 1 January–2 February 2020 or 1 January
@@ -294,7 +335,7 @@ public final class RSS20Feed {
                 sb.append("<ul>");
                 VotingIntentions votingIntentions = poll.getVotingIntentions();
                 ConfidenceInterval<ProbabilityRange> ci;
-                for (String group : votingIntentions.getGroups()) {
+                for (String group : votingIntentions.getSortedGroups()) {
                     sb.append("<li>");
                     sb.append(xmlEncode(group));
                     sb.append(": ");
@@ -312,12 +353,34 @@ public final class RSS20Feed {
                 sb.append("<ul>");
                 SeatProjection seatProjection = poll.getSeatProjection();
                 ConfidenceInterval<Integer> ci;
-                for (String group : seatProjection.getGroups()) {
+                for (String group : seatProjection.getSortedGroups()) {
                     sb.append("<li>");
                     sb.append(xmlEncode(group));
                     sb.append(": ");
                     ci = seatProjection.getConfidenceInterval(group, NINETY_FIVE_PERCENT);
                     sb.append(formatSeatsConfidenceInterval(ci));
+                    sb.append("</li>");
+                }
+                sb.append("</ul>");
+                return sb.toString();
+            }
+
+            @Override
+            String createSeatingPlanProjectionItemDescription(Poll poll, SaporDirectory saporDir) {
+                StringBuilder sb = new StringBuilder();
+                sb.append("<ul>");
+                SeatProjection seatProjection = poll.getSeatProjection();
+                int numberOfSeats = saporDir.getCountryProperties().getNumberOfSeats();
+                for (String group : seatProjection.getGroupsSortedByAdjustedMedian(numberOfSeats)) {
+                    sb.append("<li>");
+                    sb.append(xmlEncode(group));
+                    sb.append(": ");
+                    int adjustedMedian = seatProjection.getAdjustedMedian(group, numberOfSeats);
+                    sb.append(adjustedMedian);
+                    sb.append(" seat");
+                    if (adjustedMedian != 1) {
+                        sb.append("s");
+                    }
                     sb.append("</li>");
                 }
                 sb.append("</ul>");
@@ -395,6 +458,38 @@ public final class RSS20Feed {
                 sb.append("]]>");
                 return sb.toString();
             }
+
+            @Override
+            String createSeatingPlanProjectionItemDescription(Poll poll, SaporDirectory saporDir) {
+                StringBuilder sb = new StringBuilder();
+                sb.append("<![CDATA[");
+                sb.append("Seating plan projection for the ");
+                sb.append(xmlEncode(saporDir.getCountryProperties().getParliamentName()));
+                sb.append("<br/>");
+                sb.append(saporDir.getCountryProperties().getNumberOfSeatsForMajority());
+                sb.append(" seats needed for a majority<br/>");
+                sb.append("Opinion poll by ");
+                sb.append(poll.getPollingFirm());
+                if (poll.getComissioners() != null) {
+                    sb.append(" for " + xmlEncode(poll.getComissioners()));
+                }
+                sb.append(", ");
+                sb.append(formatPeriod(poll.getFieldworkStart(), poll.getFieldworkEnd()));
+                sb.append("<br/>");
+                sb.append("<img src=\"");
+                sb.append(saporDir.getCountryProperties().getGitHubDirectoryURL());
+                sb.append("/");
+                sb.append(poll.getBaseName());
+                sb.append("-seating-plan.png\"/>");
+                sb.append("<br/>");
+                sb.append("Details on ");
+                sb.append(saporDir.getCountryProperties().getGitHubDirectoryURL());
+                sb.append("/");
+                sb.append(poll.getBaseName());
+                sb.append(".html");
+                sb.append("]]>");
+                return sb.toString();
+            }
         };
 
         /**
@@ -418,6 +513,17 @@ public final class RSS20Feed {
          *         the seat projections per party for a poll.
          */
         abstract String createSeatProjectionsItemDescription(Poll poll, SaporDirectory saporDir);
+
+        /**
+         * Creates the description field for an item about the seating plan projection
+         * for a poll.
+         *
+         * @param poll     The poll.
+         * @param saporDir The Sapor directory.
+         * @return A string with the content of the description field for an item about
+         *         the seating plan projection for a poll.
+         */
+        abstract String createSeatingPlanProjectionItemDescription(Poll poll, SaporDirectory saporDir);
 
         /**
          * Returns the file name for the feed.

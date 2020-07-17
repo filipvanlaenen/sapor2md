@@ -62,6 +62,15 @@ public abstract class CountryProperties {
     }
 
     /**
+     * Returns the number of seats.
+     *
+     * @return The number of seats.
+     */
+    int getNumberOfSeats() {
+        return numberOfSeats;
+    }
+
+    /**
      * Returns the number of seats needed for a majority.
      *
      * @return The number of seats needed for a majority.

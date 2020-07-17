@@ -91,7 +91,7 @@ public class SeatProjectionTest {
         SeatProjection seatProjection = new SeatProjection("Red Party",
                 new ProbabilityMassFunction<Integer>(0, ONE_QUARTER, 1, THREE_QUARTERS), "Blue Party",
                 new ProbabilityMassFunction<Integer>(0, A_HALF, 1, A_HALF));
-        List<String> actual = seatProjection.getGroups();
+        List<String> actual = seatProjection.getSortedGroups();
         List<String> expected = new ArrayList<String>();
         expected.add("Red Party");
         expected.add("Blue Party");

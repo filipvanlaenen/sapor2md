@@ -38,6 +38,10 @@ public class RSS20FeedTest {
      */
     private static final int SIX = 6;
     /**
+     * Magic number seven.
+     */
+    private static final int SEVEN = 7;
+    /**
      * The magic number a half.
      */
     private static final double A_HALF = 0.5D;
@@ -216,6 +220,7 @@ public class RSS20FeedTest {
         poll.setFieldworkEnd(THIRD_OF_JANUARY_2020);
         poll.setVotingIntentionsChartFileSize(FIVE);
         poll.setSeatProjectionsChartFileSize(SIX);
+        poll.setSeatingPlanProjectionChartFileSize(SEVEN);
         InMemoryStateSummary stateSummary = new InMemoryStateSummary();
         stateSummary.setNumberOfSimulations(numberOfSimulations);
         stateSummary.setTimestamp(createDateTime(TWO_THOUSAND_AND_TWENTY, Month.JANUARY, FOUR, 0, 0));
@@ -319,6 +324,18 @@ public class RSS20FeedTest {
         sb.append("    <description>All Registered Polls for the Foo Parliament</description>\n");
         sb.append("    <pubDate>Wed, 1 Jan 2020 00:00:00 +0100</pubDate>\n");
         sb.append("    <item>\n");
+        sb.append("      <title>Opinion Poll by Baz for Qux, 2–3 January 2020 – Seating Plan Projection</title>\n");
+        sb.append("      <link>https://bar.github.io/foo_polls/2020-01-03-Baz.html#seating-plan</link>\n");
+        sb.append("      <description><ul>");
+        sb.append("<li>Red Party: 5 seats</li>");
+        sb.append("<li>Green Party: 1 seat</li>");
+        sb.append("</ul></description>\n");
+        sb.append("      <enclosure url=\"https://bar.github.io/foo_polls/2020-01-03-Baz-seating-plan.png\"");
+        sb.append(" length=\"7\" type=\"image/png\"/>\n");
+        sb.append("      <pubDate>Sat, 4 Jan 2020 00:00:00 +0100</pubDate>\n");
+        sb.append("      <dc:date>2020-01-04T00:00:00+01:00</dc:date>\n");
+        sb.append("    </item>\n");
+        sb.append("    <item>\n");
         sb.append("      <title>Opinion Poll by Baz for Qux, 2–3 January 2020 – Seat Projections</title>\n");
         sb.append("      <link>https://bar.github.io/foo_polls/2020-01-03-Baz.html#seats</link>\n");
         sb.append("      <description><ul>");
@@ -364,6 +381,18 @@ public class RSS20FeedTest {
         sb.append("    <link>https://bar.github.io/foo_polls</link>\n");
         sb.append("    <description>All Registered Polls for the Foo Parliament</description>\n");
         sb.append("    <pubDate>Wed, 1 Jan 2020 00:00:00 +0100</pubDate>\n");
+        sb.append("    <item>\n");
+        sb.append("      <title>Opinion Poll by Baz, 2–3 January 2020 – Seating Plan Projection</title>\n");
+        sb.append("      <link>https://bar.github.io/foo_polls/2020-01-03-Baz.html#seating-plan</link>\n");
+        sb.append("      <description><ul>");
+        sb.append("<li>Red Party: 5 seats</li>");
+        sb.append("<li>Green Party: 1 seat</li>");
+        sb.append("</ul></description>\n");
+        sb.append("      <enclosure url=\"https://bar.github.io/foo_polls/2020-01-03-Baz-seating-plan.png\"");
+        sb.append(" length=\"7\" type=\"image/png\"/>\n");
+        sb.append("      <pubDate>Sat, 4 Jan 2020 00:00:00 +0100</pubDate>\n");
+        sb.append("      <dc:date>2020-01-04T00:00:00+01:00</dc:date>\n");
+        sb.append("    </item>\n");
         sb.append("    <item>\n");
         sb.append("      <title>Opinion Poll by Baz, 2–3 January 2020 – Seat Projections</title>\n");
         sb.append("      <link>https://bar.github.io/foo_polls/2020-01-03-Baz.html#seats</link>\n");
@@ -479,6 +508,19 @@ public class RSS20FeedTest {
         sb.append("    <description>All Registered Polls for the Foo Parliament</description>\n");
         sb.append("    <pubDate>Wed, 1 Jan 2020 00:00:00 +0100</pubDate>\n");
         sb.append("    <item>\n");
+        sb.append("      <title>Opinion Poll by Baz for Qux, 2–3 January 2020 – Seating Plan Projection</title>\n");
+        sb.append("      <link>https://bar.github.io/foo_polls/2020-01-03-Baz.html#seating-plan</link>\n");
+        sb.append("      <description><![CDATA[Seating plan projection for the Foo Parliament<br/>");
+        sb.append("4 seats needed for a majority<br/>");
+        sb.append("Opinion poll by Baz for Qux, 2–3 January 2020<br/>");
+        sb.append("<img src=\"https://bar.github.io/foo_polls/2020-01-03-Baz-seating-plan.png\"/><br/>");
+        sb.append("Details on https://bar.github.io/foo_polls/2020-01-03-Baz.html]]></description>\n");
+        sb.append("      <enclosure url=\"https://bar.github.io/foo_polls/2020-01-03-Baz-seating-plan.png\"");
+        sb.append(" length=\"7\" type=\"image/png\"/>\n");
+        sb.append("      <pubDate>Sat, 4 Jan 2020 00:00:00 +0100</pubDate>\n");
+        sb.append("      <dc:date>2020-01-04T00:00:00+01:00</dc:date>\n");
+        sb.append("    </item>\n");
+        sb.append("    <item>\n");
         sb.append("      <title>Opinion Poll by Baz for Qux, 2–3 January 2020 – Seat Projections</title>\n");
         sb.append("      <link>https://bar.github.io/foo_polls/2020-01-03-Baz.html#seats</link>\n");
         sb.append("      <description><![CDATA[Seat projections for the Foo Parliament<br/>");
@@ -525,6 +567,19 @@ public class RSS20FeedTest {
         sb.append("    <link>https://bar.github.io/foo_polls</link>\n");
         sb.append("    <description>All Registered Polls for the Foo Parliament</description>\n");
         sb.append("    <pubDate>Wed, 1 Jan 2020 00:00:00 +0100</pubDate>\n");
+        sb.append("    <item>\n");
+        sb.append("      <title>Opinion Poll by Baz, 2–3 January 2020 – Seating Plan Projection</title>\n");
+        sb.append("      <link>https://bar.github.io/foo_polls/2020-01-03-Baz.html#seating-plan</link>\n");
+        sb.append("      <description><![CDATA[Seating plan projection for the Foo Parliament<br/>");
+        sb.append("4 seats needed for a majority<br/>");
+        sb.append("Opinion poll by Baz, 2–3 January 2020<br/>");
+        sb.append("<img src=\"https://bar.github.io/foo_polls/2020-01-03-Baz-seating-plan.png\"/><br/>");
+        sb.append("Details on https://bar.github.io/foo_polls/2020-01-03-Baz.html]]></description>\n");
+        sb.append("      <enclosure url=\"https://bar.github.io/foo_polls/2020-01-03-Baz-seating-plan.png\"");
+        sb.append(" length=\"7\" type=\"image/png\"/>\n");
+        sb.append("      <pubDate>Sat, 4 Jan 2020 00:00:00 +0100</pubDate>\n");
+        sb.append("      <dc:date>2020-01-04T00:00:00+01:00</dc:date>\n");
+        sb.append("    </item>\n");
         sb.append("    <item>\n");
         sb.append("      <title>Opinion Poll by Baz, 2–3 January 2020 – Seat Projections</title>\n");
         sb.append("      <link>https://bar.github.io/foo_polls/2020-01-03-Baz.html#seats</link>\n");

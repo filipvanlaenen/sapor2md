@@ -43,7 +43,7 @@ public abstract class ProbabilityMassFunctionCombination<T extends Comparable<T>
      *
      * @return A set containing all the groups, sorted.
      */
-    List<String> getGroups() {
+    List<String> getSortedGroups() {
         List<String> sortedGroups = new ArrayList<String>(map.keySet());
         sortedGroups.sort(new Comparator<String>() {
             @Override
