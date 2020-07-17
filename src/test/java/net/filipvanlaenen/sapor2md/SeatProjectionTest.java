@@ -2,6 +2,7 @@ package net.filipvanlaenen.sapor2md;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -187,5 +188,41 @@ public class SeatProjectionTest {
         String expected = "Choice | CI95LB | Median | Adjusted Median\n" + "Blue Party | 1 | 1 | 1\n"
                 + "Red Party | 0 | 1 | 2\n" + "Green Party | 0 | 0 | 0\n";
         assertEquals(expected, actual);
+    }
+
+    /**
+     * Test verifying that a group will be sorted before another group if the
+     * adjusted median is higher.
+     */
+    @Test
+    void groupsAreSortedByAdjustedMediands() {
+        SeatProjection seatProjection = new SeatProjection("Red Party",
+                new ProbabilityMassFunction<Integer>(1, THREE_QUARTERS, 2, ONE_QUARTER), "Blue Party",
+                new ProbabilityMassFunction<Integer>(0, ONE_QUARTER, 1, THREE_QUARTERS));
+        assertEquals("Blue Party", seatProjection.getGroupsSortedByAdjustedMedian(2).get(0));
+    }
+
+    /**
+     * Test verifying that a group will be sorted before another group if the
+     * adjusted median is higher.
+     */
+    @Test
+    void groupWithHigherAdjustedMedianComesFirst() {
+        SeatProjection seatProjection = new SeatProjection("Red Party",
+                new ProbabilityMassFunction<Integer>(2, THREE_QUARTERS, THREE, ONE_QUARTER), "Blue Party",
+                new ProbabilityMassFunction<Integer>(0, ONE_QUARTER, 1, THREE_QUARTERS));
+        assertTrue(seatProjection.compareGroupsByAdjustedMedian("Red Party", "Blue Party", THREE) < 0);
+    }
+
+    /**
+     * Test verifying that a group will be sorted before another group if the
+     * adjusted medians are equal but the name comes alphabetically first.
+     */
+    @Test
+    void groupWithLowestNameComesFirstIfAdjustedMediansAreEqual() {
+        SeatProjection seatProjection = new SeatProjection("Red Party",
+                new ProbabilityMassFunction<Integer>(1, THREE_QUARTERS, 2, ONE_QUARTER), "Blue Party",
+                new ProbabilityMassFunction<Integer>(0, ONE_QUARTER, 1, THREE_QUARTERS));
+        assertTrue(seatProjection.compareGroupsByAdjustedMedian("Blue Party", "Red Party", 2) < 0);
     }
 }

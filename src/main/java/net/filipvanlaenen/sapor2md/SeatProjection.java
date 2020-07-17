@@ -226,16 +226,30 @@ public class SeatProjection extends ProbabilityMassFunctionCombination<Integer> 
         sortedGroups.sort(new Comparator<String>() {
             @Override
             public int compare(final String group1, final String group2) {
-                Integer adjustedMedian1 = getAdjustedMedian(group1, size);
-                Integer adjustedMedian2 = getAdjustedMedian(group2, size);
-                int compareAdjustedMedian = adjustedMedian2.compareTo(adjustedMedian1);
-                if (compareAdjustedMedian == 0) {
-                    return group1.compareToIgnoreCase(group2);
-                } else {
-                    return compareAdjustedMedian;
-                }
+                return compareGroupsByAdjustedMedian(group1, group2, size);
             }
         });
         return sortedGroups;
+    }
+
+    /**
+     * Compares two groups for sorting by adjusted median. The groups are sorted
+     * descending by adjusted median. If the adjusted medians are equal, the groups
+     * are sorted alphabetically by name.
+     *
+     * @param group1 The name of the first group.
+     * @param group2 The name of the second group.
+     * @param size   The size of the parliament.
+     * @return The comparison result.
+     */
+    int compareGroupsByAdjustedMedian(final String group1, final String group2, final int size) {
+        Integer adjustedMedian1 = getAdjustedMedian(group1, size);
+        Integer adjustedMedian2 = getAdjustedMedian(group2, size);
+        int compareAdjustedMedian = adjustedMedian2.compareTo(adjustedMedian1);
+        if (compareAdjustedMedian == 0) {
+            return group1.compareToIgnoreCase(group2);
+        } else {
+            return compareAdjustedMedian;
+        }
     }
 }
