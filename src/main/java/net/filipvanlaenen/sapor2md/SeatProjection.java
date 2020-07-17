@@ -218,15 +218,16 @@ public class SeatProjection extends ProbabilityMassFunctionCombination<Integer> 
      * Returns a set with all groups, sorted by adjusted median. If the adjusted
      * medians are equal, the groups are sorted alphabetically by name.
      *
+     * @param size The size of the parliament.
      * @return A set containing all the groups, sorted by adjusted median.
      */
-    List<String> getGroupsSortedByAdjustedMedian(final int numberOfSeats) {
+    List<String> getGroupsSortedByAdjustedMedian(final int size) {
         List<String> sortedGroups = new ArrayList<String>(getMap().keySet());
         sortedGroups.sort(new Comparator<String>() {
             @Override
             public int compare(final String group1, final String group2) {
-                Integer adjustedMedian1 = getAdjustedMedian(group1, numberOfSeats);
-                Integer adjustedMedian2 = getAdjustedMedian(group2, numberOfSeats);
+                Integer adjustedMedian1 = getAdjustedMedian(group1, size);
+                Integer adjustedMedian2 = getAdjustedMedian(group2, size);
                 int compareAdjustedMedian = adjustedMedian2.compareTo(adjustedMedian1);
                 if (compareAdjustedMedian == 0) {
                     return group1.compareToIgnoreCase(group2);

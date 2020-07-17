@@ -366,7 +366,7 @@ public final class RSS20Feed {
             }
 
             @Override
-            String createSeatingPlanProjectionItemDescription(Poll poll, SaporDirectory saporDir) {
+            String createSeatingPlanProjectionItemDescription(final Poll poll, final SaporDirectory saporDir) {
                 StringBuilder sb = new StringBuilder();
                 sb.append("<ul>");
                 SeatProjection seatProjection = poll.getSeatProjection();
@@ -460,7 +460,7 @@ public final class RSS20Feed {
             }
 
             @Override
-            String createSeatingPlanProjectionItemDescription(Poll poll, SaporDirectory saporDir) {
+            String createSeatingPlanProjectionItemDescription(final Poll poll, final SaporDirectory saporDir) {
                 StringBuilder sb = new StringBuilder();
                 sb.append("<![CDATA[");
                 sb.append("Seating plan projection for the ");

@@ -157,13 +157,13 @@ public abstract class Poll {
     /**
      * Sets the size of the file containing the seating plan projection chart.
      *
-     * @param seatProjectionsChartFileSize The size of the file containing the seating plan
-     *                                     projection chart.
+     * @param seatingPlanProjectionChartFileSize The size of the file containing the
+     *                                           seating plan projection chart.
      */
     void setSeatingPlanProjectionChartFileSize(final long seatingPlanProjectionChartFileSize) {
         this.seatingPlanProjectionChartFileSize = seatingPlanProjectionChartFileSize;
     }
-    
+
     /**
      * Returns the seat projection for the poll.
      *
