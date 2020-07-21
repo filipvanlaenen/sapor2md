@@ -7,6 +7,7 @@ import java.time.LocalDateTime;
 import java.time.Month;
 import java.time.OffsetDateTime;
 import java.time.ZoneOffset;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -42,6 +43,18 @@ public class RSS20FeedTest {
      */
     private static final int SEVEN = 7;
     /**
+     * Magic number nine.
+     */
+    private static final int NINE = 9;
+    /**
+     * Magic number ten.
+     */
+    private static final int TEN = 10;
+    /**
+     * Magic number eleven.
+     */
+    private static final int ELEVEN = 11;
+    /**
      * The magic number a half.
      */
     private static final double A_HALF = 0.5D;
@@ -69,6 +82,10 @@ public class RSS20FeedTest {
      * Upper bound for the 95 percent confidence interval for the green party.
      */
     private static final double GREEN_PARTY_CONFIDENCE_INTERVAL_UPPER_BOUND = 0.140D;
+    /**
+     * Magic number 2019, used as a year number.
+     */
+    private static final int TWO_THOUSAND_AND_NINETEEN = 2019;
     /**
      * Magic number 2020, used as a year number.
      */
@@ -241,6 +258,56 @@ public class RSS20FeedTest {
         poll.setSeatProjection(seatProjection);
         directory.addPoll(poll);
         return directory;
+    }
+
+    /**
+     * Creates a Sapor directory with a number of polls.
+     *
+     * @param noOfPolls The number of polls requested.
+     * @return A Sapor directory with the requests number of polls.
+     */
+    private SaporDirectory createDirectoryWithPolls(final int noOfPolls) {
+        InMemorySaporDirectory directory = new InMemorySaporDirectory(countryProperties);
+        for (int i = noOfPolls; i >= 1; i--) {
+            directory.addPoll(createPoll(i, TWO_THOUSAND_AND_TWENTY));
+        }
+        return directory;
+    }
+
+    /**
+     * Creates a poll to be included in a Sapor directory.
+     *
+     * @param i    The index of the poll, used as the day of month for the fieldwork
+     *             start.
+     * @param year The year of the poll.
+     * @return A poll to be included in a Sapor directory.
+     */
+    private InMemoryPoll createPoll(final int i, final int year) {
+        Map<String, String> properties = new HashMap<String, String>();
+        properties.put(Poll.POLLING_FIRM_KEY, "Baz");
+        properties.put(Poll.COMMISSIONERS_KEY, "Qux");
+        properties.put(Poll.FIELDWORK_START_KEY, year + "-01-" + String.format("%02d", i));
+        String endDate = year + "-01-" + String.format("%02d", i + 1);
+        properties.put(Poll.FIELDWORK_END_KEY, endDate);
+        InMemoryPoll poll = new InMemoryPoll(endDate + "-Baz", properties);
+        poll.setVotingIntentionsChartFileSize(FIVE);
+        poll.setSeatProjectionsChartFileSize(SIX);
+        poll.setSeatingPlanProjectionChartFileSize(SEVEN);
+        InMemoryStateSummary stateSummary = new InMemoryStateSummary();
+        stateSummary.setNumberOfSimulations(1);
+        stateSummary.setTimestamp(createDateTime(year, Month.JANUARY, i + 1, 0, 0));
+        poll.setStateSummary(stateSummary);
+        VotingIntentions votingIntentions = new VotingIntentions("Red Party",
+                createProbabilityMassFunctionForConfidenceInterval(RED_PARTY_CONFIDENCE_INTERVAL_LOWER_BOUND,
+                        RED_PARTY_CONFIDENCE_INTERVAL_UPPER_BOUND),
+                "Green Party", createProbabilityMassFunctionForConfidenceInterval(
+                        GREEN_PARTY_CONFIDENCE_INTERVAL_LOWER_BOUND, GREEN_PARTY_CONFIDENCE_INTERVAL_UPPER_BOUND));
+        poll.setVotingIntentions(votingIntentions);
+        SeatProjection seatProjection = new SeatProjection("Red Party",
+                new ProbabilityMassFunction<Integer>(0, 0D, 1, 0D, 2, 0D, THREE, 0D, FOUR, A_HALF, FIVE, A_HALF),
+                "Green Party", new ProbabilityMassFunction<Integer>(0, 0D, 1, A_HALF, 2, A_HALF));
+        poll.setSeatProjection(seatProjection);
+        return poll;
     }
 
     /**
@@ -454,6 +521,250 @@ public class RSS20FeedTest {
         sb.append(" type=\"image/png\"/>\n");
         sb.append("      <pubDate>Sat, 4 Jan 2020 00:00:00 +0100</pubDate>\n");
         sb.append("      <dc:date>2020-01-04T00:00:00+01:00</dc:date>\n");
+        sb.append("    </item>\n");
+        sb.append("  </channel>\n");
+        sb.append("</rss>");
+        String expected = sb.toString();
+        assertEquals(expected, actual);
+    }
+
+    /**
+     * Verifying that for a directory with eleven polls within thirty days from the
+     * most recent poll, a feed with all eleven polls is produced for IFTTT.
+     */
+    @Test
+    void iftttFeedIncludesAllPollsUpToThirtyDaysBackFromTheMostRecentPoll() {
+        SaporDirectory directory = createDirectoryWithPolls(ELEVEN);
+        String actual = new RSS20Feed(directory, RSS20FeedMode.IftttFeed).toString();
+        StringBuilder sb = new StringBuilder();
+        sb.append("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n");
+        sb.append("<rss version=\"2.0\" xmlns:dc=\"http://purl.org/dc/elements/1.1/\">\n");
+        sb.append("  <channel>\n");
+        sb.append("    <title>All Registered Polls for the Foo Parliament</title>\n");
+        sb.append("    <link>https://bar.github.io/foo_polls</link>\n");
+        sb.append("    <description>All Registered Polls for the Foo Parliament</description>\n");
+        sb.append("    <pubDate>Wed, 1 Jan 2020 00:00:00 +0100</pubDate>\n");
+        for (int i = ELEVEN; i >= 1; i--) {
+            String period = i + "–" + (i + 1);
+            String dayOfMonth = String.format("%02d", i + 1);
+            sb.append("    <item>\n");
+            sb.append("      <title>Opinion Poll by Baz for Qux, ");
+            sb.append(period);
+            sb.append(" January 2020 – Voting Intentions</title>\n");
+            sb.append("      <link>https://bar.github.io/foo_polls/2020-01-");
+            sb.append(dayOfMonth);
+            sb.append("-Baz.html</link>\n");
+            sb.append("      <description><![CDATA[Voting intentions for the Foo Parliament<br/>");
+            sb.append("Opinion poll by Baz for Qux, ");
+            sb.append(period);
+            sb.append(" January 2020<br/>");
+            sb.append("Details on https://bar.github.io/foo_polls/2020-01-");
+            sb.append(dayOfMonth);
+            sb.append("-Baz.html<br/>");
+            sb.append("<img src=\"https://bar.github.io/foo_polls/2020-01-");
+            sb.append(dayOfMonth);
+            sb.append("-Baz.png\"/>]]></description>\n");
+            sb.append("      <enclosure url=\"https://bar.github.io/foo_polls/2020-01-");
+            sb.append(dayOfMonth);
+            sb.append("-Baz.png\" length=\"5\"");
+            sb.append(" type=\"image/png\"/>\n");
+            sb.append("      <pubDate>");
+            OffsetDateTime timestamp = createDateTime(TWO_THOUSAND_AND_TWENTY, Month.JANUARY, i + 1, 0, 0);
+            sb.append(timestamp.format(DateTimeFormatter.RFC_1123_DATE_TIME));
+            sb.append("</pubDate>\n");
+            sb.append("      <dc:date>2020-01-");
+            sb.append(dayOfMonth);
+            sb.append("T00:00:00+01:00</dc:date>\n");
+            sb.append("    </item>\n");
+        }
+        sb.append("  </channel>\n");
+        sb.append("</rss>");
+        String expected = sb.toString();
+        assertEquals(expected, actual);
+    }
+
+    /**
+     * Verifying that for a directory with ten polls, one of which more than thirty
+     * days older than the most recent poll, a feed with all ten polls is produced
+     * for IFTTT.
+     */
+    @Test
+    void iftttFeedDoesNotIncludeEleventhPollIfOlderThanThirtyDaysFromMostRecentPoll() {
+        SaporDirectory directory = createDirectoryWithPolls(NINE);
+        directory.addPoll(createPoll(1, TWO_THOUSAND_AND_TWENTY_ONE));
+        String actual = new RSS20Feed(directory, RSS20FeedMode.IftttFeed).toString();
+        StringBuilder sb = new StringBuilder();
+        sb.append("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n");
+        sb.append("<rss version=\"2.0\" xmlns:dc=\"http://purl.org/dc/elements/1.1/\">\n");
+        sb.append("  <channel>\n");
+        sb.append("    <title>All Registered Polls for the Foo Parliament</title>\n");
+        sb.append("    <link>https://bar.github.io/foo_polls</link>\n");
+        sb.append("    <description>All Registered Polls for the Foo Parliament</description>\n");
+        sb.append("    <pubDate>Wed, 1 Jan 2020 00:00:00 +0100</pubDate>\n");
+        sb.append("    <item>\n");
+        sb.append("      <title>Opinion Poll by Baz for Qux, 1–2 January 2021 – Voting Intentions</title>\n");
+        sb.append("      <link>https://bar.github.io/foo_polls/2021-01-02-Baz.html</link>\n");
+        sb.append("      <description><![CDATA[Voting intentions for the Foo Parliament<br/>");
+        sb.append("Opinion poll by Baz for Qux, 1–2 January 2021<br/>");
+        sb.append("Details on https://bar.github.io/foo_polls/2021-01-02-Baz.html<br/>");
+        sb.append("<img src=\"https://bar.github.io/foo_polls/2021-01-02-Baz.png\"/>]]></description>\n");
+        sb.append("      <enclosure url=\"https://bar.github.io/foo_polls/2021-01-02-Baz.png\" length=\"5\"");
+        sb.append(" type=\"image/png\"/>\n");
+        sb.append("      <pubDate>Sat, 2 Jan 2021 00:00:00 +0100</pubDate>\n");
+        sb.append("      <dc:date>2021-01-02T00:00:00+01:00</dc:date>\n");
+        sb.append("    </item>\n");
+        for (int i = NINE; i >= 1; i--) {
+            String period = i + "–" + (i + 1);
+            String dayOfMonth = String.format("%02d", i + 1);
+            sb.append("    <item>\n");
+            sb.append("      <title>Opinion Poll by Baz for Qux, ");
+            sb.append(period);
+            sb.append(" January 2020 – Voting Intentions</title>\n");
+            sb.append("      <link>https://bar.github.io/foo_polls/2020-01-");
+            sb.append(dayOfMonth);
+            sb.append("-Baz.html</link>\n");
+            sb.append("      <description><![CDATA[Voting intentions for the Foo Parliament<br/>");
+            sb.append("Opinion poll by Baz for Qux, ");
+            sb.append(period);
+            sb.append(" January 2020<br/>");
+            sb.append("Details on https://bar.github.io/foo_polls/2020-01-");
+            sb.append(dayOfMonth);
+            sb.append("-Baz.html<br/>");
+            sb.append("<img src=\"https://bar.github.io/foo_polls/2020-01-");
+            sb.append(dayOfMonth);
+            sb.append("-Baz.png\"/>]]></description>\n");
+            sb.append("      <enclosure url=\"https://bar.github.io/foo_polls/2020-01-");
+            sb.append(dayOfMonth);
+            sb.append("-Baz.png\" length=\"5\"");
+            sb.append(" type=\"image/png\"/>\n");
+            sb.append("      <pubDate>");
+            OffsetDateTime timestamp = createDateTime(TWO_THOUSAND_AND_TWENTY, Month.JANUARY, i + 1, 0, 0);
+            sb.append(timestamp.format(DateTimeFormatter.RFC_1123_DATE_TIME));
+            sb.append("</pubDate>\n");
+            sb.append("      <dc:date>2020-01-");
+            sb.append(dayOfMonth);
+            sb.append("T00:00:00+01:00</dc:date>\n");
+            sb.append("    </item>\n");
+        }
+        sb.append("  </channel>\n");
+        sb.append("</rss>");
+        String expected = sb.toString();
+        assertEquals(expected, actual);
+    }
+
+    /**
+     * Verifying that for a directory with eleven polls, one of which more than
+     * thirty days older than the most recent poll, a feed with only ten polls is
+     * produced for IFTTT.
+     */
+    @Test
+    void iftttFeedIncludesAtLeastTenPolls() {
+        SaporDirectory directory = createDirectoryWithPolls(TEN);
+        directory.addPoll(createPoll(1, TWO_THOUSAND_AND_NINETEEN));
+        String actual = new RSS20Feed(directory, RSS20FeedMode.IftttFeed).toString();
+        StringBuilder sb = new StringBuilder();
+        sb.append("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n");
+        sb.append("<rss version=\"2.0\" xmlns:dc=\"http://purl.org/dc/elements/1.1/\">\n");
+        sb.append("  <channel>\n");
+        sb.append("    <title>All Registered Polls for the Foo Parliament</title>\n");
+        sb.append("    <link>https://bar.github.io/foo_polls</link>\n");
+        sb.append("    <description>All Registered Polls for the Foo Parliament</description>\n");
+        sb.append("    <pubDate>Wed, 1 Jan 2020 00:00:00 +0100</pubDate>\n");
+        for (int i = TEN; i >= 1; i--) {
+            String period = i + "–" + (i + 1);
+            String dayOfMonth = String.format("%02d", i + 1);
+            sb.append("    <item>\n");
+            sb.append("      <title>Opinion Poll by Baz for Qux, ");
+            sb.append(period);
+            sb.append(" January 2020 – Voting Intentions</title>\n");
+            sb.append("      <link>https://bar.github.io/foo_polls/2020-01-");
+            sb.append(dayOfMonth);
+            sb.append("-Baz.html</link>\n");
+            sb.append("      <description><![CDATA[Voting intentions for the Foo Parliament<br/>");
+            sb.append("Opinion poll by Baz for Qux, ");
+            sb.append(period);
+            sb.append(" January 2020<br/>");
+            sb.append("Details on https://bar.github.io/foo_polls/2020-01-");
+            sb.append(dayOfMonth);
+            sb.append("-Baz.html<br/>");
+            sb.append("<img src=\"https://bar.github.io/foo_polls/2020-01-");
+            sb.append(dayOfMonth);
+            sb.append("-Baz.png\"/>]]></description>\n");
+            sb.append("      <enclosure url=\"https://bar.github.io/foo_polls/2020-01-");
+            sb.append(dayOfMonth);
+            sb.append("-Baz.png\" length=\"5\"");
+            sb.append(" type=\"image/png\"/>\n");
+            sb.append("      <pubDate>");
+            OffsetDateTime timestamp = createDateTime(TWO_THOUSAND_AND_TWENTY, Month.JANUARY, i + 1, 0, 0);
+            sb.append(timestamp.format(DateTimeFormatter.RFC_1123_DATE_TIME));
+            sb.append("</pubDate>\n");
+            sb.append("      <dc:date>2020-01-");
+            sb.append(dayOfMonth);
+            sb.append("T00:00:00+01:00</dc:date>\n");
+            sb.append("    </item>\n");
+        }
+        sb.append("  </channel>\n");
+        sb.append("</rss>");
+        String expected = sb.toString();
+        assertEquals(expected, actual);
+    }
+
+    /**
+     * Verifying that for a directory with eleven polls, one of which more than
+     * thirty days older than the most recent poll, a feed with all eleven polls is
+     * produced for RSS 2.0.
+     */
+    @Test
+    void rssFeedIncludesAllPolls() {
+        SaporDirectory directory = createDirectoryWithPolls(TEN);
+        directory.addPoll(createPoll(1, TWO_THOUSAND_AND_NINETEEN));
+        String actual = new RSS20Feed(directory, RSS20FeedMode.GitHubFeed).toString();
+        StringBuilder sb = new StringBuilder();
+        sb.append("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n");
+        sb.append("<rss version=\"2.0\" xmlns:dc=\"http://purl.org/dc/elements/1.1/\">\n");
+        sb.append("  <channel>\n");
+        sb.append("    <title>All Registered Polls for the Foo Parliament</title>\n");
+        sb.append("    <link>https://bar.github.io/foo_polls</link>\n");
+        sb.append("    <description>All Registered Polls for the Foo Parliament</description>\n");
+        sb.append("    <pubDate>Wed, 1 Jan 2020 00:00:00 +0100</pubDate>\n");
+        for (int i = TEN; i >= 1; i--) {
+            String period = i + "–" + (i + 1);
+            String dayOfMonth = String.format("%02d", i + 1);
+            sb.append("    <item>\n");
+            sb.append("      <title>Opinion Poll by Baz for Qux, ");
+            sb.append(period);
+            sb.append(" January 2020 – Voting Intentions</title>\n");
+            sb.append("      <link>https://bar.github.io/foo_polls/2020-01-");
+            sb.append(dayOfMonth);
+            sb.append("-Baz.html</link>\n");
+            sb.append("      <description><ul>");
+            sb.append("<li>Red Party: 14.9–19.5%</li>");
+            sb.append("<li>Green Party: 10.0–14.0%</li>");
+            sb.append("</ul></description>\n");
+            sb.append("      <enclosure url=\"https://bar.github.io/foo_polls/2020-01-");
+            sb.append(dayOfMonth);
+            sb.append("-Baz.png\" length=\"5\"");
+            sb.append(" type=\"image/png\"/>\n");
+            sb.append("      <pubDate>");
+            OffsetDateTime timestamp = createDateTime(TWO_THOUSAND_AND_TWENTY, Month.JANUARY, i + 1, 0, 0);
+            sb.append(timestamp.format(DateTimeFormatter.RFC_1123_DATE_TIME));
+            sb.append("</pubDate>\n");
+            sb.append("      <dc:date>2020-01-");
+            sb.append(dayOfMonth);
+            sb.append("T00:00:00+01:00</dc:date>\n");
+            sb.append("    </item>\n");
+        }
+        sb.append("    <item>\n");
+        sb.append("      <title>Opinion Poll by Baz for Qux, 1–2 January 2019 – Voting Intentions</title>\n");
+        sb.append("      <link>https://bar.github.io/foo_polls/2019-01-02-Baz.html</link>\n");
+        sb.append("      <description><ul>");
+        sb.append("<li>Red Party: 14.9–19.5%</li>");
+        sb.append("<li>Green Party: 10.0–14.0%</li>");
+        sb.append("</ul></description>\n");
+        sb.append("      <enclosure url=\"https://bar.github.io/foo_polls/2019-01-02-Baz.png\" length=\"5\"");
+        sb.append(" type=\"image/png\"/>\n");
+        sb.append("      <pubDate>Wed, 2 Jan 2019 00:00:00 +0100</pubDate>\n");
+        sb.append("      <dc:date>2019-01-02T00:00:00+01:00</dc:date>\n");
         sb.append("    </item>\n");
         sb.append("  </channel>\n");
         sb.append("</rss>");

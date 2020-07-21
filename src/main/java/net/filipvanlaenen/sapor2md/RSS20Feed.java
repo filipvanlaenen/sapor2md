@@ -16,6 +16,14 @@ public final class RSS20Feed {
      */
     private static final double NINETY_FIVE_PERCENT = 0.95D;
     /**
+     * Magic number ten.
+     */
+    private static final int TEN = 10;
+    /**
+     * Magic number thirty.
+     */
+    private static final int THIRTY = 30;
+    /**
      * Magic number 100.
      */
     private static final double ONE_HUNDRED = 100D;
@@ -79,15 +87,28 @@ public final class RSS20Feed {
         sb.append("</description>\n");
         sb.append("    <pubDate>" + getPubDate().format(DateTimeFormatter.RFC_1123_DATE_TIME) + "</pubDate>\n");
         Iterator<Poll> pollIterator = saporDirectory.getSortedPolls();
-        while (pollIterator.hasNext()) {
+        int noOfPollsIncluded = 0;
+        LocalDate cutOffDate = null;
+        boolean withinThirtyDays = true;
+        while (pollIterator.hasNext()
+                && (feedMode != RSS20FeedMode.IftttFeed || noOfPollsIncluded < TEN || withinThirtyDays)) {
             Poll poll = pollIterator.next();
-            if (poll.hasStateSummary() && poll.getStateSummary().getNumberOfSimulations() >= ONE_MILLION) {
-                sb.append(createSeatingPlanProjectionItem(poll));
-                sb.append(createSeatProjectionsItem(poll));
+            LocalDate fieldworkEnd = poll.getFieldworkEnd();
+            if (cutOffDate == null) {
+                cutOffDate = fieldworkEnd.minusDays(THIRTY);
+            } else {
+                withinThirtyDays = fieldworkEnd.isAfter(cutOffDate);
             }
-            if (poll.hasStateSummary() && poll.getStateSummary().getNumberOfSimulations() >= 1) {
-                sb.append(createVotingIntentionsItem(poll));
+            if (feedMode != RSS20FeedMode.IftttFeed || noOfPollsIncluded < TEN || withinThirtyDays) {
+                if (poll.hasStateSummary() && poll.getStateSummary().getNumberOfSimulations() >= ONE_MILLION) {
+                    sb.append(createSeatingPlanProjectionItem(poll));
+                    sb.append(createSeatProjectionsItem(poll));
+                }
+                if (poll.hasStateSummary() && poll.getStateSummary().getNumberOfSimulations() >= 1) {
+                    sb.append(createVotingIntentionsItem(poll));
+                }
             }
+            noOfPollsIncluded++;
         }
         sb.append("  </channel>\n");
         sb.append("</rss>");
