@@ -448,8 +448,8 @@ public class RSS20FeedTest {
         sb.append("      <link>https://bar.github.io/foo_polls/2020-01-03-Baz.html</link>\n");
         sb.append("      <description><![CDATA[Voting intentions for the Foo Parliament<br/>");
         sb.append("Opinion poll by Baz for Qux, 2–3 January 2020<br/>");
-        sb.append("<img src=\"https://bar.github.io/foo_polls/2020-01-03-Baz.png\"/><br/>");
-        sb.append("Details on https://bar.github.io/foo_polls/2020-01-03-Baz.html]]></description>\n");
+        sb.append("Details on https://bar.github.io/foo_polls/2020-01-03-Baz.html<br/>");
+        sb.append("<img src=\"https://bar.github.io/foo_polls/2020-01-03-Baz.png\"/>]]></description>\n");
         sb.append("      <enclosure url=\"https://bar.github.io/foo_polls/2020-01-03-Baz.png\" length=\"5\"");
         sb.append(" type=\"image/png\"/>\n");
         sb.append("      <pubDate>Sat, 4 Jan 2020 00:00:00 +0100</pubDate>\n");
@@ -482,8 +482,8 @@ public class RSS20FeedTest {
         sb.append("      <link>https://bar.github.io/foo_polls/2020-01-03-Baz.html</link>\n");
         sb.append("      <description><![CDATA[Voting intentions for the Foo Parliament<br/>");
         sb.append("Opinion poll by Baz, 2–3 January 2020<br/>");
-        sb.append("<img src=\"https://bar.github.io/foo_polls/2020-01-03-Baz.png\"/><br/>");
-        sb.append("Details on https://bar.github.io/foo_polls/2020-01-03-Baz.html]]></description>\n");
+        sb.append("Details on https://bar.github.io/foo_polls/2020-01-03-Baz.html<br/>");
+        sb.append("<img src=\"https://bar.github.io/foo_polls/2020-01-03-Baz.png\"/>]]></description>\n");
         sb.append("      <enclosure url=\"https://bar.github.io/foo_polls/2020-01-03-Baz.png\" length=\"5\"");
         sb.append(" type=\"image/png\"/>\n");
         sb.append("      <pubDate>Sat, 4 Jan 2020 00:00:00 +0100</pubDate>\n");
@@ -517,8 +517,8 @@ public class RSS20FeedTest {
         sb.append("      <description><![CDATA[Seating plan projection for the Foo Parliament<br/>");
         sb.append("4 seats needed for a majority<br/>");
         sb.append("Opinion poll by Baz for Qux, 2–3 January 2020<br/>");
-        sb.append("<img src=\"https://bar.github.io/foo_polls/2020-01-03-Baz-seating-plan.png\"/><br/>");
-        sb.append("Details on https://bar.github.io/foo_polls/2020-01-03-Baz.html]]></description>\n");
+        sb.append("Details on https://bar.github.io/foo_polls/2020-01-03-Baz.html<br/>");
+        sb.append("<img src=\"https://bar.github.io/foo_polls/2020-01-03-Baz-seating-plan.png\"/>]]></description>\n");
         sb.append("      <enclosure url=\"https://bar.github.io/foo_polls/2020-01-03-Baz-seating-plan.png\"");
         sb.append(" length=\"7\" type=\"image/png\"/>\n");
         sb.append("      <pubDate>Sat, 4 Jan 2020 00:00:00 +0100</pubDate>\n");
@@ -530,8 +530,8 @@ public class RSS20FeedTest {
         sb.append("      <description><![CDATA[Seat projections for the Foo Parliament<br/>");
         sb.append("4 seats needed for a majority<br/>");
         sb.append("Opinion poll by Baz for Qux, 2–3 January 2020<br/>");
-        sb.append("<img src=\"https://bar.github.io/foo_polls/2020-01-03-Baz-seats.png\"/><br/>");
-        sb.append("Details on https://bar.github.io/foo_polls/2020-01-03-Baz.html]]></description>\n");
+        sb.append("Details on https://bar.github.io/foo_polls/2020-01-03-Baz.html<br/>");
+        sb.append("<img src=\"https://bar.github.io/foo_polls/2020-01-03-Baz-seats.png\"/>]]></description>\n");
         sb.append("      <enclosure url=\"https://bar.github.io/foo_polls/2020-01-03-Baz-seats.png\" length=\"6\"");
         sb.append(" type=\"image/png\"/>\n");
         sb.append("      <pubDate>Sat, 4 Jan 2020 00:00:00 +0100</pubDate>\n");
@@ -542,8 +542,8 @@ public class RSS20FeedTest {
         sb.append("      <link>https://bar.github.io/foo_polls/2020-01-03-Baz.html</link>\n");
         sb.append("      <description><![CDATA[Voting intentions for the Foo Parliament<br/>");
         sb.append("Opinion poll by Baz for Qux, 2–3 January 2020<br/>");
-        sb.append("<img src=\"https://bar.github.io/foo_polls/2020-01-03-Baz.png\"/><br/>");
-        sb.append("Details on https://bar.github.io/foo_polls/2020-01-03-Baz.html]]></description>\n");
+        sb.append("Details on https://bar.github.io/foo_polls/2020-01-03-Baz.html<br/>");
+        sb.append("<img src=\"https://bar.github.io/foo_polls/2020-01-03-Baz.png\"/>]]></description>\n");
         sb.append("      <enclosure url=\"https://bar.github.io/foo_polls/2020-01-03-Baz.png\" length=\"5\"");
         sb.append(" type=\"image/png\"/>\n");
         sb.append("      <pubDate>Sat, 4 Jan 2020 00:00:00 +0100</pubDate>\n");
@@ -577,8 +577,8 @@ public class RSS20FeedTest {
         sb.append("      <description><![CDATA[Seating plan projection for the Foo Parliament<br/>");
         sb.append("4 seats needed for a majority<br/>");
         sb.append("Opinion poll by Baz, 2–3 January 2020<br/>");
-        sb.append("<img src=\"https://bar.github.io/foo_polls/2020-01-03-Baz-seating-plan.png\"/><br/>");
-        sb.append("Details on https://bar.github.io/foo_polls/2020-01-03-Baz.html]]></description>\n");
+        sb.append("Details on https://bar.github.io/foo_polls/2020-01-03-Baz.html<br/>");
+        sb.append("<img src=\"https://bar.github.io/foo_polls/2020-01-03-Baz-seating-plan.png\"/>]]></description>\n");
         sb.append("      <enclosure url=\"https://bar.github.io/foo_polls/2020-01-03-Baz-seating-plan.png\"");
         sb.append(" length=\"7\" type=\"image/png\"/>\n");
         sb.append("      <pubDate>Sat, 4 Jan 2020 00:00:00 +0100</pubDate>\n");
@@ -590,8 +590,8 @@ public class RSS20FeedTest {
         sb.append("      <description><![CDATA[Seat projections for the Foo Parliament<br/>");
         sb.append("4 seats needed for a majority<br/>");
         sb.append("Opinion poll by Baz, 2–3 January 2020<br/>");
-        sb.append("<img src=\"https://bar.github.io/foo_polls/2020-01-03-Baz-seats.png\"/><br/>");
-        sb.append("Details on https://bar.github.io/foo_polls/2020-01-03-Baz.html]]></description>\n");
+        sb.append("Details on https://bar.github.io/foo_polls/2020-01-03-Baz.html<br/>");
+        sb.append("<img src=\"https://bar.github.io/foo_polls/2020-01-03-Baz-seats.png\"/>]]></description>\n");
         sb.append("      <enclosure url=\"https://bar.github.io/foo_polls/2020-01-03-Baz-seats.png\" length=\"6\"");
         sb.append(" type=\"image/png\"/>\n");
         sb.append("      <pubDate>Sat, 4 Jan 2020 00:00:00 +0100</pubDate>\n");
@@ -602,8 +602,8 @@ public class RSS20FeedTest {
         sb.append("      <link>https://bar.github.io/foo_polls/2020-01-03-Baz.html</link>\n");
         sb.append("      <description><![CDATA[Voting intentions for the Foo Parliament<br/>");
         sb.append("Opinion poll by Baz, 2–3 January 2020<br/>");
-        sb.append("<img src=\"https://bar.github.io/foo_polls/2020-01-03-Baz.png\"/><br/>");
-        sb.append("Details on https://bar.github.io/foo_polls/2020-01-03-Baz.html]]></description>\n");
+        sb.append("Details on https://bar.github.io/foo_polls/2020-01-03-Baz.html<br/>");
+        sb.append("<img src=\"https://bar.github.io/foo_polls/2020-01-03-Baz.png\"/>]]></description>\n");
         sb.append("      <enclosure url=\"https://bar.github.io/foo_polls/2020-01-03-Baz.png\" length=\"5\"");
         sb.append(" type=\"image/png\"/>\n");
         sb.append("      <pubDate>Sat, 4 Jan 2020 00:00:00 +0100</pubDate>\n");
