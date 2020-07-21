@@ -90,8 +90,7 @@ public final class RSS20Feed {
         int noOfPollsIncluded = 0;
         LocalDate cutOffDate = null;
         boolean withinThirtyDays = true;
-        while (pollIterator.hasNext()
-                && (feedMode != RSS20FeedMode.IftttFeed || noOfPollsIncluded < TEN || withinThirtyDays)) {
+        while (pollIterator.hasNext()) {
             Poll poll = pollIterator.next();
             LocalDate fieldworkEnd = poll.getFieldworkEnd();
             if (cutOffDate == null) {
