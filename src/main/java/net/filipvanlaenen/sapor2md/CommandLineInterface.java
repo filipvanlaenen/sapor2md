@@ -158,6 +158,50 @@ public final class CommandLineInterface {
                 System.out.println(IftttRSS20Feed.execute(directory));
                 return "Done.";
             }
+        },
+        /**
+         * Command to create a voting intentions changes chart.
+         */
+        VotingIntentionsChangesChart {
+            /**
+             * Produces a chart with the voting intentions changes from a poll.
+             *
+             * @param args The arguments for the command, i.e. the directory in which the
+             *             poll resides and the poll file.
+             * @return A message reporting whether a voting intentions changes chart has
+             *         been produced.
+             */
+            @Override
+            String execute(final String... args) {
+                String directory = args[0];
+                String pollFileName = args[1];
+                VotingIntentionsChangesChart chart = new VotingIntentionsChangesChart(directory, pollFileName);
+                boolean success = chart.writeSvgToFileSystem();
+                return (success ? "Produced" : "Could not produce") + " the voting intentions changes chart for "
+                        + pollFileName + ".";
+            }
+        },
+        /**
+         * Command to create a voting intentions chart.
+         */
+        VotingIntentionsChart {
+            /**
+             * Produces a chart with the voting intentions from a poll.
+             *
+             * @param args The arguments for the command, i.e. the directory in which the
+             *             poll resides and the poll file.
+             * @return A message reporting whether a voting intentions chart has been
+             *         produced.
+             */
+            @Override
+            String execute(final String... args) {
+                String directory = args[0];
+                String pollFileName = args[1];
+                VotingIntentionsChart chart = new VotingIntentionsChart(directory, pollFileName);
+                boolean success = chart.writeSvgToFileSystem();
+                return (success ? "Produced" : "Could not produce") + " the voting intentions chart for " + pollFileName
+                        + ".";
+            }
         };
 
         /**
