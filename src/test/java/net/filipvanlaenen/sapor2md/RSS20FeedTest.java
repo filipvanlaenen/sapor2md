@@ -8,9 +8,7 @@ import java.time.Month;
 import java.time.OffsetDateTime;
 import java.time.ZoneOffset;
 import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 import org.junit.jupiter.api.BeforeEach;
@@ -63,10 +61,6 @@ public class RSS20FeedTest {
      */
     private static final double NINETY_FIVE_PERCENT = 0.95D;
     /**
-     * Magic number 2000.
-     */
-    private static final double TWO_THOUSAND = 2000D;
-    /**
      * Lower bound for the 95 percent confidence interval for the red party.
      */
     private static final double RED_PARTY_CONFIDENCE_INTERVAL_LOWER_BOUND = 0.149D;
@@ -107,6 +101,10 @@ public class RSS20FeedTest {
      * projections in an RSS 2.0 feed.
      */
     private static final long ONE_MILLION = 1048576;
+    /**
+     * A text color.
+     */
+    private static final String TEXT_COLOR = "#112233";
 
     /**
      * A country properties object for testing purposes.
@@ -122,6 +120,7 @@ public class RSS20FeedTest {
         map.put(CountryProperties.NUMBER_OF_SEATS_KEY, Integer.toString(SIX));
         map.put(CountryProperties.GITHUB_DIRECTORY_URL_KEY, "https://bar.github.io/foo_polls");
         map.put(CountryProperties.PARLIAMENT_NAME_KEY, "Foo Parliament");
+        map.put(CountryProperties.TEXT_COLOR_KEY, TEXT_COLOR);
         OffsetDateTime timestamp = createDateTime(TWO_THOUSAND_AND_TWENTY, Month.JANUARY, 1, 0, 0);
         countryProperties = new InMemoryCountryProperties(map, timestamp);
     }
@@ -192,37 +191,6 @@ public class RSS20FeedTest {
     }
 
     /**
-     * Creates a probability mass function for the voting intentions such that the
-     * 95 percent confidence interval is as specified.
-     *
-     * @param lowerBound The lower bound of the 95 percent confidence interval.
-     * @param upperBound The lower bound of the 95 percent confidence interval.
-     * @return A probability mass function having the 95 percent confidence interval
-     *         as specified.
-     */
-    private ProbabilityMassFunction<ProbabilityRange> createProbabilityMassFunctionForConfidenceInterval(
-            final double lowerBound, final double upperBound) {
-        int noBelow = (int) (lowerBound * TWO_THOUSAND);
-        List<Object> args = new ArrayList<Object>();
-        for (int i = 0; i < noBelow; i++) {
-            args.add(new ProbabilityRange(((double) i) / TWO_THOUSAND, ((double) (i + 1)) / TWO_THOUSAND));
-            args.add(0D);
-        }
-        int noBetween = (int) ((upperBound - lowerBound) * TWO_THOUSAND);
-        double p = NINETY_FIVE_PERCENT / noBetween;
-        for (int i = 0; i < noBetween; i++) {
-            args.add(new ProbabilityRange(((double) (noBelow + i)) / TWO_THOUSAND,
-                    ((double) (noBelow + i + 1)) / TWO_THOUSAND));
-            if (i == 0 || i == noBetween - 1) {
-                args.add(p + (1D - NINETY_FIVE_PERCENT) / 2D);
-            } else {
-                args.add(p);
-            }
-        }
-        return new ProbabilityMassFunction<ProbabilityRange>(args.toArray());
-    }
-
-    /**
      * Creates a Sapor directory with one poll.
      *
      * @param numberOfSimulations The number of simulations run on the poll.
@@ -247,9 +215,9 @@ public class RSS20FeedTest {
         stateSummary.setTimestamp(createDateTime(TWO_THOUSAND_AND_TWENTY, Month.JANUARY, FOUR, 0, 0));
         poll.setStateSummary(stateSummary);
         VotingIntentions votingIntentions = new VotingIntentions("Red Party",
-                createProbabilityMassFunctionForConfidenceInterval(RED_PARTY_CONFIDENCE_INTERVAL_LOWER_BOUND,
-                        RED_PARTY_CONFIDENCE_INTERVAL_UPPER_BOUND),
-                "Green Party", createProbabilityMassFunctionForConfidenceInterval(
+                VotingIntentionsTestServices.createProbabilityMassFunctionForConfidenceInterval(
+                        RED_PARTY_CONFIDENCE_INTERVAL_LOWER_BOUND, RED_PARTY_CONFIDENCE_INTERVAL_UPPER_BOUND),
+                "Green Party", VotingIntentionsTestServices.createProbabilityMassFunctionForConfidenceInterval(
                         GREEN_PARTY_CONFIDENCE_INTERVAL_LOWER_BOUND, GREEN_PARTY_CONFIDENCE_INTERVAL_UPPER_BOUND));
         poll.setVotingIntentions(votingIntentions);
         SeatProjection seatProjection = new SeatProjection("Red Party",
@@ -298,9 +266,9 @@ public class RSS20FeedTest {
         stateSummary.setTimestamp(createDateTime(year, Month.JANUARY, i + 1, 0, 0));
         poll.setStateSummary(stateSummary);
         VotingIntentions votingIntentions = new VotingIntentions("Red Party",
-                createProbabilityMassFunctionForConfidenceInterval(RED_PARTY_CONFIDENCE_INTERVAL_LOWER_BOUND,
-                        RED_PARTY_CONFIDENCE_INTERVAL_UPPER_BOUND),
-                "Green Party", createProbabilityMassFunctionForConfidenceInterval(
+                VotingIntentionsTestServices.createProbabilityMassFunctionForConfidenceInterval(
+                        RED_PARTY_CONFIDENCE_INTERVAL_LOWER_BOUND, RED_PARTY_CONFIDENCE_INTERVAL_UPPER_BOUND),
+                "Green Party", VotingIntentionsTestServices.createProbabilityMassFunctionForConfidenceInterval(
                         GREEN_PARTY_CONFIDENCE_INTERVAL_LOWER_BOUND, GREEN_PARTY_CONFIDENCE_INTERVAL_UPPER_BOUND));
         poll.setVotingIntentions(votingIntentions);
         SeatProjection seatProjection = new SeatProjection("Red Party",

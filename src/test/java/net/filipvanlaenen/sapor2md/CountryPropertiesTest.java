@@ -40,6 +40,14 @@ public class CountryPropertiesTest {
      * A parliament name.
      */
     private static final String PARLIAMENT_NAME = "Foo Parliament";
+    /**
+     * A text color.
+     */
+    private static final String TEXT_COLOR = "#112233";
+    /**
+     * The text color as integer.
+     */
+    private static final int TEXT_COLOR_AS_INT = 0x112233;
 
     /**
      * A country properties object for testing purposes.
@@ -55,6 +63,7 @@ public class CountryPropertiesTest {
         map.put(CountryProperties.GITHUB_DIRECTORY_URL_KEY, GITHUB_DIRECTORY_URL);
         map.put(CountryProperties.NUMBER_OF_SEATS_KEY, Integer.toString(SIX));
         map.put(CountryProperties.PARLIAMENT_NAME_KEY, PARLIAMENT_NAME);
+        map.put(CountryProperties.TEXT_COLOR_KEY, TEXT_COLOR);
         LocalDateTime localDateTime = LocalDateTime.of(TWO_THOUSAND_AND_TWENTY, Month.JANUARY, 1, 0, 0);
         ZoneOffset offset = ZoneOffset.of("+01:00");
         OffsetDateTime timestamp = OffsetDateTime.of(localDateTime, offset);
@@ -94,6 +103,7 @@ public class CountryPropertiesTest {
     void numberOfSeatsForMajorityIsCalculatedCorrectlyForOddNumberOfSeats() {
         Map<String, String> map = new HashMap<String, String>();
         map.put(CountryProperties.NUMBER_OF_SEATS_KEY, Integer.toString(SEVEN));
+        map.put(CountryProperties.TEXT_COLOR_KEY, TEXT_COLOR);
         CountryProperties otherCountryProperties = new InMemoryCountryProperties(map, null);
         assertEquals(FOUR, otherCountryProperties.getNumberOfSeatsForMajority());
     }
@@ -104,5 +114,13 @@ public class CountryPropertiesTest {
     @Test
     void constructorWiresParliamentNameCorrectly() {
         assertEquals(PARLIAMENT_NAME, countryProperties.getParliamentName());
+    }
+
+    /**
+     * Verifying that the text color is wired correctly from the map.
+     */
+    @Test
+    void constructorWiresTextColorCorrectly() {
+        assertEquals(TEXT_COLOR_AS_INT, countryProperties.getTextColor());
     }
 }

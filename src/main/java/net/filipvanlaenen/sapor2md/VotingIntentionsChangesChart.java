@@ -1,9 +1,17 @@
 package net.filipvanlaenen.sapor2md;
 
+import java.util.Map;
+
+import net.filipvanlaenen.tsvgj.G;
+import net.filipvanlaenen.tsvgj.StructuralElement;
+
 /**
  * Class producing a voting intentions changes chart.
  */
-public class VotingIntentionsChangesChart extends Chart {
+public class VotingIntentionsChangesChart extends HorizontalBartChart {
+    private Integer numberOfGroups;
+    private Map<String, ProbabilityMassFunction<ProbabilityRange>> votingIntentionsMap;
+
     /**
      * Constructor taking the path to the Sapor directory and the name of the poll
      * file as its parameters.
@@ -34,5 +42,35 @@ public class VotingIntentionsChangesChart extends Chart {
     @Override
     public String getFileNameSuffix() {
         return "-changes";
+    }
+
+    @Override
+    protected double calculateContentWidth() {
+        return 0; // TODO
+    }
+
+    @Override
+    int getNumberOfGroups() {
+        if (numberOfGroups == null) {
+            numberOfGroups = getVotingIntentionsMap().size();
+        }
+        return numberOfGroups;
+    }
+
+    private Map<String, ProbabilityMassFunction<ProbabilityRange>> getVotingIntentionsMap() {
+        if (votingIntentionsMap == null) {
+            votingIntentionsMap = getPoll().getVotingIntentions().getMap();
+        }
+        return votingIntentionsMap;
+    }
+
+    @Override
+    protected StructuralElement createChartContent() {
+        return new G(); // TODO
+    }
+
+    @Override
+    protected String getTitleText() {
+        return "Voting Intentions Changes for the " + getSaporDirectory().getCountryProperties().getParliamentName();
     }
 }

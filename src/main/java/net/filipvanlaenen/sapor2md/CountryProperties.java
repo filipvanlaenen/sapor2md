@@ -20,6 +20,10 @@ public abstract class CountryProperties {
      * The key for the parliament name.
      */
     static final String PARLIAMENT_NAME_KEY = "ParliamentName";
+    /**
+     * The key for the text color.
+     */
+    static final String TEXT_COLOR_KEY = "TextColor";
 
     /**
      * The URL to the GitHub directory.
@@ -33,6 +37,10 @@ public abstract class CountryProperties {
      * The name of the parliament.
      */
     private final String parliamentName;
+    /**
+     * The text color.
+     */
+    private final int textColor;
     /**
      * The timestamp for the country properties file.
      */
@@ -49,6 +57,7 @@ public abstract class CountryProperties {
         gitHubDirectoryURL = map.get(GITHUB_DIRECTORY_URL_KEY);
         numberOfSeats = Integer.parseInt(map.get(NUMBER_OF_SEATS_KEY));
         parliamentName = map.get(PARLIAMENT_NAME_KEY);
+        textColor = Integer.parseInt(map.get(TEXT_COLOR_KEY).substring(1, 7), 16);
         this.timestamp = timestamp;
     }
 
@@ -89,6 +98,15 @@ public abstract class CountryProperties {
     }
 
     /**
+     * Returns the text color.
+     *
+     * @return The text color.
+     */
+    int getTextColor() {
+        return textColor;
+    }
+
+    /**
      * Returns the last modified timestamp of the file.
      *
      * @return The last modified timestamp.
@@ -96,4 +114,5 @@ public abstract class CountryProperties {
     OffsetDateTime getTimestamp() {
         return timestamp;
     }
+
 }

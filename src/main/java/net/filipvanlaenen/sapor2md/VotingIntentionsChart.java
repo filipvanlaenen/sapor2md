@@ -1,9 +1,18 @@
 package net.filipvanlaenen.sapor2md;
 
+import java.util.Map;
+
+import net.filipvanlaenen.tsvgj.G;
+import net.filipvanlaenen.tsvgj.StructuralElement;
+
 /**
  * Class producing a voting intentions chart.
  */
-public class VotingIntentionsChart extends Chart {
+public class VotingIntentionsChart extends HorizontalBartChart {
+    private static final int MAX_CHOICE_WIDTH = 1000;
+    private Integer numberOfGroups;
+    private Map<String, ProbabilityMassFunction<ProbabilityRange>> votingIntentionsMap;
+
     /**
      * Constructor taking the path to the Sapor directory and the name of the poll
      * file as its parameters.
@@ -34,5 +43,43 @@ public class VotingIntentionsChart extends Chart {
     @Override
     public String getFileNameSuffix() {
         return "";
+    }
+
+    @Override
+    protected double calculateContentWidth() {
+        return getWidestChoiceWidth() + 2 * SPACE_BETWEEN_ELEMENTS + MAX_CHOICE_WIDTH + getWidestLabelWidth();
+    }
+
+    private double getWidestChoiceWidth() {
+        return 0; // TODO
+    }
+
+    private double getWidestLabelWidth() {
+        return 0; // TODO
+    }
+
+    @Override
+    int getNumberOfGroups() {
+        if (numberOfGroups == null) {
+            numberOfGroups = getVotingIntentionsMap().size();
+        }
+        return numberOfGroups;
+    }
+
+    private Map<String, ProbabilityMassFunction<ProbabilityRange>> getVotingIntentionsMap() {
+        if (votingIntentionsMap == null) {
+            votingIntentionsMap = getPoll().getVotingIntentions().getMap();
+        }
+        return votingIntentionsMap;
+    }
+
+    @Override
+    protected StructuralElement createChartContent() {
+        return new G(); // TODO
+    }
+
+    @Override
+    protected String getTitleText() {
+        return "Voting Intentions for the " + getSaporDirectory().getCountryProperties().getParliamentName();
     }
 }
