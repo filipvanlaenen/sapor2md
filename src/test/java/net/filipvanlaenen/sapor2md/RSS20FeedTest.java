@@ -2,7 +2,6 @@ package net.filipvanlaenen.sapor2md;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.Month;
 import java.time.OffsetDateTime;
@@ -88,14 +87,6 @@ public class RSS20FeedTest {
      * Magic number 2021, used as a year number.
      */
     private static final int TWO_THOUSAND_AND_TWENTY_ONE = 2021;
-    /**
-     * Local date representing 2 January 2020.
-     */
-    private static final LocalDate SECOND_OF_JANUARY_2020 = LocalDate.of(TWO_THOUSAND_AND_TWENTY, Month.JANUARY, 2);
-    /**
-     * Local date representing 3 January 2020.
-     */
-    private static final LocalDate THIRD_OF_JANUARY_2020 = LocalDate.of(TWO_THOUSAND_AND_TWENTY, Month.JANUARY, THREE);
     /**
      * Magic number one million (1,048,576), the threshold for when to include seat
      * projections in an RSS 2.0 feed.
@@ -892,44 +883,6 @@ public class RSS20FeedTest {
         sb.append("</rss>");
         String expected = sb.toString();
         assertEquals(expected, actual);
-    }
-
-    /**
-     * Verifying that when a period has the same start and end date, it is formatted
-     * as a simple date.
-     */
-    @Test
-    void formattedPeriodWithSameStartAndEndDateIsFormattedAsADate() {
-        assertEquals("2 January 2020", RSS20Feed.formatPeriod(SECOND_OF_JANUARY_2020, SECOND_OF_JANUARY_2020));
-    }
-
-    /**
-     * Verifying that when a period falls within the same month, it is formatted
-     * separating the day of month only.
-     */
-    @Test
-    void formattedPeriodWithinSameMonthSeparatesDayOfMonthOnly() {
-        assertEquals("2–3 January 2020", RSS20Feed.formatPeriod(SECOND_OF_JANUARY_2020, THIRD_OF_JANUARY_2020));
-    }
-
-    /**
-     * Verifying that when a period falls within the same year but not the same
-     * month, it is formatted separating the day of month and month only.
-     */
-    @Test
-    void formattedPeriodWithinSameYearSeparatesDayOfMonthAndMonth() {
-        assertEquals("2 January–2 February 2020", RSS20Feed.formatPeriod(SECOND_OF_JANUARY_2020,
-                LocalDate.of(TWO_THOUSAND_AND_TWENTY, Month.FEBRUARY, 2)));
-    }
-
-    /**
-     * Verifying that when a period spans across years, it is formatted as two dates
-     * separated.
-     */
-    @Test
-    void formattedPeriodAcrossYearsSeparatesDates() {
-        assertEquals("2 January 2020–2 January 2021", RSS20Feed.formatPeriod(SECOND_OF_JANUARY_2020,
-                LocalDate.of(TWO_THOUSAND_AND_TWENTY_ONE, Month.JANUARY, 2)));
     }
 
     /**

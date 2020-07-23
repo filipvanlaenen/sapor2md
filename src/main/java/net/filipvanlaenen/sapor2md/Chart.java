@@ -2,12 +2,14 @@ package net.filipvanlaenen.sapor2md;
 
 import java.io.File;
 
+import net.filipvanlaenen.tsvgj.FontStyleValue;
 import net.filipvanlaenen.tsvgj.FontWeightValue;
 import net.filipvanlaenen.tsvgj.Rect;
 import net.filipvanlaenen.tsvgj.ShapeElement;
 import net.filipvanlaenen.tsvgj.StructuralElement;
 import net.filipvanlaenen.tsvgj.Svg;
 import net.filipvanlaenen.tsvgj.Text;
+import net.filipvanlaenen.tsvgj.TextAlignValue;
 import net.filipvanlaenen.tsvgj.TextAnchorValue;
 
 /**
@@ -33,6 +35,7 @@ public abstract class Chart {
     private final SaporDirectory directory;
     private Double height;
     private Double width;
+    private Integer textColor;
 
     /**
      * Constructor taking the path to the Sapor directory and the name of the poll
@@ -129,28 +132,45 @@ public abstract class Chart {
     }
 
     /**
-     * TODO: title.add_attribute('font-style', 'normal')
-     * 
-     * TODO: font-size is in px
-     * 
-     * TODO: title.add_attribute('text-align', 'center')
+     * TODO: font-size should be in px
      * 
      * @return
      */
     private Text createTitle() {
         Text text = new Text(getTitleText());
         text.x(getWidth() / 2).y(MARGIN + TITLE_FONT_SIZE);
-        text.fontFamily(FONT_FAMILIY).fontWeight(FontWeightValue.BOLD).fontSize(TITLE_FONT_SIZE);
-        text.fill(getSaporDirectory().getCountryProperties().getTextColor());
-        text.textAnchor(TextAnchorValue.MIDDLE);
+        text.fontFamily(FONT_FAMILIY).fontSize(TITLE_FONT_SIZE);
+        text.fontWeight(FontWeightValue.BOLD).fontStyle(FontStyleValue.NORMAL);
+        text.fill(getTextColor());
+        text.textAnchor(TextAnchorValue.MIDDLE).textAlign(TextAlignValue.CENTER);
         return text;
     }
 
     protected abstract String getTitleText();
 
+    /**
+     * TODO: font-size should be in px
+     * 
+     * @return
+     */
     private Text createSubtitle() {
-        return new Text(""); // TODO
+        Text text = new Text(getSubtitleText());
+        text.x(getWidth() / 2).y(MARGIN + TITLE_FONT_SIZE + SPACE_BETWEEN_ELEMENTS + SUBTITLE_FONT_SIZE);
+        text.fontFamily(FONT_FAMILIY).fontSize(SUBTITLE_FONT_SIZE);
+        text.fontWeight(FontWeightValue.BOLD).fontStyle(FontStyleValue.NORMAL);
+        text.fill(getTextColor());
+        text.textAnchor(TextAnchorValue.MIDDLE).textAlign(TextAlignValue.CENTER);
+        return text;
     }
+
+    private int getTextColor() {
+        if (textColor == null) {
+            textColor = getSaporDirectory().getCountryProperties().getTextColor();
+        }
+        return textColor;
+    }
+
+    protected abstract String getSubtitleText();
 
     private Text createCopyrightNotice() {
         return new Text(""); // TODO

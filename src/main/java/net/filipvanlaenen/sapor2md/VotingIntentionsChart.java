@@ -82,4 +82,17 @@ public class VotingIntentionsChart extends HorizontalBartChart {
     protected String getTitleText() {
         return "Voting Intentions for the " + getSaporDirectory().getCountryProperties().getParliamentName();
     }
+
+    @Override
+    protected String getSubtitleText() {
+        StringBuilder sb = new StringBuilder();
+        sb.append("Based on an Opinion Poll by ");
+        sb.append(getPoll().getPollingFirm());
+        if (getPoll().getComissioners() != null) {
+            sb.append(" for " + getPoll().getComissioners());
+        }
+        sb.append(", ");
+        sb.append(TimeServices.formatPeriod(getPoll().getFieldworkStart(), getPoll().getFieldworkEnd()));
+        return sb.toString();
+    }
 }

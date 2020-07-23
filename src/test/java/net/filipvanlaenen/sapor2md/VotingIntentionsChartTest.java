@@ -69,6 +69,7 @@ public class VotingIntentionsChartTest {
         CountryProperties countryProperties = new InMemoryCountryProperties(map, timestamp);
         SaporDirectory directory = new InMemorySaporDirectory(countryProperties);
         Map<String, String> properties = new HashMap<String, String>();
+        properties.put(Poll.POLLING_FIRM_KEY, "Baz");
         properties.put(Poll.FIELDWORK_START_KEY, "2020-01-02");
         properties.put(Poll.FIELDWORK_END_KEY, "2020-01-03");
         Poll poll = new InMemoryPoll("2020-01-03-Baz", properties);
@@ -114,9 +115,12 @@ public class VotingIntentionsChartTest {
         sb.append("<svg height=\"414\" viewBox=\"0 0 1080 414\" width=\"1080\"");
         sb.append(" xmlns=\"http://www.w3.org/2000/svg\">\n");
         sb.append("  <rect/>\n");
-        sb.append("  <text fill=\"#112233\" font-family=\"Lato\" font-size=\"46\" font-weight=\"bold\"");
-        sb.append(" text-anchor=\"middle\" x=\"540\" y=\"66\">Voting Intentions for the Foo Parliament</text>\n");
-        sb.append("  <text></text>\n");
+        sb.append("  <text fill=\"#112233\" font-family=\"Lato\" font-size=\"46\" font-style=\"normal\"");
+        sb.append(" font-weight=\"bold\" text-align=\"center\" text-anchor=\"middle\" x=\"540\" y=\"66\">Voting");
+        sb.append(" Intentions for the Foo Parliament</text>\n");
+        sb.append("  <text fill=\"#112233\" font-family=\"Lato\" font-size=\"28\" font-style=\"normal\"");
+        sb.append(" font-weight=\"bold\" text-align=\"center\" text-anchor=\"middle\" x=\"540\" y=\"114\">Based on an");
+        sb.append(" Opinion Poll by Baz, 2–3 January 2020</text>\n");
         sb.append("  <text></text>\n");
         sb.append("  <g/>\n");
         sb.append("</svg>");

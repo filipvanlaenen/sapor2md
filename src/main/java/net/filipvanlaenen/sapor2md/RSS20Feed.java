@@ -151,7 +151,7 @@ public final class RSS20Feed {
             sb.append(" for " + xmlEncode(poll.getComissioners()));
         }
         sb.append(", ");
-        sb.append(formatPeriod(poll.getFieldworkStart(), poll.getFieldworkEnd()));
+        sb.append(TimeServices.formatPeriod(poll.getFieldworkStart(), poll.getFieldworkEnd()));
         sb.append(" – Voting Intentions</title>\n");
         sb.append("      <link>");
         sb.append(saporDirectory.getCountryProperties().getGitHubDirectoryURL());
@@ -191,7 +191,7 @@ public final class RSS20Feed {
             sb.append(" for " + xmlEncode(poll.getComissioners()));
         }
         sb.append(", ");
-        sb.append(formatPeriod(poll.getFieldworkStart(), poll.getFieldworkEnd()));
+        sb.append(TimeServices.formatPeriod(poll.getFieldworkStart(), poll.getFieldworkEnd()));
         sb.append(" – Seat Projections</title>\n");
         sb.append("      <link>");
         sb.append(saporDirectory.getCountryProperties().getGitHubDirectoryURL());
@@ -231,7 +231,7 @@ public final class RSS20Feed {
             sb.append(" for " + xmlEncode(poll.getComissioners()));
         }
         sb.append(", ");
-        sb.append(formatPeriod(poll.getFieldworkStart(), poll.getFieldworkEnd()));
+        sb.append(TimeServices.formatPeriod(poll.getFieldworkStart(), poll.getFieldworkEnd()));
         sb.append(" – Seating Plan Projection</title>\n");
         sb.append("      <link>");
         sb.append(saporDirectory.getCountryProperties().getGitHubDirectoryURL());
@@ -255,30 +255,7 @@ public final class RSS20Feed {
         return sb.toString();
     }
 
-    /**
-     * Formats a period, consisting of two dates, to a human-readable form. Common
-     * elements in the dates are joined, such that the result takes one of the
-     * following forms: 1–2 January 2020, 1 January–2 February 2020 or 1 January
-     * 2020–31 December 2021.
-     *
-     * @param start The start of the period.
-     * @param end   The end of the period.
-     * @return A string with the period formatted in a human-readable form.
-     */
-    static String formatPeriod(final LocalDate start, final LocalDate end) {
-        DateTimeFormatter dayMonthYear = DateTimeFormatter.ofPattern("d MMMM yyyy", Locale.ENGLISH);
-        DateTimeFormatter dayMonth = DateTimeFormatter.ofPattern("d MMMM", Locale.ENGLISH);
-        DateTimeFormatter day = DateTimeFormatter.ofPattern("d", Locale.ENGLISH);
-        if (start.getYear() != end.getYear()) {
-            return start.format(dayMonthYear) + "–" + end.format(dayMonthYear);
-        } else if (start.getMonth() != end.getMonth()) {
-            return start.format(dayMonth) + "–" + end.format(dayMonthYear);
-        } else if (start.getDayOfMonth() != end.getDayOfMonth()) {
-            return start.format(day) + "–" + end.format(dayMonthYear);
-        } else {
-            return start.format(dayMonthYear);
-        }
-    }
+
 
     /**
      * Formats a double as a percentage number. The double is multiplied with 100
@@ -430,7 +407,7 @@ public final class RSS20Feed {
                     sb.append(" for " + xmlEncode(poll.getComissioners()));
                 }
                 sb.append(", ");
-                sb.append(formatPeriod(poll.getFieldworkStart(), poll.getFieldworkEnd()));
+                sb.append(TimeServices.formatPeriod(poll.getFieldworkStart(), poll.getFieldworkEnd()));
                 sb.append("<br/>");
                 sb.append("Details on ");
                 sb.append(saporDir.getCountryProperties().getGitHubDirectoryURL());
@@ -462,7 +439,7 @@ public final class RSS20Feed {
                     sb.append(" for " + xmlEncode(poll.getComissioners()));
                 }
                 sb.append(", ");
-                sb.append(formatPeriod(poll.getFieldworkStart(), poll.getFieldworkEnd()));
+                sb.append(TimeServices.formatPeriod(poll.getFieldworkStart(), poll.getFieldworkEnd()));
                 sb.append("<br/>");
                 sb.append("Details on ");
                 sb.append(saporDir.getCountryProperties().getGitHubDirectoryURL());
@@ -494,7 +471,7 @@ public final class RSS20Feed {
                     sb.append(" for " + xmlEncode(poll.getComissioners()));
                 }
                 sb.append(", ");
-                sb.append(formatPeriod(poll.getFieldworkStart(), poll.getFieldworkEnd()));
+                sb.append(TimeServices.formatPeriod(poll.getFieldworkStart(), poll.getFieldworkEnd()));
                 sb.append("<br/>");
                 sb.append("Details on ");
                 sb.append(saporDir.getCountryProperties().getGitHubDirectoryURL());
