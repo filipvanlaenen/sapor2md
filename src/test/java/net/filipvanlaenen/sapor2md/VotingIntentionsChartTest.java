@@ -29,6 +29,10 @@ public class VotingIntentionsChartTest {
      */
     private static final String PARLIAMENT_NAME = "Foo Parliament";
     /**
+     * A background color.
+     */
+    private static final String BACKGROUND_COLOR = "#DDEEFF";
+    /**
      * A text color.
      */
     private static final String TEXT_COLOR = "#112233";
@@ -62,6 +66,7 @@ public class VotingIntentionsChartTest {
         Map<String, String> map = new HashMap<String, String>();
         map.put(CountryProperties.NUMBER_OF_SEATS_KEY, Integer.toString(SIX));
         map.put(CountryProperties.PARLIAMENT_NAME_KEY, PARLIAMENT_NAME);
+        map.put(CountryProperties.BACKGROUND_COLOR_KEY, BACKGROUND_COLOR);
         map.put(CountryProperties.TEXT_COLOR_KEY, TEXT_COLOR);
         LocalDateTime localDateTime = LocalDateTime.of(TWO_THOUSAND_AND_TWENTY, Month.JANUARY, 1, 0, 0);
         ZoneOffset offset = ZoneOffset.of("+01:00");
@@ -112,9 +117,9 @@ public class VotingIntentionsChartTest {
     @Test
     void svgContentShouldBeCorrect() {
         StringBuilder sb = new StringBuilder();
-        sb.append("<svg height=\"414\" viewBox=\"0 0 1080 414\" width=\"1080\"");
+        sb.append(" <svg height=\"414\" viewBox=\"0 0 1080 414\" width=\"1080\"");
         sb.append(" xmlns=\"http://www.w3.org/2000/svg\">\n");
-        sb.append("  <rect/>\n");
+        sb.append("  <rect fill=\"#DDEEFF\" height=\"414\" stroke=\"none\" width=\"1080\" x=\"0\" y=\"0\"/>\n");
         sb.append("  <text fill=\"#112233\" font-family=\"Lato\" font-size=\"46\" font-style=\"normal\"");
         sb.append(" font-weight=\"bold\" text-align=\"center\" text-anchor=\"middle\" x=\"540\" y=\"66\">Voting");
         sb.append(" Intentions for the Foo Parliament</text>\n");

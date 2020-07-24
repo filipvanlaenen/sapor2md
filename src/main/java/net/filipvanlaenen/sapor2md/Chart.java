@@ -4,6 +4,7 @@ import java.io.File;
 
 import net.filipvanlaenen.tsvgj.FontStyleValue;
 import net.filipvanlaenen.tsvgj.FontWeightValue;
+import net.filipvanlaenen.tsvgj.NoneValue;
 import net.filipvanlaenen.tsvgj.Rect;
 import net.filipvanlaenen.tsvgj.ShapeElement;
 import net.filipvanlaenen.tsvgj.StructuralElement;
@@ -36,6 +37,7 @@ public abstract class Chart {
     private Double height;
     private Double width;
     private Integer textColor;
+    private Integer backgroundColor;
 
     /**
      * Constructor taking the path to the Sapor directory and the name of the poll
@@ -128,7 +130,9 @@ public abstract class Chart {
     }
 
     private ShapeElement createBackgroundRectangle() {
-        return new Rect(); // TODO
+        Rect rect = new Rect().x(0).y(0).width(getWidth()).height(getHeight());
+        rect.fill(getBackgroundColor()).stroke(NoneValue.NONE);
+        return rect;
     }
 
     /**
@@ -168,6 +172,13 @@ public abstract class Chart {
             textColor = getSaporDirectory().getCountryProperties().getTextColor();
         }
         return textColor;
+    }
+
+    private int getBackgroundColor() {
+        if (backgroundColor == null) {
+            backgroundColor = getSaporDirectory().getCountryProperties().getBackgroundColor();
+        }
+        return backgroundColor;
     }
 
     protected abstract String getSubtitleText();

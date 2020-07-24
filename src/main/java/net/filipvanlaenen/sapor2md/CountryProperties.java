@@ -9,6 +9,10 @@ import java.util.Map;
  */
 public abstract class CountryProperties {
     /**
+     * The key for the background color.
+     */
+    static final String BACKGROUND_COLOR_KEY = "BackgroundColor";
+    /**
      * The key for the property containing the URL to the GitHub directory.
      */
     static final String GITHUB_DIRECTORY_URL_KEY = "GitHubDirectoryURL";
@@ -25,6 +29,10 @@ public abstract class CountryProperties {
      */
     static final String TEXT_COLOR_KEY = "TextColor";
 
+    /**
+     * The background color.
+     */
+    private final int backgroundColor;
     /**
      * The URL to the GitHub directory.
      */
@@ -54,11 +62,31 @@ public abstract class CountryProperties {
      * @param timestamp The last modified timestamp of the file.
      */
     CountryProperties(final Map<String, String> map, final OffsetDateTime timestamp) {
+        backgroundColor = parseHexadecimalColorCode(map.get(BACKGROUND_COLOR_KEY));
         gitHubDirectoryURL = map.get(GITHUB_DIRECTORY_URL_KEY);
         numberOfSeats = Integer.parseInt(map.get(NUMBER_OF_SEATS_KEY));
         parliamentName = map.get(PARLIAMENT_NAME_KEY);
-        textColor = Integer.parseInt(map.get(TEXT_COLOR_KEY).substring(1, 7), 16);
+        textColor = parseHexadecimalColorCode(map.get(TEXT_COLOR_KEY));
         this.timestamp = timestamp;
+    }
+
+    /**
+     * Parses a hexadecimal color code into an integer.
+     *
+     * @param hex The hexadecimal color code.
+     * @return The integer value.
+     */
+    private int parseHexadecimalColorCode(final String hex) {
+        return Integer.parseInt(hex.substring(1, 7), 16);
+    }
+
+    /**
+     * Returns the background color.
+     *
+     * @return The background color.
+     */
+    int getBackgroundColor() {
+        return backgroundColor;
     }
 
     /**
