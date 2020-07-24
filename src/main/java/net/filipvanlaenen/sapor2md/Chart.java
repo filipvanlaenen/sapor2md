@@ -12,11 +12,13 @@ import net.filipvanlaenen.tsvgj.Svg;
 import net.filipvanlaenen.tsvgj.Text;
 import net.filipvanlaenen.tsvgj.TextAlignValue;
 import net.filipvanlaenen.tsvgj.TextAnchorValue;
+import net.filipvanlaenen.tsvgj.Transform;
 
 /**
  * Abstract class defining the behavior of a chart.
  */
 public abstract class Chart {
+    private static final int COPYRIGHT_FONT_SIZE = 10;
     private static final String FONT_FAMILIY = "Lato";
     private static final int MARGIN = 20;
     protected static final int SPACE_BETWEEN_ELEMENTS = 20;
@@ -184,7 +186,30 @@ public abstract class Chart {
     protected abstract String getSubtitleText();
 
     private Text createCopyrightNotice() {
-        return new Text(""); // TODO
+        Text text = new Text(getCopyrightNoticeText());
+        text.x(-4).y(getWidth() - 4);
+        text.fontFamily(FONT_FAMILIY).fontStyle(FontStyleValue.NORMAL).fontWeight(FontWeightValue.NORMAL);
+        // TODO: font-size should be in px
+        text.fontSize(COPYRIGHT_FONT_SIZE);
+        text.textAlign(TextAlignValue.CENTER).textAnchor(TextAnchorValue.END);
+        text.fill(getTextColor());
+        text.transform(Transform.rotate(270));
+        return text;
+    }
+
+    String getCopyrightNoticeText() {
+        String copyrightText = getSaporDirectory().getCountryProperties().getCopyrightText();
+        if (copyrightText == null) {
+            return "Chart produced using Sapor2MD";
+        } else {
+            StringBuilder sb = new StringBuilder();
+            sb.append("© ");
+            sb.append(TimeServices.getYear());
+            sb.append(" ");
+            sb.append(getSaporDirectory().getCountryProperties().getCopyrightText());
+            sb.append(", chart produced using Sapor2MD");
+            return sb.toString();
+        }
     }
 
     protected abstract StructuralElement createChartContent();

@@ -13,6 +13,10 @@ public abstract class CountryProperties {
      */
     static final String BACKGROUND_COLOR_KEY = "BackgroundColor";
     /**
+     * The key for the copyright text.
+     */
+    static final String COPYRIGHT_TEXT_KEY = "CopyrightText";
+    /**
      * The key for the property containing the URL to the GitHub directory.
      */
     static final String GITHUB_DIRECTORY_URL_KEY = "GitHubDirectoryURL";
@@ -29,6 +33,10 @@ public abstract class CountryProperties {
      */
     static final String TEXT_COLOR_KEY = "TextColor";
 
+    /**
+     * The copyirght text.
+     */
+    private final String copyrightText;
     /**
      * The background color.
      */
@@ -63,6 +71,7 @@ public abstract class CountryProperties {
      */
     CountryProperties(final Map<String, String> map, final OffsetDateTime timestamp) {
         backgroundColor = parseHexadecimalColorCode(map.get(BACKGROUND_COLOR_KEY));
+        copyrightText = map.get(COPYRIGHT_TEXT_KEY);
         gitHubDirectoryURL = map.get(GITHUB_DIRECTORY_URL_KEY);
         numberOfSeats = Integer.parseInt(map.get(NUMBER_OF_SEATS_KEY));
         parliamentName = map.get(PARLIAMENT_NAME_KEY);
@@ -87,6 +96,15 @@ public abstract class CountryProperties {
      */
     int getBackgroundColor() {
         return backgroundColor;
+    }
+
+    /**
+     * Returns the copyright text.
+     *
+     * @return The copyright text.
+     */
+    String getCopyrightText() {
+        return copyrightText;
     }
 
     /**

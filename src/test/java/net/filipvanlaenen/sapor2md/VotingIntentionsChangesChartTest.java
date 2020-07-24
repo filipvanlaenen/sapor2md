@@ -126,7 +126,9 @@ public class VotingIntentionsChangesChartTest {
         sb.append("  <text fill=\"#112233\" font-family=\"Lato\" font-size=\"28\" font-style=\"normal\"");
         sb.append(" font-weight=\"bold\" text-align=\"center\" text-anchor=\"middle\" x=\"20\" y=\"114\">Based on an");
         sb.append(" Opinion Poll by Baz, 2–3 January 2020</text>\n");
-        sb.append("  <text></text>\n");
+        sb.append("  <text fill=\"#112233\" font-family=\"Lato\" font-size=\"10\" font-style=\"normal\"");
+        sb.append(" font-weight=\"normal\" text-align=\"center\" text-anchor=\"end\" transform=\"rotate(270)\"");
+        sb.append(" x=\"-4\" y=\"36\">Chart produced using Sapor2MD</text>\n");
         sb.append("  <g/>\n");
         sb.append("</svg>");
         assertEquals(sb.toString(), chart.toString());

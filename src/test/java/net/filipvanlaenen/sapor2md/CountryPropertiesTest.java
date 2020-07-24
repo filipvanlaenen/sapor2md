@@ -37,6 +37,10 @@ public class CountryPropertiesTest {
      */
     private static final String GITHUB_DIRECTORY_URL = "https://bar.github.io/foo_polls";
     /**
+     * A copyright text.
+     */
+    private static final String COPYRIGHT_TEXT = "John Doe";
+    /**
      * A parliament name.
      */
     private static final String PARLIAMENT_NAME = "Foo Parliament";
@@ -68,6 +72,7 @@ public class CountryPropertiesTest {
     @BeforeEach
     void createCountryProperties() {
         Map<String, String> map = new HashMap<String, String>();
+        map.put(CountryProperties.COPYRIGHT_TEXT_KEY, COPYRIGHT_TEXT);
         map.put(CountryProperties.GITHUB_DIRECTORY_URL_KEY, GITHUB_DIRECTORY_URL);
         map.put(CountryProperties.NUMBER_OF_SEATS_KEY, Integer.toString(SIX));
         map.put(CountryProperties.PARLIAMENT_NAME_KEY, PARLIAMENT_NAME);
@@ -116,6 +121,14 @@ public class CountryPropertiesTest {
         map.put(CountryProperties.TEXT_COLOR_KEY, TEXT_COLOR);
         CountryProperties otherCountryProperties = new InMemoryCountryProperties(map, null);
         assertEquals(FOUR, otherCountryProperties.getNumberOfSeatsForMajority());
+    }
+
+    /**
+     * Verifying that the copyright text is wired correctly from the map.
+     */
+    @Test
+    void constructorWiresCopyrightTextCorrectly() {
+        assertEquals(COPYRIGHT_TEXT, countryProperties.getCopyrightText());
     }
 
     /**

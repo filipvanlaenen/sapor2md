@@ -14,6 +14,10 @@ import org.junit.jupiter.api.Test;
  */
 public class SaporDirectoryTest {
     /**
+     * A background color.
+     */
+    private static final String BACKGROUND_COLOR = "#DDEEFF";
+    /**
      * A text color.
      */
     private static final String TEXT_COLOR = "#112233";
@@ -29,6 +33,7 @@ public class SaporDirectoryTest {
     void createCountryProperties() {
         Map<String, String> map = new HashMap<String, String>();
         map.put(CountryProperties.NUMBER_OF_SEATS_KEY, Integer.toString(1));
+        map.put(CountryProperties.BACKGROUND_COLOR_KEY, BACKGROUND_COLOR);
         map.put(CountryProperties.TEXT_COLOR_KEY, TEXT_COLOR);
         countryProperties = new InMemoryCountryProperties(map, null);
     }

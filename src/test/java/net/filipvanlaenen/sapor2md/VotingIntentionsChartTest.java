@@ -117,7 +117,7 @@ public class VotingIntentionsChartTest {
     @Test
     void svgContentShouldBeCorrect() {
         StringBuilder sb = new StringBuilder();
-        sb.append(" <svg height=\"414\" viewBox=\"0 0 1080 414\" width=\"1080\"");
+        sb.append("<svg height=\"414\" viewBox=\"0 0 1080 414\" width=\"1080\"");
         sb.append(" xmlns=\"http://www.w3.org/2000/svg\">\n");
         sb.append("  <rect fill=\"#DDEEFF\" height=\"414\" stroke=\"none\" width=\"1080\" x=\"0\" y=\"0\"/>\n");
         sb.append("  <text fill=\"#112233\" font-family=\"Lato\" font-size=\"46\" font-style=\"normal\"");
@@ -126,7 +126,9 @@ public class VotingIntentionsChartTest {
         sb.append("  <text fill=\"#112233\" font-family=\"Lato\" font-size=\"28\" font-style=\"normal\"");
         sb.append(" font-weight=\"bold\" text-align=\"center\" text-anchor=\"middle\" x=\"540\" y=\"114\">Based on an");
         sb.append(" Opinion Poll by Baz, 2–3 January 2020</text>\n");
-        sb.append("  <text></text>\n");
+        sb.append("  <text fill=\"#112233\" font-family=\"Lato\" font-size=\"10\" font-style=\"normal\"");
+        sb.append(" font-weight=\"normal\" text-align=\"center\" text-anchor=\"end\" transform=\"rotate(270)\"");
+        sb.append(" x=\"-4\" y=\"1076\">Chart produced using Sapor2MD</text>\n");
         sb.append("  <g/>\n");
         sb.append("</svg>");
         assertEquals(sb.toString(), chart.toString());

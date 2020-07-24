@@ -5,6 +5,8 @@ import java.time.format.DateTimeFormatter;
 import java.util.Locale;
 
 public class TimeServices {
+    private static LocalDate now;
+
     /**
      * Formats a period, consisting of two dates, to a human-readable form. Common
      * elements in the dates are joined, such that the result takes one of the
@@ -27,6 +29,18 @@ public class TimeServices {
             return start.format(day) + "–" + end.format(dayMonthYear);
         } else {
             return start.format(dayMonthYear);
+        }
+    }
+
+    static void setClock(final LocalDate newNow) {
+        now = newNow;
+    }
+
+    static int getYear() {
+        if (now == null) {
+            return LocalDate.now().getYear();
+        } else {
+            return now.getYear();
         }
     }
 }

@@ -93,6 +93,10 @@ public class RSS20FeedTest {
      */
     private static final long ONE_MILLION = 1048576;
     /**
+     * A background color.
+     */
+    private static final String BACKGROUND_COLOR = "#DDEEFF";
+    /**
      * A text color.
      */
     private static final String TEXT_COLOR = "#112233";
@@ -111,6 +115,7 @@ public class RSS20FeedTest {
         map.put(CountryProperties.NUMBER_OF_SEATS_KEY, Integer.toString(SIX));
         map.put(CountryProperties.GITHUB_DIRECTORY_URL_KEY, "https://bar.github.io/foo_polls");
         map.put(CountryProperties.PARLIAMENT_NAME_KEY, "Foo Parliament");
+        map.put(CountryProperties.BACKGROUND_COLOR_KEY, BACKGROUND_COLOR);
         map.put(CountryProperties.TEXT_COLOR_KEY, TEXT_COLOR);
         OffsetDateTime timestamp = createDateTime(TWO_THOUSAND_AND_TWENTY, Month.JANUARY, 1, 0, 0);
         countryProperties = new InMemoryCountryProperties(map, timestamp);
