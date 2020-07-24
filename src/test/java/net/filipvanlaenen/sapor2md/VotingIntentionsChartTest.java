@@ -16,6 +16,7 @@ import org.junit.jupiter.api.Test;
  * Unit tests on the <code>VotingIntentionsChart</code> class.
  */
 public class VotingIntentionsChartTest {
+    private static final String GREEN_PARTY = "Green Party";
     /**
      * Magic number six.
      */
@@ -81,7 +82,7 @@ public class VotingIntentionsChartTest {
         VotingIntentions votingIntentions = new VotingIntentions("Red Party",
                 VotingIntentionsTestServices.createProbabilityMassFunctionForConfidenceInterval(
                         RED_PARTY_CONFIDENCE_INTERVAL_LOWER_BOUND, RED_PARTY_CONFIDENCE_INTERVAL_UPPER_BOUND),
-                "Green Party", VotingIntentionsTestServices.createProbabilityMassFunctionForConfidenceInterval(
+                GREEN_PARTY, VotingIntentionsTestServices.createProbabilityMassFunctionForConfidenceInterval(
                         GREEN_PARTY_CONFIDENCE_INTERVAL_LOWER_BOUND, GREEN_PARTY_CONFIDENCE_INTERVAL_UPPER_BOUND));
         poll.setVotingIntentions(votingIntentions);
         chart = new VotingIntentionsChart(directory, poll);
@@ -112,23 +113,33 @@ public class VotingIntentionsChartTest {
     }
 
     /**
+     * Test verifying the correct calculation of the content width.
+     */
+    @Test
+    void contentWidthShouldBeCorrect() {
+        double expected = 2d * Chart.SPACE_BETWEEN_ELEMENTS + VotingIntentionsChart.MAX_CHOICE_WIDTH
+                + GREEN_PARTY.length() * Chart.M_WIDTH + "15–20%".length() * Chart.M_WIDTH;
+        assertEquals(expected, chart.calculateContentWidth());
+    }
+
+    /**
      * Test verifying the SVG content of the chart.
      */
     @Test
     void svgContentShouldBeCorrect() {
         StringBuilder sb = new StringBuilder();
-        sb.append("<svg height=\"414\" viewBox=\"0 0 1080 414\" width=\"1080\"");
+        sb.append("<svg height=\"414\" viewBox=\"0 0 1196.79 414\" width=\"1196.79\"");
         sb.append(" xmlns=\"http://www.w3.org/2000/svg\">\n");
-        sb.append("  <rect fill=\"#DDEEFF\" height=\"414\" stroke=\"none\" width=\"1080\" x=\"0\" y=\"0\"/>\n");
+        sb.append("  <rect fill=\"#DDEEFF\" height=\"414\" stroke=\"none\" width=\"1196.79\" x=\"0\" y=\"0\"/>\n");
         sb.append("  <text fill=\"#112233\" font-family=\"Lato\" font-size=\"46\" font-style=\"normal\"");
-        sb.append(" font-weight=\"bold\" text-align=\"center\" text-anchor=\"middle\" x=\"540\" y=\"66\">Voting");
+        sb.append(" font-weight=\"bold\" text-align=\"center\" text-anchor=\"middle\" x=\"598.395\" y=\"66\">Voting");
         sb.append(" Intentions for the Foo Parliament</text>\n");
         sb.append("  <text fill=\"#112233\" font-family=\"Lato\" font-size=\"28\" font-style=\"normal\"");
-        sb.append(" font-weight=\"bold\" text-align=\"center\" text-anchor=\"middle\" x=\"540\" y=\"114\">Based on an");
-        sb.append(" Opinion Poll by Baz, 2–3 January 2020</text>\n");
+        sb.append(" font-weight=\"bold\" text-align=\"center\" text-anchor=\"middle\" x=\"598.395\" y=\"114\">Based");
+        sb.append(" on an Opinion Poll by Baz, 2–3 January 2020</text>\n");
         sb.append("  <text fill=\"#112233\" font-family=\"Lato\" font-size=\"10\" font-style=\"normal\"");
         sb.append(" font-weight=\"normal\" text-align=\"center\" text-anchor=\"end\" transform=\"rotate(270)\"");
-        sb.append(" x=\"-4\" y=\"1076\">Chart produced using Sapor2MD</text>\n");
+        sb.append(" x=\"-4\" y=\"1192.79\">Chart produced using Sapor2MD</text>\n");
         sb.append("  <g/>\n");
         sb.append("</svg>");
         assertEquals(sb.toString(), chart.toString());

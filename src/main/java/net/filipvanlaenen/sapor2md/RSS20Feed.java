@@ -5,7 +5,6 @@ import java.time.LocalDate;
 import java.time.OffsetDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Iterator;
-import java.util.Locale;
 
 /**
  * Class producing an RSS 2.0 feed for a Sapor directory.
@@ -23,10 +22,6 @@ public final class RSS20Feed {
      * Magic number thirty.
      */
     private static final int THIRTY = 30;
-    /**
-     * Magic number 100.
-     */
-    private static final double ONE_HUNDRED = 100D;
     /**
      * Magic number one million (1,048,576), the threshold for when to include seat
      * projections in an RSS 2.0 feed.
@@ -255,33 +250,6 @@ public final class RSS20Feed {
         return sb.toString();
     }
 
-
-
-    /**
-     * Formats a double as a percentage number. The double is multiplied with 100
-     * and formatted with one digit behind the decimal point.
-     *
-     * @param percentage The double to be formatted.
-     * @return A string with the double formatted as percentage number.
-     */
-    private static String formatPercentageNumber(final double percentage) {
-        return String.format("%.1f", percentage * ONE_HUNDRED, Locale.ENGLISH);
-    }
-
-    /**
-     * Formats a confidence interval with probability ranges to a human readable
-     * form. It takes the lower bound of the lower probability range and the upper
-     * bound of the upper probability ranges as the lower an upper bounds.
-     *
-     * @param ci The confidence interval.
-     * @return A string with the confidence interval formatted in a human-readable
-     *         form.
-     */
-    private static String formatProbabilityRangeConfidenceInterval(final ConfidenceInterval<ProbabilityRange> ci) {
-        return formatPercentageNumber(ci.getLowerBound().getLowerBound()) + "–"
-                + formatPercentageNumber(ci.getUpperBound().getUpperBound()) + "%";
-    }
-
     /**
      * Formats a confidence interval with seats to a human readable form.
      *
@@ -337,7 +305,7 @@ public final class RSS20Feed {
                     sb.append(xmlEncode(group));
                     sb.append(": ");
                     ci = votingIntentions.getConfidenceInterval(group, NINETY_FIVE_PERCENT);
-                    sb.append(formatProbabilityRangeConfidenceInterval(ci));
+                    sb.append(ProbabilityRange.formatConfidenceInterval("%.1f", ci));
                     sb.append("</li>");
                 }
                 sb.append("</ul>");

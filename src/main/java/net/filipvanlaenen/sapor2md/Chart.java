@@ -18,6 +18,7 @@ import net.filipvanlaenen.tsvgj.Transform;
  * Abstract class defining the behavior of a chart.
  */
 public abstract class Chart {
+    static final double M_WIDTH = 6.870;
     private static final int COPYRIGHT_FONT_SIZE = 10;
     private static final String FONT_FAMILIY = "Lato";
     private static final int MARGIN = 20;
@@ -247,5 +248,10 @@ public abstract class Chart {
 
     protected SaporDirectory getSaporDirectory() {
         return directory;
+    }
+
+    protected double getLabelWidth(String s) {
+        // TODO
+        return M_WIDTH * s.length();
     }
 }

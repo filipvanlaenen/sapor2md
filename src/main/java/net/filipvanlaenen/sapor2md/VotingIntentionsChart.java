@@ -9,8 +9,10 @@ import net.filipvanlaenen.tsvgj.StructuralElement;
  * Class producing a voting intentions chart.
  */
 public class VotingIntentionsChart extends HorizontalBartChart {
-    private static final int MAX_CHOICE_WIDTH = 1000;
+    static final int MAX_CHOICE_WIDTH = 1000;
     private Integer numberOfGroups;
+    private Double widestChoiceWidth;
+    private Double widestLabelWidth;
     private Map<String, ProbabilityMassFunction<ProbabilityRange>> votingIntentionsMap;
 
     /**
@@ -47,15 +49,36 @@ public class VotingIntentionsChart extends HorizontalBartChart {
 
     @Override
     protected double calculateContentWidth() {
+        // TODO: Could be slightly smarter: it's possible that the widest label doesn't
+        // occur together with the widest bar (e.g. 20 is wider than 21)
         return getWidestChoiceWidth() + 2 * SPACE_BETWEEN_ELEMENTS + MAX_CHOICE_WIDTH + getWidestLabelWidth();
     }
 
     private double getWidestChoiceWidth() {
-        return 0; // TODO
+        if (widestChoiceWidth == null) {
+            widestChoiceWidth = 0d;
+            for (String name : getVotingIntentionsMap().keySet()) {
+                double width = getLabelWidth(name);
+                if (width > widestChoiceWidth) {
+                    widestChoiceWidth = width;
+                }
+            }
+        }
+        return widestChoiceWidth;
     }
 
     private double getWidestLabelWidth() {
-        return 0; // TODO
+        if (widestLabelWidth == null) {
+            widestLabelWidth = 0d;
+            for (ProbabilityMassFunction<ProbabilityRange> pmf : getVotingIntentionsMap().values()) {
+                ConfidenceInterval<ProbabilityRange> ci = pmf.getConfidenceInterval(0.95D);
+                double width = getLabelWidth(ProbabilityRange.formatConfidenceInterval("%.0f", ci));
+                if (width > widestLabelWidth) {
+                    widestLabelWidth = width;
+                }
+            }
+        }
+        return widestLabelWidth;
     }
 
     @Override
