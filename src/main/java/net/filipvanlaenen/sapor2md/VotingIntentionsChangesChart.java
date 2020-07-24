@@ -8,7 +8,7 @@ import net.filipvanlaenen.tsvgj.StructuralElement;
 /**
  * Class producing a voting intentions changes chart.
  */
-public class VotingIntentionsChangesChart extends HorizontalBartChart {
+public class VotingIntentionsChangesChart extends HorizontalBarChart {
     private Integer numberOfGroups;
     private Map<String, ProbabilityMassFunction<ProbabilityRange>> votingIntentionsMap;
 

@@ -18,13 +18,13 @@ import net.filipvanlaenen.tsvgj.Transform;
  * Abstract class defining the behavior of a chart.
  */
 public abstract class Chart {
-    static final double M_WIDTH = 6.870;
+    static final double M_WIDTH = 0.6870;
     private static final int COPYRIGHT_FONT_SIZE = 10;
-    private static final String FONT_FAMILIY = "Lato";
-    private static final int MARGIN = 20;
+    protected static final String FONT_FAMILIY = "Lato";
+    protected static final int MARGIN = 20;
     protected static final int SPACE_BETWEEN_ELEMENTS = 20;
-    private static final int SUBTITLE_FONT_SIZE = 28;
-    private static final int TITLE_FONT_SIZE = 46;
+    protected static final int SUBTITLE_FONT_SIZE = 28;
+    protected static final int TITLE_FONT_SIZE = 46;
     /**
      * The path to the Sapor directory.
      */
@@ -170,7 +170,7 @@ public abstract class Chart {
         return text;
     }
 
-    private int getTextColor() {
+    protected int getTextColor() {
         if (textColor == null) {
             textColor = getSaporDirectory().getCountryProperties().getTextColor();
         }
@@ -250,8 +250,8 @@ public abstract class Chart {
         return directory;
     }
 
-    protected double getLabelWidth(String s) {
+    protected double getLabelWidth(final String s, final double size) {
         // TODO
-        return M_WIDTH * s.length();
+        return size * M_WIDTH * s.length();
     }
 }

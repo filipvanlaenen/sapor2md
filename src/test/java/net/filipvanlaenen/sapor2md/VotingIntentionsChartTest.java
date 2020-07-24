@@ -118,7 +118,8 @@ public class VotingIntentionsChartTest {
     @Test
     void contentWidthShouldBeCorrect() {
         double expected = 2d * Chart.SPACE_BETWEEN_ELEMENTS + VotingIntentionsChart.MAX_CHOICE_WIDTH
-                + GREEN_PARTY.length() * Chart.M_WIDTH + "15–20%".length() * Chart.M_WIDTH;
+                + (GREEN_PARTY.length() + +"15–20%".length()) * HorizontalBarChart.CHOICE_LABEL_FONT_SIZE
+                        * Chart.M_WIDTH;
         assertEquals(expected, chart.calculateContentWidth());
     }
 
@@ -140,7 +141,14 @@ public class VotingIntentionsChartTest {
         sb.append("  <text fill=\"#112233\" font-family=\"Lato\" font-size=\"10\" font-style=\"normal\"");
         sb.append(" font-weight=\"normal\" text-align=\"center\" text-anchor=\"end\" transform=\"rotate(270)\"");
         sb.append(" x=\"-4\" y=\"1192.79\">Chart produced using Sapor2MD</text>\n");
-        sb.append("  <g/>\n");
+        sb.append("  <g>\n");
+        sb.append("    <g/>\n");
+        sb.append("    <g/>\n");
+        sb.append("    <g>\n");
+        sb.append("      <g/>\n");
+        sb.append("      <g/>\n");
+        sb.append("    </g>\n");
+        sb.append("  </g>\n");
         sb.append("</svg>");
         assertEquals(sb.toString(), chart.toString());
     }
