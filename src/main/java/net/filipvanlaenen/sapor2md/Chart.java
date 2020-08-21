@@ -1,10 +1,13 @@
 package net.filipvanlaenen.sapor2md;
 
 import java.io.File;
+import java.util.ArrayList;
+import java.util.List;
 
 import net.filipvanlaenen.tsvgj.FontStyleValue;
 import net.filipvanlaenen.tsvgj.FontWeightValue;
 import net.filipvanlaenen.tsvgj.NoneValue;
+import net.filipvanlaenen.tsvgj.Pattern;
 import net.filipvanlaenen.tsvgj.Rect;
 import net.filipvanlaenen.tsvgj.ShapeElement;
 import net.filipvanlaenen.tsvgj.StructuralElement;
@@ -128,7 +131,12 @@ public abstract class Chart {
         svg.addElement(createTitle());
         svg.addElement(createSubtitle());
         svg.addElement(createCopyrightNotice());
-        svg.addElement(createChartContent());
+        List<Pattern> chartContentPatterns = new ArrayList<Pattern>();
+        StructuralElement chartContent = createChartContent(chartContentPatterns);
+        for (Pattern pattern : chartContentPatterns) {
+            svg.registerElementForReference(pattern);
+        }
+        svg.addElement(chartContent);
         return svg.asString();
     }
 
@@ -213,7 +221,7 @@ public abstract class Chart {
         }
     }
 
-    protected abstract StructuralElement createChartContent();
+    protected abstract StructuralElement createChartContent(List<Pattern> chartContentPatterns);
 
     private Double getHeight() {
         if (height == null) {

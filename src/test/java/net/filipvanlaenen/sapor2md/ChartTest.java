@@ -5,10 +5,12 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import java.time.LocalDate;
 import java.time.Month;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import org.junit.jupiter.api.Test;
 
+import net.filipvanlaenen.tsvgj.Pattern;
 import net.filipvanlaenen.tsvgj.StructuralElement;
 
 /**
@@ -77,7 +79,7 @@ public class ChartTest {
             }
 
             @Override
-            protected StructuralElement createChartContent() {
+            protected StructuralElement createChartContent(List<Pattern> chartContentPatterns) {
                 return null;
             }
 

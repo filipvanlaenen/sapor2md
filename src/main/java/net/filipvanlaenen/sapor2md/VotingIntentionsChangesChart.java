@@ -1,8 +1,10 @@
 package net.filipvanlaenen.sapor2md;
 
+import java.util.List;
 import java.util.Map;
 
 import net.filipvanlaenen.tsvgj.G;
+import net.filipvanlaenen.tsvgj.Pattern;
 import net.filipvanlaenen.tsvgj.StructuralElement;
 
 /**
@@ -65,7 +67,7 @@ public class VotingIntentionsChangesChart extends HorizontalBarChart {
     }
 
     @Override
-    protected StructuralElement createChartContent() {
+    protected StructuralElement createChartContent(List<Pattern> chartContentPatterns) {
         return new G(); // TODO
     }
 

@@ -53,6 +53,7 @@ public class VotingIntentionsChartTest {
      * Upper bound for the 95 percent confidence interval for the green party.
      */
     private static final double GREEN_PARTY_CONFIDENCE_INTERVAL_UPPER_BOUND = 0.140D;
+    private static final double DELTA = 0.001D;
 
     /**
      * The chart to run the tests on.
@@ -120,7 +121,7 @@ public class VotingIntentionsChartTest {
         double expected = 2d * Chart.SPACE_BETWEEN_ELEMENTS + VotingIntentionsChart.MAX_CHOICE_WIDTH
                 + (GREEN_PARTY.length() + +"15–20%".length()) * HorizontalBarChart.CHOICE_LABEL_FONT_SIZE
                         * Chart.M_WIDTH;
-        assertEquals(expected, chart.calculateContentWidth());
+        assertEquals(expected, chart.calculateContentWidth(), DELTA);
     }
 
     /**
@@ -129,24 +130,66 @@ public class VotingIntentionsChartTest {
     @Test
     void svgContentShouldBeCorrect() {
         StringBuilder sb = new StringBuilder();
-        sb.append("<svg height=\"414\" viewBox=\"0 0 1196.79 414\" width=\"1196.79\"");
+        sb.append("<svg height=\"414\" viewBox=\"0 0 1500.444 414\" width=\"1500.444\"");
         sb.append(" xmlns=\"http://www.w3.org/2000/svg\">\n");
-        sb.append("  <rect fill=\"#DDEEFF\" height=\"414\" stroke=\"none\" width=\"1196.79\" x=\"0\" y=\"0\"/>\n");
+        sb.append("  <rect fill=\"#DDEEFF\" height=\"414\" stroke=\"none\" width=\"1500.444\" x=\"0\" y=\"0\"/>\n");
         sb.append("  <text fill=\"#112233\" font-family=\"Lato\" font-size=\"46\" font-style=\"normal\"");
-        sb.append(" font-weight=\"bold\" text-align=\"center\" text-anchor=\"middle\" x=\"598.395\" y=\"66\">Voting");
+        sb.append(" font-weight=\"bold\" text-align=\"center\" text-anchor=\"middle\" x=\"750.222\" y=\"66\">Voting");
         sb.append(" Intentions for the Foo Parliament</text>\n");
         sb.append("  <text fill=\"#112233\" font-family=\"Lato\" font-size=\"28\" font-style=\"normal\"");
-        sb.append(" font-weight=\"bold\" text-align=\"center\" text-anchor=\"middle\" x=\"598.395\" y=\"114\">Based");
+        sb.append(" font-weight=\"bold\" text-align=\"center\" text-anchor=\"middle\" x=\"750.222\" y=\"114\">Based");
         sb.append(" on an Opinion Poll by Baz, 2–3 January 2020</text>\n");
         sb.append("  <text fill=\"#112233\" font-family=\"Lato\" font-size=\"10\" font-style=\"normal\"");
         sb.append(" font-weight=\"normal\" text-align=\"center\" text-anchor=\"end\" transform=\"rotate(270)\"");
-        sb.append(" x=\"-4\" y=\"1192.79\">Chart produced using Sapor2MD</text>\n");
+        sb.append(" x=\"-4\" y=\"1496.444\">Chart produced using Sapor2MD</text>\n");
+        sb.append("  <defs>\n");
+        sb.append("    <pattern id=\"pattern-1\" height=\"10\" patternTransform=\"rotate(45 0,0)\"");
+        sb.append(" patternUnits=\"userSpaceOnUse\" width=\"10\">\n");
+        sb.append("      <line stroke=\"#000000\" stroke-width=\"6.666667\" x1=\"0\" x2=\"0\" y1=\"0\" y2=\"10\"/>\n");
+        sb.append("    </pattern>\n");
+        sb.append("    <pattern id=\"pattern-2\" height=\"10\" patternTransform=\"rotate(135 0,0)\"");
+        sb.append(" patternUnits=\"userSpaceOnUse\" width=\"10\">\n");
+        sb.append("      <line stroke=\"#000000\" stroke-width=\"6.666667\" x1=\"0\" x2=\"0\" y1=\"0\" y2=\"10\"/>\n");
+        sb.append("    </pattern>\n");
+        sb.append("    <pattern id=\"pattern-3\" height=\"10\" patternTransform=\"rotate(45 0,0)\"");
+        sb.append(" patternUnits=\"userSpaceOnUse\" width=\"10\">\n");
+        sb.append("      <line stroke=\"#000000\" stroke-width=\"6.666667\" x1=\"0\" x2=\"0\" y1=\"0\" y2=\"10\"/>\n");
+        sb.append("    </pattern>\n");
+        sb.append("    <pattern id=\"pattern-4\" height=\"10\" patternTransform=\"rotate(135 0,0)\"");
+        sb.append(" patternUnits=\"userSpaceOnUse\" width=\"10\">\n");
+        sb.append("      <line stroke=\"#000000\" stroke-width=\"6.666667\" x1=\"0\" x2=\"0\" y1=\"0\" y2=\"10\"/>\n");
+        sb.append("    </pattern>\n");
+        sb.append("  </defs>\n");
         sb.append("  <g>\n");
         sb.append("    <g/>\n");
         sb.append("    <g/>\n");
         sb.append("    <g>\n");
-        sb.append("      <g/>\n");
-        sb.append("      <g/>\n");
+        sb.append("      <g>\n");
+        sb.append("        <text fill=\"#112233\" font-family=\"Lato\" font-size=\"36\" font-style=\"normal\"");
+        sb.append(" font-weight=\"bold\" text-align=\"center\" text-anchor=\"end\" x=\"292.052\"");
+        sb.append(" y=\"210.666667\">Red Party</text>\n");
+        sb.append("        <rect/>\n");
+        sb.append("        <text></text>\n");
+        sb.append("        <rect fill=\"url(#pattern-1)\" height=\"80\" stroke=\"#000000\" stroke-width=\"5\"");
+        sb.append(" width=\"1000\" x=\"312.052\" y=\"144\"/>\n");
+        sb.append("        <rect fill=\"url(#pattern-2)\" height=\"80\" stroke=\"#000000\" stroke-width=\"5\"");
+        sb.append(" width=\"882.051282\" x=\"312.052\" y=\"144\"/>\n");
+        sb.append("        <rect fill=\"#000000\" height=\"80\" width=\"766.666667\" x=\"312.052\" y=\"144\"/>\n");
+        sb.append("        <text></text>\n");
+        sb.append("      </g>\n");
+        sb.append("      <g>\n");
+        sb.append("        <text fill=\"#112233\" font-family=\"Lato\" font-size=\"36\" font-style=\"normal\"");
+        sb.append(" font-weight=\"bold\" text-align=\"center\" text-anchor=\"end\" x=\"292.052\"");
+        sb.append(" y=\"350.666667\">Green Party</text>\n");
+        sb.append("        <rect/>\n");
+        sb.append("        <text></text>\n");
+        sb.append("        <rect fill=\"url(#pattern-3)\" height=\"80\" stroke=\"#000000\" stroke-width=\"5\"");
+        sb.append(" width=\"717.948718\" x=\"312.052\" y=\"284\"/>\n");
+        sb.append("        <rect fill=\"url(#pattern-4)\" height=\"80\" stroke=\"#000000\" stroke-width=\"5\"");
+        sb.append(" width=\"615.384615\" x=\"312.052\" y=\"284\"/>\n");
+        sb.append("        <rect fill=\"#000000\" height=\"80\" width=\"515.384615\" x=\"312.052\" y=\"284\"/>\n");
+        sb.append("        <text></text>\n");
+        sb.append("      </g>\n");
         sb.append("    </g>\n");
         sb.append("  </g>\n");
         sb.append("</svg>");

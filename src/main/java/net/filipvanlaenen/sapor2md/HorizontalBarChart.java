@@ -5,6 +5,8 @@ public abstract class HorizontalBarChart extends Chart {
     protected static final int CHOICE_HEIGHT = 100;
     protected static final int CHOICE_LABEL_FONT_SIZE = 36;
     protected static final int SPACE_BETWEEN_CHOICES = 40;
+    protected static final int POLL_RESULT_HEIGHT = 80;
+    protected static final int BAR_STROKE = 5;
 
     /**
      * Constructor taking the path to the Sapor directory and the name of the poll
