@@ -258,7 +258,17 @@ public class VotingIntentionsChart extends HorizontalBarChart {
     }
 
     private Text createResultLabel(String group, final int i) {
-        return new Text(""); // TODO
+        ConfidenceInterval<ProbabilityRange> ci = votingIntentionsMap.get(group).getConfidenceInterval(0.95D);
+        String label = ProbabilityRange.formatConfidenceInterval("%.0f", ci);
+        Text text = new Text(label);
+        double value = ci.getUpperBound().getUpperBound();
+        text.x(calculateBarXProperty() + MAX_CHOICE_WIDTH * value / getLargestValue() + SPACE_BETWEEN_ELEMENTS);
+        text.y(calculateBarYProperty(i) + POLL_RESULT_HEIGHT * 2D / 3D);
+        text.fontFamily(FONT_FAMILIY).fontStyle(FontStyleValue.NORMAL).fontWeight(FontWeightValue.BOLD);
+        text.fontSize(CHOICE_LABEL_FONT_SIZE); // TODO Should be in px
+        text.textAlign(TextAlignValue.CENTER).textAnchor(TextAnchorValue.START);
+        text.fill(getTextColor());
+        return text;
     }
 
     private List<String> getSortedGroups() {

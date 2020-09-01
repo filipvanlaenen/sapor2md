@@ -175,7 +175,9 @@ public class VotingIntentionsChartTest {
         sb.append("        <rect fill=\"url(#pattern-2)\" height=\"80\" stroke=\"#000000\" stroke-width=\"5\"");
         sb.append(" width=\"882.051282\" x=\"312.052\" y=\"144\"/>\n");
         sb.append("        <rect fill=\"#000000\" height=\"80\" width=\"766.666667\" x=\"312.052\" y=\"144\"/>\n");
-        sb.append("        <text></text>\n");
+        sb.append("        <text fill=\"#112233\" font-family=\"Lato\" font-size=\"36\" font-style=\"normal\"");
+        sb.append(" font-weight=\"bold\" text-align=\"center\" text-anchor=\"start\" x=\"1332.052\"");
+        sb.append(" y=\"197.333333\">15–20%</text>\n");
         sb.append("      </g>\n");
         sb.append("      <g>\n");
         sb.append("        <text fill=\"#112233\" font-family=\"Lato\" font-size=\"36\" font-style=\"normal\"");
@@ -188,7 +190,9 @@ public class VotingIntentionsChartTest {
         sb.append("        <rect fill=\"url(#pattern-4)\" height=\"80\" stroke=\"#000000\" stroke-width=\"5\"");
         sb.append(" width=\"615.384615\" x=\"312.052\" y=\"284\"/>\n");
         sb.append("        <rect fill=\"#000000\" height=\"80\" width=\"515.384615\" x=\"312.052\" y=\"284\"/>\n");
-        sb.append("        <text></text>\n");
+        sb.append("        <text fill=\"#112233\" font-family=\"Lato\" font-size=\"36\" font-style=\"normal\"");
+        sb.append(" font-weight=\"bold\" text-align=\"center\" text-anchor=\"start\" x=\"1050.000718\"");
+        sb.append(" y=\"337.333333\">10–14%</text>\n");
         sb.append("      </g>\n");
         sb.append("    </g>\n");
         sb.append("  </g>\n");
