@@ -161,7 +161,14 @@ public class VotingIntentionsChartTest {
         sb.append("    </pattern>\n");
         sb.append("  </defs>\n");
         sb.append("  <g>\n");
-        sb.append("    <g/>\n");
+        sb.append("    <g>\n");
+        sb.append("      <rect/>\n");
+        sb.append("      <rect/>\n");
+        sb.append("      <rect/>\n");
+        sb.append("      <rect/>\n");
+        sb.append("      <text></text>\n");
+        sb.append("      <text></text>\n");
+        sb.append("    </g>\n");
         sb.append("    <g/>\n");
         sb.append("    <g>\n");
         sb.append("      <g>\n");

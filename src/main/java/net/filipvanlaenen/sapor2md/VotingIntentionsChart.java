@@ -128,7 +128,7 @@ public class VotingIntentionsChart extends HorizontalBarChart {
     @Override
     protected StructuralElement createChartContent(List<Pattern> chartContentPatterns) {
         G g = new G();
-        g.addElement(createLegend());
+        g.addElement(createLegend(chartContentPatterns));
         g.addElement(createGridLines());
         g.addElement(createDataElements(chartContentPatterns));
         if (needsMajorityLine()) {
@@ -148,8 +148,39 @@ public class VotingIntentionsChart extends HorizontalBarChart {
         return false; // TODO
     }
 
-    private StructuralElement createLegend() {
-        return new G();// TODO
+    private StructuralElement createLegend(List<Pattern> chartContentPatterns) {
+        G g = new G();
+        g.addElement(createLastResultRectangleForLegend());
+        g.addElement(createRectangleToLowerBoundForLegend());
+        g.addElement(createRectangleToMedianForLegend(chartContentPatterns));
+        g.addElement(createRectangleToUpperBoundForLegend(chartContentPatterns));
+        g.addElement(createResultLabelForLegend());
+        g.addElement(createLastResultLabelForLegend());
+        return g;
+    }
+
+    private Rect createLastResultRectangleForLegend() {
+        return new Rect(); // TODO
+    }
+
+    private Rect createRectangleToLowerBoundForLegend() {
+        return new Rect(); // TODO
+    }
+
+    private Rect createRectangleToMedianForLegend(List<Pattern> chartContentPatterns) {
+        return new Rect(); // TODO
+    }
+
+    private Rect createRectangleToUpperBoundForLegend(List<Pattern> chartContentPatterns) {
+        return new Rect(); // TODO
+    }
+
+    private Text createResultLabelForLegend() {
+        return new Text(""); // TODO
+    }
+
+    private Text createLastResultLabelForLegend() {
+        return new Text(""); // TODO
     }
 
     private StructuralElement createGridLines() {
