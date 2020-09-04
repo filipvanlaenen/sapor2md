@@ -223,7 +223,7 @@ public abstract class Chart {
 
     protected abstract StructuralElement createChartContent(List<Pattern> chartContentPatterns);
 
-    private Double getHeight() {
+    protected Double getHeight() {
         if (height == null) {
             height = calculateHeight();
         }
@@ -237,7 +237,7 @@ public abstract class Chart {
 
     protected abstract double calculateContentHeight();
 
-    private Double getWidth() {
+    protected Double getWidth() {
         if (width == null) {
             width = calculateWidth();
         }

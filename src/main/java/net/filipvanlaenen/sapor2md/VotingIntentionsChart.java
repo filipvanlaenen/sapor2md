@@ -164,7 +164,12 @@ public class VotingIntentionsChart extends HorizontalBarChart {
     }
 
     private Rect createRectangleToLowerBoundForLegend() {
-        return new Rect(); // TODO
+        Rect rect = new Rect();
+        rect.x(getWidth() - 13 * MARGIN);
+        rect.y(getHeight() - MARGIN - SUBTITLE_FONT_SIZE * 4D / 3D - SPACE_BETWEEN_ELEMENTS - POLL_RESULT_HEIGHT / 2D);
+        rect.height(POLL_RESULT_HEIGHT / 2D).width(6 * MARGIN);
+        rect.fill(getTextColor());
+        return rect;
     }
 
     private Rect createRectangleToMedianForLegend(List<Pattern> chartContentPatterns) {

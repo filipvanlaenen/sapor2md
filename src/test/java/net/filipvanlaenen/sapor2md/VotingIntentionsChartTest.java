@@ -163,7 +163,7 @@ public class VotingIntentionsChartTest {
         sb.append("  <g>\n");
         sb.append("    <g>\n");
         sb.append("      <rect/>\n");
-        sb.append("      <rect/>\n");
+        sb.append("      <rect fill=\"#112233\" height=\"40\" width=\"120\" x=\"1240.444\" y=\"296.666667\"/>\n");
         sb.append("      <rect/>\n");
         sb.append("      <rect/>\n");
         sb.append("      <text></text>\n");
