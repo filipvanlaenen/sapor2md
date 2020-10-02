@@ -10,7 +10,6 @@ import java.time.format.DateTimeFormatter;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import net.filipvanlaenen.sapor2md.RSS20Feed.RSS20FeedMode;
@@ -102,23 +101,27 @@ public class RSS20FeedTest {
     private static final String TEXT_COLOR = "#112233";
 
     /**
-     * A country properties object for testing purposes.
+     * Creates the default in-memory country properties for the test.
      */
-    private CountryProperties countryProperties;
+    CountryProperties createCountryProperties() {
+        return createCountryProperties(false);
+    }
 
     /**
-     * Creates the in-memory country properties for the test.
+     * Creates the default in-memory country properties for the test.
      */
-    @BeforeEach
-    void createCountryProperties() {
+    CountryProperties createCountryProperties(final boolean hasTwitterTags) {
         Map<String, String> map = new HashMap<String, String>();
         map.put(CountryProperties.NUMBER_OF_SEATS_KEY, Integer.toString(SIX));
         map.put(CountryProperties.GITHUB_DIRECTORY_URL_KEY, "https://bar.github.io/foo_polls");
         map.put(CountryProperties.PARLIAMENT_NAME_KEY, "Foo Parliament");
         map.put(CountryProperties.BACKGROUND_COLOR_KEY, BACKGROUND_COLOR);
         map.put(CountryProperties.TEXT_COLOR_KEY, TEXT_COLOR);
+        if (hasTwitterTags) {
+            map.put(CountryProperties.TWITTER_TAGS_KEY, "opinionpoll | foo");
+        }
         OffsetDateTime timestamp = createDateTime(TWO_THOUSAND_AND_TWENTY, Month.JANUARY, 1, 0, 0);
-        countryProperties = new InMemoryCountryProperties(map, timestamp);
+        return new InMemoryCountryProperties(map, timestamp);
     }
 
     /**
@@ -144,7 +147,7 @@ public class RSS20FeedTest {
      */
     @Test
     void produceEmptyFeedForDirectoryWithNoPolls() {
-        SaporDirectory directory = new InMemorySaporDirectory(countryProperties);
+        SaporDirectory directory = new InMemorySaporDirectory(createCountryProperties());
         String actual = new RSS20Feed(directory, RSS20FeedMode.GitHubFeed).toString();
         StringBuilder sb = new StringBuilder();
         sb.append("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n");
@@ -166,7 +169,7 @@ public class RSS20FeedTest {
      */
     @Test
     void produceEmptyFeedForDirectoryWithPollThatHasNotBeenCalculated() {
-        InMemorySaporDirectory directory = new InMemorySaporDirectory(countryProperties);
+        InMemorySaporDirectory directory = new InMemorySaporDirectory(createCountryProperties());
         Map<String, String> properties = new HashMap<String, String>();
         properties.put(Poll.FIELDWORK_START_KEY, "2020-01-02");
         properties.put(Poll.FIELDWORK_END_KEY, "2020-01-03");
@@ -190,11 +193,13 @@ public class RSS20FeedTest {
      * Creates a Sapor directory with one poll.
      *
      * @param numberOfSimulations The number of simulations run on the poll.
-     * @param hasCommissioners    Whether the poll shoud have commissioners or not.
+     * @param hasCommissioners    Whether the poll should have commissioners or not.
+     * @param hasTwitterTags             Whether the directory should have tags or not.
      * @return A Sapor directory with one poll.
      */
-    private SaporDirectory createDirectoryWithPoll(final long numberOfSimulations, final boolean hasCommissioners) {
-        InMemorySaporDirectory directory = new InMemorySaporDirectory(countryProperties);
+    private SaporDirectory createDirectoryWithPoll(final long numberOfSimulations, final boolean hasCommissioners,
+            final boolean hasTwitterTags) {
+        InMemorySaporDirectory directory = new InMemorySaporDirectory(createCountryProperties(hasTwitterTags));
         Map<String, String> properties = new HashMap<String, String>();
         properties.put(Poll.POLLING_FIRM_KEY, "Baz");
         if (hasCommissioners) {
@@ -231,7 +236,7 @@ public class RSS20FeedTest {
      * @return A Sapor directory with the requests number of polls.
      */
     private SaporDirectory createDirectoryWithPolls(final int noOfPolls) {
-        InMemorySaporDirectory directory = new InMemorySaporDirectory(countryProperties);
+        InMemorySaporDirectory directory = new InMemorySaporDirectory(createCountryProperties());
         for (int i = noOfPolls; i >= 1; i--) {
             directory.addPoll(createPoll(i, TWO_THOUSAND_AND_TWENTY));
         }
@@ -280,7 +285,7 @@ public class RSS20FeedTest {
      */
     @Test
     void produceFeedWithVotingIntentionsItemForDirectoryWithPollWithOneSimulation() {
-        SaporDirectory directory = createDirectoryWithPoll(1, true);
+        SaporDirectory directory = createDirectoryWithPoll(1, true, false);
         String actual = new RSS20Feed(directory, RSS20FeedMode.GitHubFeed).toString();
         StringBuilder sb = new StringBuilder();
         sb.append("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n");
@@ -314,7 +319,7 @@ public class RSS20FeedTest {
      */
     @Test
     void produceFeedWithVotingIntentionsItemForDirectoryWithPollWithoutCommissionnersWithOneSimulation() {
-        SaporDirectory directory = createDirectoryWithPoll(1, false);
+        SaporDirectory directory = createDirectoryWithPoll(1, false, false);
         String actual = new RSS20Feed(directory, RSS20FeedMode.GitHubFeed).toString();
         StringBuilder sb = new StringBuilder();
         sb.append("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n");
@@ -348,7 +353,7 @@ public class RSS20FeedTest {
      */
     @Test
     void produceFeedWithAllItemsForDirectoryWithPollWithOneMillionSimulations() {
-        SaporDirectory directory = createDirectoryWithPoll(ONE_MILLION, true);
+        SaporDirectory directory = createDirectoryWithPoll(ONE_MILLION, true, false);
         String actual = new RSS20Feed(directory, RSS20FeedMode.GitHubFeed).toString();
         StringBuilder sb = new StringBuilder();
         sb.append("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n");
@@ -406,7 +411,7 @@ public class RSS20FeedTest {
      */
     @Test
     void produceFeedWithAllItemsForDirectoryWithPollWithoutCommissionnersWithOneMillionSimulations() {
-        SaporDirectory directory = createDirectoryWithPoll(ONE_MILLION, false);
+        SaporDirectory directory = createDirectoryWithPoll(ONE_MILLION, false, false);
         String actual = new RSS20Feed(directory, RSS20FeedMode.GitHubFeed).toString();
         StringBuilder sb = new StringBuilder();
         sb.append("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n");
@@ -464,7 +469,7 @@ public class RSS20FeedTest {
      */
     @Test
     void produceIftttFeedWithVotingIntentionsItemForDirectoryWithPollWithOneSimulation() {
-        SaporDirectory directory = createDirectoryWithPoll(1, true);
+        SaporDirectory directory = createDirectoryWithPoll(1, true, false);
         String actual = new RSS20Feed(directory, RSS20FeedMode.IftttFeed).toString();
         StringBuilder sb = new StringBuilder();
         sb.append("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n");
@@ -742,7 +747,7 @@ public class RSS20FeedTest {
      */
     @Test
     void produceIftttFeedWithVotingIntentionsItemForDirectoryWithPollWithoutCommissionersWithOneSimulation() {
-        SaporDirectory directory = createDirectoryWithPoll(1, false);
+        SaporDirectory directory = createDirectoryWithPoll(1, false, false);
         String actual = new RSS20Feed(directory, RSS20FeedMode.IftttFeed).toString();
         StringBuilder sb = new StringBuilder();
         sb.append("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n");
@@ -776,7 +781,7 @@ public class RSS20FeedTest {
      */
     @Test
     void produceIftttFeedWithAllItemsForDirectoryWithPollWithAMillionSimulations() {
-        SaporDirectory directory = createDirectoryWithPoll(ONE_MILLION, true);
+        SaporDirectory directory = createDirectoryWithPoll(ONE_MILLION, true, false);
         String actual = new RSS20Feed(directory, RSS20FeedMode.IftttFeed).toString();
         StringBuilder sb = new StringBuilder();
         sb.append("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n");
@@ -831,12 +836,75 @@ public class RSS20FeedTest {
     }
 
     /**
+     * Verifying that for a directory with a poll that has 1 million simulations, a
+     * feed with all items is produced for IFTTT.
+     */
+    @Test
+    void produceIftttFeedWithAllItemsForDirectoryWithPollWithAMillionSimulationsAndTwitterTags() {
+        SaporDirectory directory = createDirectoryWithPoll(ONE_MILLION, true, true);
+        String actual = new RSS20Feed(directory, RSS20FeedMode.IftttFeed).toString();
+        StringBuilder sb = new StringBuilder();
+        sb.append("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n");
+        sb.append("<rss version=\"2.0\" xmlns:dc=\"http://purl.org/dc/elements/1.1/\">\n");
+        sb.append("  <channel>\n");
+        sb.append("    <title>All Registered Polls for the Foo Parliament</title>\n");
+        sb.append("    <link>https://bar.github.io/foo_polls</link>\n");
+        sb.append("    <description>All Registered Polls for the Foo Parliament</description>\n");
+        sb.append("    <pubDate>Wed, 1 Jan 2020 00:00:00 +0100</pubDate>\n");
+        sb.append("    <item>\n");
+        sb.append("      <title>Opinion Poll by Baz for Qux, 2–3 January 2020 – Seating Plan Projection</title>\n");
+        sb.append("      <link>https://bar.github.io/foo_polls/2020-01-03-Baz.html#seating-plan</link>\n");
+        sb.append("      <description><![CDATA[Seating plan projection for the Foo Parliament<br/>");
+        sb.append("4 seats needed for a majority<br/>");
+        sb.append("Opinion poll by Baz for Qux, 2–3 January 2020<br/>");
+        sb.append("Details on https://bar.github.io/foo_polls/2020-01-03-Baz.html<br/>");
+        sb.append("#opinionpoll #foo<br/>");
+        sb.append("<img src=\"https://bar.github.io/foo_polls/2020-01-03-Baz-seating-plan.png\"/>]]></description>\n");
+        sb.append("      <enclosure url=\"https://bar.github.io/foo_polls/2020-01-03-Baz-seating-plan.png\"");
+        sb.append(" length=\"7\" type=\"image/png\"/>\n");
+        sb.append("      <pubDate>Sat, 4 Jan 2020 00:00:00 +0100</pubDate>\n");
+        sb.append("      <dc:date>2020-01-04T00:00:00+01:00</dc:date>\n");
+        sb.append("    </item>\n");
+        sb.append("    <item>\n");
+        sb.append("      <title>Opinion Poll by Baz for Qux, 2–3 January 2020 – Seat Projections</title>\n");
+        sb.append("      <link>https://bar.github.io/foo_polls/2020-01-03-Baz.html#seats</link>\n");
+        sb.append("      <description><![CDATA[Seat projections for the Foo Parliament<br/>");
+        sb.append("4 seats needed for a majority<br/>");
+        sb.append("Opinion poll by Baz for Qux, 2–3 January 2020<br/>");
+        sb.append("Details on https://bar.github.io/foo_polls/2020-01-03-Baz.html<br/>");
+        sb.append("#opinionpoll #foo<br/>");
+        sb.append("<img src=\"https://bar.github.io/foo_polls/2020-01-03-Baz-seats.png\"/>]]></description>\n");
+        sb.append("      <enclosure url=\"https://bar.github.io/foo_polls/2020-01-03-Baz-seats.png\" length=\"6\"");
+        sb.append(" type=\"image/png\"/>\n");
+        sb.append("      <pubDate>Sat, 4 Jan 2020 00:00:00 +0100</pubDate>\n");
+        sb.append("      <dc:date>2020-01-04T00:00:00+01:00</dc:date>\n");
+        sb.append("    </item>\n");
+        sb.append("    <item>\n");
+        sb.append("      <title>Opinion Poll by Baz for Qux, 2–3 January 2020 – Voting Intentions</title>\n");
+        sb.append("      <link>https://bar.github.io/foo_polls/2020-01-03-Baz.html</link>\n");
+        sb.append("      <description><![CDATA[Voting intentions for the Foo Parliament<br/>");
+        sb.append("Opinion poll by Baz for Qux, 2–3 January 2020<br/>");
+        sb.append("Details on https://bar.github.io/foo_polls/2020-01-03-Baz.html<br/>");
+        sb.append("#opinionpoll #foo<br/>");
+        sb.append("<img src=\"https://bar.github.io/foo_polls/2020-01-03-Baz.png\"/>]]></description>\n");
+        sb.append("      <enclosure url=\"https://bar.github.io/foo_polls/2020-01-03-Baz.png\" length=\"5\"");
+        sb.append(" type=\"image/png\"/>\n");
+        sb.append("      <pubDate>Sat, 4 Jan 2020 00:00:00 +0100</pubDate>\n");
+        sb.append("      <dc:date>2020-01-04T00:00:00+01:00</dc:date>\n");
+        sb.append("    </item>\n");
+        sb.append("  </channel>\n");
+        sb.append("</rss>");
+        String expected = sb.toString();
+        assertEquals(expected, actual);
+    }
+
+    /**
      * Verifying that for a directory with a poll without commissioners that has 1
      * million simulations, a feed with all items is produced for IFTTT.
      */
     @Test
     void produceIftttFeedWithAllItemsForDirectoryWithPollWithoutCommissionersWithAMillionSimulations() {
-        SaporDirectory directory = createDirectoryWithPoll(ONE_MILLION, false);
+        SaporDirectory directory = createDirectoryWithPoll(ONE_MILLION, false, false);
         String actual = new RSS20Feed(directory, RSS20FeedMode.IftttFeed).toString();
         StringBuilder sb = new StringBuilder();
         sb.append("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n");

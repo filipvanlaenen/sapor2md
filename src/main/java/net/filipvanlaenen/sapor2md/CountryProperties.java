@@ -1,6 +1,7 @@
 package net.filipvanlaenen.sapor2md;
 
 import java.time.OffsetDateTime;
+import java.util.Arrays;
 import java.util.Map;
 
 /**
@@ -32,6 +33,10 @@ public abstract class CountryProperties {
      * The key for the text color.
      */
     static final String TEXT_COLOR_KEY = "TextColor";
+    /**
+     * The key for the Twitter tags color.
+     */
+    static final String TWITTER_TAGS_KEY = "TwitterTags";
 
     /**
      * The copyirght text.
@@ -61,6 +66,10 @@ public abstract class CountryProperties {
      * The timestamp for the country properties file.
      */
     private final OffsetDateTime timestamp;
+    /**
+     * An array with the Twitter tags.
+     */
+    private final String[] twitterTags;
 
     /**
      * Constructor taking a map with the properties and a timestamp as its
@@ -76,7 +85,23 @@ public abstract class CountryProperties {
         numberOfSeats = Integer.parseInt(map.get(NUMBER_OF_SEATS_KEY));
         parliamentName = map.get(PARLIAMENT_NAME_KEY);
         textColor = parseHexadecimalColorCode(map.get(TEXT_COLOR_KEY));
+        twitterTags = parseTwitterTags(map.get(TWITTER_TAGS_KEY));
         this.timestamp = timestamp;
+    }
+
+    /**
+     * Parses a string of Twitter tags into an array of strings. The string should
+     * be a list of tags separated by a pipe symbol.
+     *
+     * @param string The string to parse.
+     * @return An array with the Twitter tags.
+     */
+    private String[] parseTwitterTags(String string) {
+        if (string == null) {
+            return null;
+        } else {
+            return Arrays.stream(string.split("\\|")).map(String::trim).toArray(String[]::new);
+        }
     }
 
     /**
@@ -159,6 +184,24 @@ public abstract class CountryProperties {
      */
     OffsetDateTime getTimestamp() {
         return timestamp;
+    }
+
+    /**
+     * Returns true if the country has Twitter tags defined.
+     *
+     * @return True if the country has Twitter tags.
+     */
+    public boolean hasTwitterTags() {
+        return twitterTags != null && twitterTags.length > 0;
+    }
+
+    /**
+     * Returns the Twitter tags.
+     *
+     * @return The Twitter tags.
+     */
+    public String[] getTwitterTags() {
+        return twitterTags;
     }
 
 }

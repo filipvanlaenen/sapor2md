@@ -4,6 +4,7 @@ import java.io.File;
 import java.time.LocalDate;
 import java.time.OffsetDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.Arrays;
 import java.util.Iterator;
 
 /**
@@ -383,6 +384,11 @@ public final class RSS20Feed {
                 sb.append(poll.getBaseName());
                 sb.append(".html");
                 sb.append("<br/>");
+                if (saporDir.getCountryProperties().hasTwitterTags()) {
+                    String[] tags = saporDir.getCountryProperties().getTwitterTags();
+                    sb.append(String.join(" ", Arrays.stream(tags).map(t -> "#" + t).toArray(String[]::new)));
+                    sb.append("<br/>");
+                }
                 sb.append("<img src=\"");
                 sb.append(saporDir.getCountryProperties().getGitHubDirectoryURL());
                 sb.append("/");
@@ -415,6 +421,11 @@ public final class RSS20Feed {
                 sb.append(poll.getBaseName());
                 sb.append(".html");
                 sb.append("<br/>");
+                if (saporDir.getCountryProperties().hasTwitterTags()) {
+                    String[] tags = saporDir.getCountryProperties().getTwitterTags();
+                    sb.append(String.join(" ", Arrays.stream(tags).map(t -> "#" + t).toArray(String[]::new)));
+                    sb.append("<br/>");
+                }
                 sb.append("<img src=\"");
                 sb.append(saporDir.getCountryProperties().getGitHubDirectoryURL());
                 sb.append("/");
@@ -447,6 +458,11 @@ public final class RSS20Feed {
                 sb.append(poll.getBaseName());
                 sb.append(".html");
                 sb.append("<br/>");
+                if (saporDir.getCountryProperties().hasTwitterTags()) {
+                    String[] tags = saporDir.getCountryProperties().getTwitterTags();
+                    sb.append(String.join(" ", Arrays.stream(tags).map(t -> "#" + t).toArray(String[]::new)));
+                    sb.append("<br/>");
+                }
                 sb.append("<img src=\"");
                 sb.append(saporDir.getCountryProperties().getGitHubDirectoryURL());
                 sb.append("/");
